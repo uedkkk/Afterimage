@@ -50,3 +50,11 @@ tests/fixtures/output/
 lib/generated/
 
 /lib/generated/prisma
+
+# Keep directory structure but ignore uploaded files
+public/uploads/originals/*
+!public/uploads/originals/.gitkeep
+public/uploads/thumbnails/*
+!public/uploads/thumbnails/.gitkeep
+public/uploads/optimized/*
+!public/uploads/optimized/.gitkeep
