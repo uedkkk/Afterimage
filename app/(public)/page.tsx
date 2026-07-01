@@ -1,4 +1,4 @@
-import { getAllPhotos, getPublishedAlbums, getAllSettings } from "@/lib/db/queries";
+import { getAllPhotos, getAllSettings } from "@/lib/db/queries";
 import { PhotoGrid } from "@/components/PhotoGrid";
 import { Reveal } from "@/components/Reveal";
 import Link from "next/link";
@@ -6,13 +6,11 @@ import Link from "next/link";
 export const revalidate = 300;
 
 export default async function Home() {
-  const [photos, albums, settings] = await Promise.all([
+  const [photos, settings] = await Promise.all([
     getAllPhotos(7, 0),
-    getPublishedAlbums(),
     getAllSettings(),
   ]);
 
-  const title = settings["site.title"] ?? "Afterimage";
   const description = settings["site.description"] ?? "摄影作品展示与管理系统";
 
   return (
