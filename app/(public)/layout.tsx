@@ -3,6 +3,8 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { IndexBar } from "@/components/IndexBar";
 
+export const revalidate = 300;
+
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <>
