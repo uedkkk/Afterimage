@@ -174,7 +174,9 @@ export async function createCategory(name: string, slug: string): Promise<Catego
   return db.category.create({ data: { name, slug } });
 }
 
-export async function getPublishedStories(): Promise<Story[]> {
+export async function getPublishedStories(): Promise<
+  (Story & { cover: Photo | null; album: Album | null })[]
+> {
   return db.story.findMany({
     where: { published: true },
     orderBy: { sortOrder: "asc" },
@@ -182,7 +184,9 @@ export async function getPublishedStories(): Promise<Story[]> {
   });
 }
 
-export async function getStoryBySlug(slug: string): Promise<Story | null> {
+export async function getStoryBySlug(
+  slug: string
+): Promise<(Story & { cover: Photo | null; album: Album | null }) | null> {
   return db.story.findUnique({
     where: { slug },
     include: { cover: true, album: true },
