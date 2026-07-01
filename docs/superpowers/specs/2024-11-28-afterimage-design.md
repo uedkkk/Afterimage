@@ -292,6 +292,38 @@ public/uploads/
 
 ## 部署
 
-- 单机部署：`npm run build && npm start`，PM2 守护进程
+### Docker 部署（主要方式）
+
+- 多阶段 Dockerfile：`deps` → `builder` → `runner`，最终镜像仅含运行时产物
+- `docker-compose.yml` 一键启动，包含：
+  - 卷挂载：SQLite 数据库文件 + `public/uploads/` 持久化
+  - 局域网文件访问：挂载 NAS/共享目录到容器内路径（如 `/mnt/nas`）
+  - 环境变量通过 `.env` 或 `environment` 注入
+- 示例：
+  ```yaml
+  services:
+    afterimage:
+      build: .
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./data:/app/data           # SQLite 数据库
+        - ./uploads:/app/public/uploads  # 图片存储
+        - /mnt/nas/photos:/mnt/nas:ro   # 局域网文件（只读）
+      env_file: .env
+      restart: unless-stopped
+  ```
+
+### 单机部署（备选）
+
+- `npm run build && npm start`，PM2 守护进程
 - SQLite 文件 + uploads 目录需定期备份
-- 环境变量：`DATABASE_URL`、`JWT_SECRET`、`ADMIN_USERNAME`、`ADMIN_PASSWORD`（bcrypt 哈希）
+
+### 环境变量
+
+| 变量 | 说明 | 示例 |
+|------|------|------|
+| `DATABASE_URL` | SQLite 数据库路径 | `file:./data/afterimage.db` |
+| `JWT_SECRET` | JWT 签名密钥 | 随机字符串 |
+| `ADMIN_USERNAME` | 管理员用户名 | `admin` |
+| `ADMIN_PASSWORD` | 管理员密码（bcrypt 哈希） | `$2b$10$...` |
