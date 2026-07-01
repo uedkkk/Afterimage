@@ -73,6 +73,22 @@ export async function getAllPhotos(limit = 100, offset = 0): Promise<PhotoWithTa
   return photos.map(serializePhoto);
 }
 
+export async function searchPhotos(query: string): Promise<PhotoWithTags[]> {
+  const photos = await db.photo.findMany({
+    where: {
+      OR: [
+        { title: { contains: query } },
+        { description: { contains: query } },
+        { filename: { contains: query } },
+        { tags: { contains: query } },
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+  return photos.map(serializePhoto);
+}
+
 export async function updatePhoto(
   id: string,
   data: Partial<CreatePhotoInput>
