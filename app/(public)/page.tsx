@@ -16,7 +16,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero — compact text intro */}
-      <section className="grid grid-cols-[1.4fr_1fr] items-end gap-28 px-14 pt-14 pb-7 border-b border-line">
+      <section className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] items-end gap-8 md:gap-28 px-4 md:px-14 pt-14 pb-7 border-b border-line">
         <div>
           <div className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-widest text-accent mb-3.5 before:content-[''] before:w-7 before:h-px before:bg-accent">
             Featured · 2024
@@ -44,7 +44,7 @@ export default async function Home() {
       </section>
 
       {/* Gallery */}
-      <section className="px-14 pt-28 pb-14" id="gallery">
+      <section className="px-4 md:px-14 pt-28 pb-14" id="gallery">
         <Reveal>
           <div className="flex justify-between items-end mb-14 pb-7 border-b border-line">
             <div className="flex items-baseline gap-4">

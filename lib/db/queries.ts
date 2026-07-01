@@ -66,6 +66,9 @@ export async function getPhotosByAlbum(albumId: string): Promise<PhotoWithTags[]
 
 export async function getAllPhotos(limit = 100, offset = 0): Promise<PhotoWithTags[]> {
   const photos = await db.photo.findMany({
+    where: {
+      OR: [{ albumId: null }, { album: { published: true } }],
+    },
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: offset,
@@ -73,14 +76,29 @@ export async function getAllPhotos(limit = 100, offset = 0): Promise<PhotoWithTa
   return photos.map(serializePhoto);
 }
 
+export async function getPhotoCount(): Promise<number> {
+  return db.photo.count({
+    where: {
+      OR: [{ albumId: null }, { album: { published: true } }],
+    },
+  });
+}
+
 export async function searchPhotos(query: string): Promise<PhotoWithTags[]> {
   const photos = await db.photo.findMany({
     where: {
-      OR: [
-        { title: { contains: query } },
-        { description: { contains: query } },
-        { filename: { contains: query } },
-        { tags: { contains: query } },
+      AND: [
+        {
+          OR: [{ albumId: null }, { album: { published: true } }],
+        },
+        {
+          OR: [
+            { title: { contains: query } },
+            { description: { contains: query } },
+            { filename: { contains: query } },
+            { tags: { contains: query } },
+          ],
+        },
       ],
     },
     orderBy: { createdAt: "desc" },
@@ -144,7 +162,7 @@ export async function getAlbumWithPhotos(slug: string): Promise<{
   photos: PhotoWithTags[];
 } | null> {
   const album = await db.album.findUnique({
-    where: { slug },
+    where: { slug, published: true },
     include: { category: true, cover: true },
   });
   if (!album) return null;

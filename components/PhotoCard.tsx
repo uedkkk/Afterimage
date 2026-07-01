@@ -1,16 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { PhotoWithTags } from "@/lib/db/queries";
-import { cn } from "@/lib/utils";
 
-const SPANS = [
-  "col-span-5 aspect-[4/5]",
-  "col-span-7 aspect-[3/2]",
-  "col-span-4 aspect-square",
-  "col-span-4 aspect-square",
-  "col-span-4 aspect-square",
-  "col-span-7 aspect-[3/2]",
-  "col-span-5 aspect-[4/5]",
+export const SPANS = [
+  "col-span-1 md:col-span-5 aspect-[4/5]",
+  "col-span-1 md:col-span-7 aspect-[3/2]",
+  "col-span-1 md:col-span-4 aspect-square",
+  "col-span-1 md:col-span-4 aspect-square",
+  "col-span-1 md:col-span-4 aspect-square",
+  "col-span-1 md:col-span-7 aspect-[3/2]",
+  "col-span-1 md:col-span-5 aspect-[4/5]",
 ];
 
 interface PhotoCardProps {
@@ -19,16 +18,12 @@ interface PhotoCardProps {
 }
 
 export function PhotoCard({ photo, index }: PhotoCardProps) {
-  const span = SPANS[index % SPANS.length];
   const num = String(index + 1).padStart(2, "0");
 
   return (
     <Link
       href={`/photo/${photo.id}`}
-      className={cn(
-        "relative overflow-hidden cursor-pointer bg-faint group",
-        span
-      )}
+      className="relative overflow-hidden cursor-pointer bg-faint group"
     >
       <Image
         src={photo.thumbPath ?? photo.filePath}

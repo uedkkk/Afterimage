@@ -19,7 +19,7 @@ export default async function AlbumPage({ params }: PageProps) {
   const { album, photos } = result;
 
   return (
-    <div className="px-14 py-14">
+    <div className="px-4 md:px-14 py-14">
       <Reveal>
         <header className="mb-10 pb-7 border-b border-line">
           {album.category && (

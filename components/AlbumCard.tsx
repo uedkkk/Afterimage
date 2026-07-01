@@ -21,7 +21,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
         />
       )}
-      <div className="absolute inset-0 p-4.5 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/70 to-transparent text-white">
+      <div className="absolute inset-0 p-4 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/70 to-transparent text-white">
         <h3 className="font-display text-lg font-semibold">{album.title}</h3>
         {album.description && (
           <p className="text-white/70 text-sm font-serif italic mt-0.5 line-clamp-2">

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Nav() {
   return (
-    <nav className="sticky top-0 z-50 bg-bg/88 backdrop-blur-md border-b border-line h-14 px-14 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-bg/88 backdrop-blur-md border-b border-line h-14 px-4 md:px-14 flex items-center justify-between">
       <Link
         href="/"
         className="font-display text-[17px] font-semibold tracking-tight no-underline text-ink flex items-center gap-1.5"
@@ -10,7 +10,7 @@ export function Nav() {
         After
         <em className="font-serif italic font-normal text-accent">image</em>
       </Link>
-      <div className="flex gap-0 absolute left-1/2 -translate-x-1/2">
+      <div className="hidden md:flex gap-0 absolute left-1/2 -translate-x-1/2">
         <Link
           href="/"
           className="text-ink no-underline text-[13px] font-medium px-4 py-1 transition-colors relative group"

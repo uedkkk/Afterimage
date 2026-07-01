@@ -16,14 +16,14 @@ export default async function AboutPage() {
   }
 
   return (
-    <div className="px-14 py-14">
+    <div className="px-4 md:px-14 py-14">
       <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] border-t border-line">
         {/* Left — title */}
         <Reveal className="lg:border-r lg:border-line lg:p-14 p-0 lg:pt-14 pt-14">
           <div className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-widest text-accent mb-3.5 before:content-[''] before:w-7 before:h-px before:bg-accent">
             About the Photographer
           </div>
-          <h1 className="font-display text-[clamp(28px,4vw,48px)] font-semibold leading-tight tracking-tight text-wrap-balance">
+          <h1 className="font-display text-[clamp(28px,4vw,48px)] font-semibold leading-tight tracking-tight text-balance">
             用镜头书写
             <em className="font-serif italic font-normal text-accent">光影</em>
             的诗篇
