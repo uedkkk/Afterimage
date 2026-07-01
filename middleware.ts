@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { COOKIE_NAME, getJwtSecret } from "@/lib/auth/constants";
 
-const COOKIE_NAME = "afterimage_session";
-const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "fallback-secret-change-me"
-);
+const secret = getJwtSecret();
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

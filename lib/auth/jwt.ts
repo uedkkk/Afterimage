@@ -1,8 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
+import { getJwtSecret } from "./constants";
 
-const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "fallback-secret-change-me"
-);
+const secret = getJwtSecret();
 
 export async function signToken(payload: { username: string }): Promise<string> {
   return new SignJWT({ ...payload })

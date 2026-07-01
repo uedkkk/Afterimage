@@ -1,4 +1,4 @@
-import { readdirSync, statSync, copyFileSync, existsSync, readFileSync } from "fs";
+import { readdirSync, statSync, copyFileSync, existsSync, readFileSync, mkdirSync } from "fs";
 import { join, extname, basename } from "path";
 import type { SavedFile } from "./local";
 
@@ -63,6 +63,7 @@ export async function importLanFile(
     throw new Error(`File not found: ${lanPath}`);
   }
 
+  mkdirSync(destDir, { recursive: true });
   const filename = basename(lanPath);
   const destPath = join(destDir, filename);
   copyFileSync(lanPath, destPath);
