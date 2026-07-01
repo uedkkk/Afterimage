@@ -123,6 +123,20 @@ export async function getPublishedAlbums(): Promise<Album[]> {
   });
 }
 
+export async function getAlbumWithPhotos(slug: string): Promise<{
+  album: Album & { category: Category | null; cover: Photo | null };
+  photos: PhotoWithTags[];
+} | null> {
+  const album = await db.album.findUnique({
+    where: { slug },
+    include: { category: true, cover: true },
+  });
+  if (!album) return null;
+
+  const photos = await getPhotosByAlbum(album.id);
+  return { album, photos };
+}
+
 export async function getAlbumsByCategory(categoryId: string): Promise<Album[]> {
   return db.album.findMany({
     where: { categoryId, published: true },
