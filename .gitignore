@@ -44,3 +44,8 @@ next-env.d.ts
 # project
 data/
 .superpowers/
+
+# prisma generated client
+lib/generated/
+
+/lib/generated/prisma

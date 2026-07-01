@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String  @id @default(cuid())
+  name      String  @unique
+  slug      String  @unique
+  sortOrder Int     @default(0)
+  albums    Album[]
+}
+
+model Album {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String?
+  coverId     String?   @unique
+  cover       Photo?    @relation("AlbumCover", fields: [coverId], references: [id])
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  sortOrder   Int       @default(0)
+  published   Boolean   @default(false)
+  photos      Photo[]
+  stories     Story[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([slug])
+}
+
+model Photo {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  albumId     String?
+  album       Album?   @relation(fields: [albumId], references: [id])
+  filename    String
+  filePath    String
+  lanPath     String?
+  width       Int
+  height      Int
+  fileSize    Int
+  mimeType    String
+  thumbPath   String?
+  exif        String?
+  tags        String   @default("[]")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  albumCover  Album?  @relation("AlbumCover")
+  storyCover  Story?  @relation("StoryCover")
+
+  @@index([albumId])
+  @@index([createdAt])
+}
+
+model Story {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String
+  content   String
+  coverId   String?  @unique
+  cover     Photo?   @relation("StoryCover", fields: [coverId], references: [id])
+  albumId   String?
+  album     Album?   @relation(fields: [albumId], references: [id])
+  published Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([albumId])
+  @@index([slug])
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  albumId   String?
+  photoId   String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+}
+
+model Setting {
+  id    String @id
+  value String
+}
