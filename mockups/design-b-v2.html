@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="color-scheme:light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4f2ed">
+<title>Afterimage — Swiss Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --color-bg:#f4f2ed;
+    --color-paper:#faf8f4;
+    --color-text:#0e0e0e;
+    --color-dim:#6c6a64;
+    --color-faint:#d8d5cd;
+    --color-line:#0e0e0e;
+    --color-accent:#a64b2a;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-serif:'Instrument Serif',Georgia,serif;
+    --space-xs:6px;--space-sm:14px;--space-md:28px;--space-lg:56px;--space-xl:112px;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  html{scroll-behavior:smooth}
+  body{background:var(--color-bg);color:var(--color-text);font-family:var(--font-display);font-weight:400;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-size:15px}
+  
+  /* Paper texture — signature detail */
+  body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  
+  /* Reveal animation */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  
+  /* Nav — refined, thin */
+  .nav{position:sticky;top:0;z-index:100;background:rgba(244,242,237,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--color-line);padding:0 var(--space-lg);display:flex;align-items:center;justify-content:space-between;height:56px}
+  .nav-logo{font-size:17px;font-weight:600;letter-spacing:-.02em;text-decoration:none;color:var(--color-text);display:flex;align-items:center;gap:6px}
+  .nav-logo em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--color-accent)}
+  .nav-center{display:flex;gap:0;position:absolute;left:50%;transform:translateX(-50%)}
+  .nav-center a{color:var(--color-text);text-decoration:none;font-size:13px;font-weight:500;padding:4px 16px;transition:color .3s var(--ease);cursor:pointer;position:relative}
+  .nav-center a::after{content:'';position:absolute;bottom:-2px;left:16px;right:16px;height:1px;background:var(--color-accent);transform:scaleX(0);transition:transform .3s var(--ease)}
+  .nav-center a:hover::after,.nav-center a.active::after{transform:scaleX(1)}
+  .nav-center a.active{color:var(--color-accent)}
+  .nav-right{display:flex;align-items:center;gap:10px}
+  .nav-search{background:none;border:1px solid var(--color-faint);border-radius:0;padding:5px 10px;font-family:var(--font-display);font-size:12px;color:var(--color-dim);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .3s var(--ease)}
+  .nav-search:hover{border-color:var(--color-text);color:var(--color-text)}
+  .nav-search svg{width:13px;height:13px}
+  
+  /* Index bar — replaces marquee */
+  .index-bar{display:flex;border-bottom:1px solid var(--color-line);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em}
+  .index-bar > div{padding:8px 20px;border-right:1px solid var(--color-faint);display:flex;align-items:center;gap:6px}
+  .index-bar > div:first-child{padding-left:var(--space-lg)}
+  .index-bar > div:last-child{border-right:none;margin-left:auto;padding-right:var(--space-lg)}
+  .index-dot{width:5px;height:5px;border-radius:50%;background:var(--color-accent)}
+  
+  /* Hero — compact text intro */
+  .hero{display:grid;grid-template-columns:1.4fr 1fr;align-items:end;gap:var(--space-xl);padding:var(--space-lg) var(--space-lg) var(--space-md);border-bottom:1px solid var(--color-line)}
+  .hero-meta{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--color-accent);margin-bottom:var(--space-sm)}
+  .hero-meta::before{content:'';width:28px;height:1px;background:var(--color-accent)}
+  .hero-title{font-size:clamp(40px,6vw,84px);font-weight:700;line-height:.92;letter-spacing:-.035em;text-wrap:balance}
+  .hero-title em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--color-accent);letter-spacing:-.01em}
+  .hero-right{display:flex;flex-direction:column;gap:var(--space-md);padding-bottom:8px}
+  .hero-desc{font-family:var(--font-serif);font-size:17px;font-style:italic;color:var(--color-dim);line-height:1.6}
+  .hero-cta{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;text-decoration:none;color:var(--color-text);transition:gap .3s var(--ease);align-self:flex-start}
+  .hero-cta:hover{gap:14px;color:var(--color-accent)}
+  .hero-cta-arrow{transition:transform .3s var(--ease)}
+  .hero-cta:hover .hero-cta-arrow{transform:translateX(2px)}
+  
+  /* Gallery */
+  .gallery{padding:var(--space-xl) var(--space-lg) var(--space-lg)}
+  .gallery-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:var(--space-lg)}
+  .gallery-title-wrap{display:flex;align-items:baseline;gap:16px}
+  .gallery-title{font-size:clamp(24px,3vw,36px);font-weight:600;letter-spacing:-.02em}
+  .gallery-count{font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--color-dim)}
+  .gallery-filters{display:flex;gap:0;border:1px solid var(--color-line)}
+  .filter{padding:6px 14px;font-size:12px;font-weight:500;background:none;border:none;border-right:1px solid var(--color-faint);color:var(--color-dim);cursor:pointer;transition:all .3s var(--ease);font-family:var(--font-display)}
+  .filter:last-child{border-right:none}
+  .filter:hover{color:var(--color-text)}
+  .filter.active{background:var(--color-text);color:var(--color-bg)}
+  
+  .gallery-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .g-item{position:relative;overflow:hidden;cursor:pointer;background:var(--color-faint)}
+  .g-item img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease),filter .5s var(--ease);filter:grayscale(.1) contrast(1.02)}
+  .g-item:hover img{transform:scale(1.04);filter:grayscale(0) contrast(1.05)}
+  .g-item:nth-child(1){grid-column:span 5;aspect-ratio:4/5}
+  .g-item:nth-child(2){grid-column:span 7;aspect-ratio:3/2}
+  .g-item:nth-child(3){grid-column:span 4;aspect-ratio:1/1}
+  .g-item:nth-child(4){grid-column:span 4;aspect-ratio:1/1}
+  .g-item:nth-child(5){grid-column:span 4;aspect-ratio:1/1}
+  .g-item:nth-child(6){grid-column:span 7;aspect-ratio:3/2}
+  .g-item:nth-child(7){grid-column:span 5;aspect-ratio:4/5}
+  .g-item-info{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(to bottom,rgba(0,0,0,.25),transparent 30%,transparent 60%,rgba(0,0,0,.65));color:#fff;opacity:0;transition:opacity .4s var(--ease)}
+  .g-item:hover .g-item-info{opacity:1}
+  .g-item-num{font-size:11px;font-weight:600;letter-spacing:.05em;opacity:.7;font-variant-numeric:tabular-nums}
+  .g-item-bottom{display:flex;justify-content:space-between;align-items:flex-end}
+  .g-item-title{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .g-item-meta{font-family:var(--font-serif);font-style:italic;font-size:13px;opacity:.8}
+  
+  /* About — editorial spread */
+  .about{display:grid;grid-template-columns:5fr 7fr;border-top:1px solid var(--color-line)}
+  .about-left{padding:var(--space-lg) var(--space-md);border-right:1px solid var(--color-line);display:flex;flex-direction:column;justify-content:space-between;gap:var(--space-lg)}
+  .about-img-wrap{position:relative;overflow:hidden;aspect-ratio:4/5}
+  .about-img-wrap img{width:100%;height:100%;object-fit:cover;filter:grayscale(.2) contrast(1.05);transition:filter .6s var(--ease)}
+  .about-img-wrap:hover img{filter:grayscale(0) contrast(1.05)}
+  .about-img-caption{font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--color-dim);margin-top:8px}
+  .about-right{padding:var(--space-lg) var(--space-md);display:flex;flex-direction:column;justify-content:center}
+  .about-eyebrow{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--color-accent);margin-bottom:var(--space-sm);display:flex;align-items:center;gap:8px}
+  .about-eyebrow::before{content:'';width:24px;height:1px;background:var(--color-accent)}
+  .about-title{font-size:clamp(28px,4vw,48px);font-weight:600;line-height:1.05;letter-spacing:-.025em;margin-bottom:var(--space-md);text-wrap:balance}
+  .about-title em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--color-accent)}
+  .about-text{font-family:var(--font-serif);font-size:18px;line-height:1.65;color:var(--color-dim);max-width:460px;margin-bottom:var(--space-lg)}
+  .about-gear{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--color-faint)}
+  .gear-cell{padding:14px 0;border-bottom:1px solid var(--color-faint);display:flex;justify-content:space-between;align-items:baseline}
+  .gear-cell:nth-child(odd){padding-right:14px;border-right:1px solid var(--color-faint)}
+  .gear-cell:nth-child(even){padding-left:14px}
+  .gear-brand{font-size:14px;font-weight:600}
+  .gear-model{font-family:var(--font-serif);font-style:italic;font-size:13px;color:var(--color-dim)}
+  
+  /* Footer */
+  .footer{border-top:1px solid var(--color-line);padding:var(--space-lg);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:var(--space-md)}
+  .footer-left{font-size:12px;color:var(--color-dim)}
+  .footer-logo{font-size:24px;font-weight:600;letter-spacing:-.02em;text-align:center}
+  .footer-logo em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--color-accent)}
+  .footer-right{font-size:12px;color:var(--color-dim);text-align:right}
+  .footer-right a{color:var(--color-dim);text-decoration:none;transition:color .3s var(--ease)}
+  .footer-right a:hover{color:var(--color-accent)}
+  
+  a:focus-visible,button:focus-visible{outline:1px solid var(--color-accent);outline-offset:3px}
+  
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+  
+  @media(max-width:900px){
+    :root{--space-md:20px;--space-lg:32px;--space-xl:64px}
+    .nav{padding:0 20px;height:48px}
+    .nav-center{display:none}
+    .index-bar{display:none}
+    .hero{grid-template-columns:1fr;gap:20px;padding:32px 20px 24px}
+    .gallery{padding:64px 20px 32px}
+    .gallery-grid{grid-template-columns:1fr;gap:12px}
+    .g-item:nth-child(n){grid-column:span 1;aspect-ratio:4/3}
+    .gallery-header{flex-direction:column;align-items:flex-start;gap:16px}
+    .about{grid-template-columns:1fr}
+    .about-left{border-right:none;border-bottom:1px solid var(--color-line);padding:32px 20px}
+    .about-right{padding:32px 20px}
+    .footer{grid-template-columns:1fr;text-align:center;gap:12px}
+    .footer-left,.footer-right{text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">After<em>image</em></a>
+  <div class="nav-center">
+    <a class="active">作品</a>
+    <a>分类</a>
+    <a>关于</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-search" aria-label="搜索作品">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+      搜索
+    </button>
+  </div>
+</nav>
+
+<div class="index-bar">
+  <div><span class="index-dot"></span> 2024 — Present</div>
+  <div>Travel · Street · Portrait</div>
+  <div>121 Works · 6 Albums</div>
+  <div>Updated 2024.11.28</div>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="hero-meta">Featured · 2024</div>
+    <h1 class="hero-title">光影的<br><em>残像</em></h1>
+  </div>
+  <div class="hero-right">
+    <p class="hero-desc">在街巷与山野之间，寻找转瞬即逝的光线、情绪与故事——让影像成为记忆的残像。</p>
+    <a href="#gallery" class="hero-cta">
+      浏览全部作品
+      <span class="hero-cta-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+  <div class="gallery-header reveal">
+    <div class="gallery-title-wrap">
+      <h2 class="gallery-title">作品集</h2>
+      <span class="gallery-count">— 共 121 张</span>
+    </div>
+    <div class="gallery-filters">
+      <button class="filter active">全部</button>
+      <button class="filter">旅行</button>
+      <button class="filter">城市</button>
+      <button class="filter">街拍</button>
+      <button class="filter">人像</button>
+    </div>
+  </div>
+  <div class="gallery-grid">
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=700&q=80" width="700" height="875" alt="京都红叶古寺" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">01 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">京都 · 秋色</div>
+          <div class="g-item-meta">Sony A7RⅡ · 35mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1545569310-5fd6d4c1d3f1?w=900&q=80" width="900" height="600" alt="香港维港夜景" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">02 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">香港 · 夜景</div>
+          <div class="g-item-meta">Sony A7RⅡ · 50mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=500&q=80" width="500" height="500" alt="大阪街拍" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">03 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">大阪 · 街拍</div>
+          <div class="g-item-meta">Sony A7RⅡ · 35mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1538970272646-f61fabb3a8a2?w=500&q=80" width="500" height="500" alt="澳门历史城区" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">04 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">澳门 · 历史</div>
+          <div class="g-item-meta">DJI Air 2S</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1502899576159-f224dc2349fa?w=500&q=80" width="500" height="500" alt="厦门海港" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">05 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">厦门 · 海风</div>
+          <div class="g-item-meta">Sony A7RⅡ · 40mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=900&q=80" width="900" height="600" alt="奈良之鹿" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">06 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">奈良 · 鹿语</div>
+          <div class="g-item-meta">Sony A7RⅡ · 85mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=700&q=80" width="700" height="875" alt="城市光影" loading="lazy">
+      <div class="g-item-info">
+        <span class="g-item-num">07 / 121</span>
+        <div class="g-item-bottom">
+          <div class="g-item-title">城市 · 光影</div>
+          <div class="g-item-meta">Sony A7RⅡ · 35mm</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="about">
+  <div class="about-left">
+    <div>
+      <div class="about-img-wrap">
+        <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=600&q=80" width="600" height="750" alt="摄影师作品" loading="lazy">
+      </div>
+      <p class="about-img-caption">京都 · 东福寺 · 2024年11月</p>
+    </div>
+  </div>
+  <div class="about-right">
+    <div class="about-eyebrow">About the Photographer</div>
+    <h2 class="about-title">用镜头书写<em>光影</em>的诗篇</h2>
+    <p class="about-text">每一次按下快门，都是与瞬间的对话。在街巷与山野之间，寻找那些转瞬即逝的光线、情绪与故事——让影像成为记忆的残像，让瞬间成为永恒。</p>
+    <div class="about-gear">
+      <div class="gear-cell"><span class="gear-brand">Sony</span><span class="gear-model">Alpha 7R Ⅱ</span></div>
+      <div class="gear-cell"><span class="gear-brand">DJI</span><span class="gear-model">Air 2S</span></div>
+      <div class="gear-cell"><span class="gear-brand">Tamron</span><span class="gear-model">50-400mm F/4.5-6.3</span></div>
+      <div class="gear-cell"><span class="gear-brand">Sigma</span><span class="gear-model">35mm F/1.4 DG HSM</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-left">© 2024 Afterimage</div>
+  <div class="footer-logo">After<em>image</em></div>
+  <div class="footer-right">
+    <a>Instagram</a> · <a>GitHub</a> · <a>小红书</a>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');observer.unobserve(e.target)}})
+  },{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  
+  // Filters
+  document.querySelectorAll('.filter').forEach(f=>{
+    f.addEventListener('click',()=>{
+      document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+      f.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
