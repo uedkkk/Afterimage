@@ -137,11 +137,33 @@ export async function getAlbumWithPhotos(slug: string): Promise<{
   return { album, photos };
 }
 
-export async function getAlbumsByCategory(categoryId: string): Promise<Album[]> {
+export async function getAlbumsByCategory(
+  categoryId: string
+): Promise<(Album & { cover: Photo | null })[]> {
   return db.album.findMany({
     where: { categoryId, published: true },
     orderBy: { sortOrder: "asc" },
+    include: { cover: true },
   });
+}
+
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  return db.category.findUnique({ where: { slug } });
+}
+
+export async function getPhotoWithAlbum(id: string): Promise<{
+  photo: PhotoWithTags;
+  album: Album | null;
+} | null> {
+  const photo = await getPhotoById(id);
+  if (!photo) return null;
+
+  let album: Album | null = null;
+  if (photo.albumId) {
+    album = await db.album.findUnique({ where: { id: photo.albumId } });
+  }
+
+  return { photo, album };
 }
 
 export async function getAllCategories(): Promise<Category[]> {
