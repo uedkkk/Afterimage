@@ -12,7 +12,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
   const results = q ? await searchPhotos(q) : [];
 
   return (
-    <div className="px-14 py-14">
+    <div className="px-4 md:px-14 py-14">
       <SearchResults initialResults={results} query={q} />
     </div>
   );

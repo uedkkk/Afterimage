@@ -21,7 +21,7 @@ export default async function PhotoPage({ params }: PageProps) {
   const { photo, album } = result;
 
   return (
-    <div className="px-14 py-14 max-w-5xl mx-auto">
+    <div className="px-4 md:px-14 py-14 max-w-5xl mx-auto">
       <Reveal>
         <Link
           href={album ? `/album/${album.slug}` : "/"}

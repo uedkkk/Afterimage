@@ -5,7 +5,7 @@ export async function Footer() {
   const title = settings["site.title"] ?? "Afterimage";
 
   return (
-    <footer className="border-t border-line px-14 py-14 grid grid-cols-[1fr_auto_1fr] items-center gap-7">
+    <footer className="border-t border-line px-4 md:px-14 py-14 grid grid-cols-[1fr_auto_1fr] items-center gap-7">
       <div className="text-[12px] text-dim">
         © {new Date().getFullYear()} {title}
       </div>

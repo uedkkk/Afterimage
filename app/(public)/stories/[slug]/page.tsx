@@ -18,7 +18,7 @@ export default async function StoryPage({ params }: PageProps) {
   if (!story) notFound();
 
   return (
-    <article className="px-14 py-14 max-w-3xl mx-auto">
+    <article className="px-4 md:px-14 py-14 max-w-3xl mx-auto">
       <Reveal>
         <Link
           href="/stories"
@@ -31,7 +31,7 @@ export default async function StoryPage({ params }: PageProps) {
 
       <Reveal>
         <header className="mb-10">
-          <h1 className="font-display text-[clamp(28px,4vw,48px)] font-semibold tracking-tight mb-4 text-wrap-balance">
+          <h1 className="font-display text-[clamp(28px,4vw,48px)] font-semibold tracking-tight mb-4 text-balance">
             {story.title}
           </h1>
           <div className="flex items-center gap-4 text-[12px] text-dim">
@@ -64,7 +64,7 @@ export default async function StoryPage({ params }: PageProps) {
       )}
 
       <Reveal>
-        <div className="font-serif text-lg leading-relaxed text-ink/90 prose prose-neutral max-w-none">
+        <div className="font-serif text-lg leading-relaxed text-ink/90 max-w-none">
           {story.content.split("\n").map((paragraph, i) => (
             <p key={i} className="mb-4">
               {paragraph}
