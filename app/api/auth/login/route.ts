@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { authenticateUser, createSession } from "@/lib/auth/session";
 
 export async function POST(request: NextRequest) {
-  const { username, password } = await request.json();
+  let body: { username?: string; password?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON in request body" },
+      { status: 400 }
+    );
+  }
+
+  const { username, password } = body;
 
   if (!username || !password) {
     return NextResponse.json(

@@ -2,8 +2,7 @@ import { cookies } from "next/headers";
 import { signToken, verifyToken } from "./jwt";
 import { db } from "@/lib/db";
 import { verifyPassword } from "./password";
-
-const COOKIE_NAME = "afterimage_session";
+import { COOKIE_NAME } from "./constants";
 
 export async function createSession(username: string): Promise<void> {
   const token = await signToken({ username });

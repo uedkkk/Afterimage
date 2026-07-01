@@ -10,6 +10,7 @@ export interface ExifData {
   takenAt?: string;
 }
 
+// TODO: Replace regex-based EXIF parsing with exifr library for real EXIF data
 export async function extractExif(
   filePath: string
 ): Promise<ExifData | null> {

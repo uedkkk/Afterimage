@@ -15,8 +15,8 @@ beforeAll(() => {
 describe("extractExif", () => {
   it("returns null for image without EXIF", async () => {
     const exif = await extractExif(testImagePath);
-    // Test image has no EXIF, so should return null or empty object
-    expect(exif).toBeTypeOf("object");
+    // Test image has no EXIF, so should return null
+    expect(exif).toBeNull();
   });
 });
 
@@ -45,6 +45,6 @@ describe("processImage", () => {
     expect(result.mimeType).toBe("image/jpeg");
     expect(existsSync(result.thumbPath)).toBe(true);
     expect(existsSync(result.optimizedPath)).toBe(true);
-    expect(result.exif).toBeTypeOf("object");
+    expect(result.exif).toBeNull();
   });
 });
