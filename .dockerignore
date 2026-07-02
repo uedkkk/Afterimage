@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+data
+tests
+e2e
+docs
+.superpowers
+mockups
+playwright-report
+test-results
+.env
+.env.local
