@@ -23,13 +23,14 @@ export default async function PhotoPage({ params }: PageProps) {
   return (
     <div className="px-4 md:px-14 py-14 max-w-5xl mx-auto">
       <Reveal>
-        <Link
-          href={album ? `/album/${album.slug}` : "/"}
-          className="inline-flex items-center gap-2 text-[13px] text-dim hover:text-accent transition-colors mb-7 no-underline"
-        >
-          <span aria-hidden="true">←</span>
-          {album ? album.title : "返回首页"}
-        </Link>
+        {album && (
+          <Link
+            href={`/album/${album.slug}`}
+            className="inline-block text-[12px] text-dim hover:text-accent transition-colors mb-7 no-underline"
+          >
+            {album.title}
+          </Link>
+        )}
       </Reveal>
 
       <Reveal>
