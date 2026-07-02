@@ -1,0 +1,73 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { EmptyState } from "@/components/admin/EmptyState";
+import type { PhotoWithTags } from "@/lib/db/queries";
+
+interface AlbumPhotosManagerProps {
+  albumId: string;
+  photos: PhotoWithTags[];
+}
+
+export function AlbumPhotosManager({
+  albumId,
+  photos,
+}: AlbumPhotosManagerProps) {
+  const router = useRouter();
+
+  async function setCover(photoId: string) {
+    await fetch("/api/admin/albums/cover", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ albumId, photoId }),
+    });
+    router.refresh();
+  }
+
+  async function removeFromAlbum(photoId: string) {
+    await fetch("/api/admin/photos", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: photoId, albumId: null }),
+    });
+    router.refresh();
+  }
+
+  if (photos.length === 0) {
+    return <EmptyState title="暂无照片" description="上传照片后可在此管理" />;
+  }
+
+  return (
+    <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+      {photos.map((photo) => (
+        <div
+          key={photo.id}
+          className="relative group aspect-square rounded-md overflow-hidden bg-faint"
+        >
+          {photo.thumbPath && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={photo.thumbPath}
+              alt={photo.title || photo.filename}
+              className="w-full h-full object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-ink/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+            <button
+              onClick={() => setCover(photo.id)}
+              className="text-xs text-bg bg-ink/80 px-2 py-1 rounded hover:bg-ink"
+            >
+              设为封面
+            </button>
+            <button
+              onClick={() => removeFromAlbum(photo.id)}
+              className="text-xs text-bg bg-accent/80 px-2 py-1 rounded hover:bg-accent"
+            >
+              移除
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
