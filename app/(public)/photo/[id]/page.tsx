@@ -26,7 +26,7 @@ export default async function PhotoPage({ params }: PageProps) {
         {album && (
           <Link
             href={`/album/${album.slug}`}
-            className="inline-block text-[12px] text-dim hover:text-accent transition-colors mb-7 no-underline"
+            className="inline-block text-[12px] text-dim hover:text-accent transition-colors mb-7 underline underline-offset-4 decoration-faint hover:decoration-accent"
           >
             {album.title}
           </Link>
