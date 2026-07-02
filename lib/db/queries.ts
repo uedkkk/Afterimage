@@ -208,6 +208,26 @@ export async function createCategory(name: string, slug: string): Promise<Catego
   return db.category.create({ data: { name, slug } });
 }
 
+export async function getAllCategoriesAdmin(): Promise<
+  (Category & { _count: { albums: number } })[]
+> {
+  return db.category.findMany({
+    include: { _count: { select: { albums: true } } },
+    orderBy: { sortOrder: "asc" },
+  });
+}
+
+export async function updateCategory(
+  id: string,
+  data: { name?: string; slug?: string; sortOrder?: number }
+): Promise<Category | null> {
+  return db.category.update({ where: { id }, data });
+}
+
+export async function deleteCategory(id: string): Promise<void> {
+  await db.category.delete({ where: { id } });
+}
+
 export async function getPublishedStories(): Promise<
   (Story & { cover: Photo | null; album: Album | null })[]
 > {
