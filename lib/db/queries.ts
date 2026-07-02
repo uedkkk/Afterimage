@@ -181,6 +181,59 @@ export async function getAlbumsByCategory(
   });
 }
 
+export async function getAllAlbumsAdmin(): Promise<
+  (Album & {
+    cover: Photo | null;
+    category: Category | null;
+    _count: { photos: number };
+  })[]
+> {
+  return db.album.findMany({
+    include: { cover: true, category: true, _count: { select: { photos: true } } },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getAlbumByIdAdmin(
+  id: string
+): Promise<{
+  album: Album & { cover: Photo | null; category: Category | null };
+  photos: PhotoWithTags[];
+} | null> {
+  const album = await db.album.findUnique({
+    where: { id },
+    include: { cover: true, category: true },
+  });
+  if (!album) return null;
+  const photos = await getPhotosByAlbum(id);
+  return { album, photos };
+}
+
+export async function updateAlbum(
+  id: string,
+  data: {
+    title?: string;
+    slug?: string;
+    description?: string;
+    categoryId?: string | null;
+    published?: boolean;
+    sortOrder?: number;
+  }
+): Promise<Album | null> {
+  return db.album.update({ where: { id }, data });
+}
+
+export async function deleteAlbum(id: string): Promise<void> {
+  await db.album.delete({ where: { id } });
+}
+
+export async function setAlbumCover(
+  albumId: string,
+  photoId: string | null
+): Promise<void> {
+  await db.album.update({ where: { id: albumId }, data: { coverId: photoId } });
+}
+
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   return db.category.findUnique({ where: { slug } });
 }
