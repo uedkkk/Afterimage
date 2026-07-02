@@ -55,6 +55,34 @@ export async function scanLanDirectory(dirPath: string): Promise<ScannedFile[]> 
   return results;
 }
 
+export interface DirEntry {
+  name: string;
+  path: string;
+}
+
+export async function listDirectories(dirPath: string): Promise<DirEntry[]> {
+  if (!existsSync(dirPath)) {
+    return [];
+  }
+
+  const entries = readdirSync(dirPath);
+  const dirs: DirEntry[] = [];
+
+  for (const entry of entries) {
+    const fullPath = join(dirPath, entry);
+    try {
+      const stat = statSync(fullPath);
+      if (stat.isDirectory()) {
+        dirs.push({ name: entry, path: fullPath });
+      }
+    } catch {
+      // skip entries we can't stat
+    }
+  }
+
+  return dirs.sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export async function importLanFile(
   lanPath: string,
   destDir: string
