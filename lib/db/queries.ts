@@ -22,12 +22,13 @@ export interface CreatePhotoInput {
   tags?: string[];
 }
 
-function serializePhoto(photo: Photo): PhotoWithTags {
+function serializePhoto<T extends Photo>(photo: T): PhotoWithTags & Omit<T, keyof Photo> {
+  const { tags: _tags, exif: _exif, ...rest } = photo;
   return {
-    ...photo,
-    tags: JSON.parse(photo.tags) as string[],
-    exif: photo.exif ? (JSON.parse(photo.exif) as Record<string, unknown>) : null,
-  };
+    ...rest,
+    tags: JSON.parse(_tags) as string[],
+    exif: _exif ? (JSON.parse(_exif) as Record<string, unknown>) : null,
+  } as PhotoWithTags & Omit<T, keyof Photo>;
 }
 
 export async function createPhoto(input: CreatePhotoInput): Promise<PhotoWithTags> {
@@ -125,6 +126,48 @@ export async function updatePhoto(
 
 export async function deletePhoto(id: string): Promise<void> {
   await db.photo.delete({ where: { id } });
+}
+
+export async function getAllPhotosAdmin(
+  limit = 50,
+  offset = 0
+): Promise<(PhotoWithTags & { album: Album | null })[]> {
+  const photos = await db.photo.findMany({
+    include: { album: true },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: offset,
+  });
+  return photos.map(serializePhoto);
+}
+
+export async function getPhotoCountAdmin(): Promise<number> {
+  return db.photo.count();
+}
+
+export async function getPhotoByIdAdmin(
+  id: string
+): Promise<(PhotoWithTags & { album: Album | null }) | null> {
+  const photo = await db.photo.findUnique({
+    where: { id },
+    include: { album: true },
+  });
+  if (!photo) return null;
+  return serializePhoto(photo);
+}
+
+export async function bulkAssignAlbum(
+  photoIds: string[],
+  albumId: string | null
+): Promise<void> {
+  await db.photo.updateMany({
+    where: { id: { in: photoIds } },
+    data: { albumId },
+  });
+}
+
+export async function bulkDeletePhotos(photoIds: string[]): Promise<void> {
+  await db.photo.deleteMany({ where: { id: { in: photoIds } } });
 }
 
 export async function createAlbum(input: {

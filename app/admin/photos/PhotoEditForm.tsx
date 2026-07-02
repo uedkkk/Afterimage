@@ -1,0 +1,131 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import type { PhotoWithTags } from "@/lib/db/queries";
+import type { Album } from "@/lib/generated/prisma/client";
+
+type PhotoWithAlbum = PhotoWithTags & { album: Album | null };
+
+interface PhotoEditFormProps {
+  photo: PhotoWithAlbum;
+  albums: (Album & { _count: { photos: number } })[];
+}
+
+export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
+  const router = useRouter();
+  const [title, setTitle] = useState(photo.title ?? "");
+  const [description, setDescription] = useState(photo.description ?? "");
+  const [albumId, setAlbumId] = useState(photo.albumId ?? "");
+  const [tags, setTags] = useState(photo.tags.join(", "));
+  const [saving, setSaving] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await fetch("/api/admin/photos", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: photo.id,
+          title: title.trim() || undefined,
+          description: description.trim() || undefined,
+          albumId: albumId || null,
+          tags: tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+        }),
+      });
+      router.refresh();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    await fetch("/api/admin/photos", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: photo.id }),
+    });
+    router.push("/admin/photos");
+    router.refresh();
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm text-dim mb-1">标题</label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm text-dim mb-1">描述</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm text-dim mb-1">相册</label>
+        <select
+          value={albumId}
+          onChange={(e) => setAlbumId(e.target.value)}
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+        >
+          <option value="">无相册</option>
+          {albums.map((album) => (
+            <option key={album.id} value={album.id}>
+              {album.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm text-dim mb-1">
+          标签（逗号分隔）
+        </label>
+        <input
+          type="text"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+        />
+      </div>
+
+      <div className="flex items-center gap-3 pt-2">
+        <button
+          type="submit"
+          disabled={saving}
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
+        >
+          {saving ? "..." : "保存"}
+        </button>
+        <ConfirmDialog
+          trigger={
+            <span className="text-sm text-accent hover:opacity-80 cursor-pointer">
+              删除照片
+            </span>
+          }
+          title="删除照片"
+          description="确定要删除这张照片吗？此操作不可撤销。"
+          confirmLabel="删除"
+          variant="danger"
+          onConfirm={handleDelete}
+        />
+      </div>
+    </form>
+  );
+}
