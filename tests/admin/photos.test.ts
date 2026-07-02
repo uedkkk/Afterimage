@@ -13,7 +13,7 @@ afterAll(async () => {
 });
 
 describe("photo admin queries", () => {
-  let photoIds: string[] = [];
+  const photoIds: string[] = [];
   let albumId: string;
 
   beforeAll(async () => {

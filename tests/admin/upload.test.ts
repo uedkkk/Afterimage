@@ -7,7 +7,7 @@ import { deletePhoto } from "@/lib/db/queries";
 
 const FIXTURE_PATH = path.join(process.cwd(), "tests/fixtures/test-image.jpg");
 
-let createdPhotoIds: string[] = [];
+const createdPhotoIds: string[] = [];
 
 vi.mock("@/lib/auth/session", () => ({
   getSession: vi.fn().mockResolvedValue({ username: "admin" }),
