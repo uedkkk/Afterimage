@@ -343,6 +343,55 @@ export async function getStoryBySlug(
   });
 }
 
+export async function getAllStoriesAdmin(): Promise<
+  (Story & { cover: Photo | null; album: Album | null })[]
+> {
+  return db.story.findMany({
+    include: { cover: true, album: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getStoryByIdAdmin(
+  id: string
+): Promise<(Story & { cover: Photo | null; album: Album | null }) | null> {
+  return db.story.findUnique({
+    where: { id },
+    include: { cover: true, album: true },
+  });
+}
+
+export async function createStory(input: {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverId?: string;
+  albumId?: string;
+  published?: boolean;
+}): Promise<Story> {
+  return db.story.create({ data: input });
+}
+
+export async function updateStory(
+  id: string,
+  data: {
+    title?: string;
+    slug?: string;
+    excerpt?: string;
+    content?: string;
+    coverId?: string | null;
+    albumId?: string | null;
+    published?: boolean;
+  }
+): Promise<Story | null> {
+  return db.story.update({ where: { id }, data });
+}
+
+export async function deleteStory(id: string): Promise<void> {
+  await db.story.delete({ where: { id } });
+}
+
 export async function createPageView(input: {
   path: string;
   albumId?: string;
