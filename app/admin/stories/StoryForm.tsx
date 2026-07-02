@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { MarkdownEditor } from "./MarkdownEditor";
-import type { Story, Album, Photo } from "@/lib/generated/prisma/client";
+import type { Story, Album } from "@/lib/generated/prisma/client";
 import type { PhotoWithTags } from "@/lib/db/queries";
 
 interface StoryFormProps {
