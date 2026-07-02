@@ -1,0 +1,18 @@
+services:
+  afterimage:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - afterimage-data:/app/data
+      - afterimage-uploads:/app/public/uploads
+      # Uncomment for LAN file access:
+      # - /mnt/nas/photos:/mnt/nas:ro
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+volumes:
+  afterimage-data:
+  afterimage-uploads:
