@@ -1,5 +1,15 @@
 import { db } from "./index";
 import type { Photo, Album, Category, Story, Setting, PageView } from "@/lib/generated/prisma/client";
+import { unlink } from "fs/promises";
+import path from "path";
+
+async function deletePhotoFiles(photo: Photo): Promise<void> {
+  const paths = [photo.filePath, photo.thumbPath].filter(Boolean) as string[];
+  for (const p of paths) {
+    const fsPath = path.join(process.cwd(), "public", p);
+    try { await unlink(fsPath); } catch {}
+  }
+}
 
 export interface PhotoWithTags extends Omit<Photo, "tags" | "exif"> {
   tags: string[];
@@ -125,6 +135,10 @@ export async function updatePhoto(
 }
 
 export async function deletePhoto(id: string): Promise<void> {
+  const photo = await db.photo.findUnique({ where: { id } });
+  if (photo) {
+    await deletePhotoFiles(photo);
+  }
   await db.photo.delete({ where: { id } });
 }
 
@@ -167,6 +181,10 @@ export async function bulkAssignAlbum(
 }
 
 export async function bulkDeletePhotos(photoIds: string[]): Promise<void> {
+  const photos = await db.photo.findMany({ where: { id: { in: photoIds } } });
+  for (const photo of photos) {
+    await deletePhotoFiles(photo);
+  }
   await db.photo.deleteMany({ where: { id: { in: photoIds } } });
 }
 
@@ -366,8 +384,8 @@ export async function createStory(input: {
   slug: string;
   excerpt: string;
   content: string;
-  coverId?: string;
-  albumId?: string;
+  coverId?: string | null;
+  albumId?: string | null;
   published?: boolean;
 }): Promise<Story> {
   return db.story.create({ data: input });

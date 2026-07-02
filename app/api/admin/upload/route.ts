@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import path from "path";
 import crypto from "crypto";
+import { unlink } from "fs/promises";
 import { getSession } from "@/lib/auth/session";
 import { saveUploadedFile } from "@/lib/storage";
 import { scanLanDirectory, importLanFile } from "@/lib/storage/lan";
@@ -10,6 +11,8 @@ import { createPhoto } from "@/lib/db/queries";
 
 const ORIGINALS_DIR = path.join(process.cwd(), "public/uploads/originals");
 const UPLOADS_DIR = path.join(process.cwd(), "public/uploads");
+
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 
 function toWebPath(fsPath: string): string {
   return fsPath.replace(path.join(process.cwd(), "public"), "").replace(/\\/g, "/");
@@ -57,27 +60,40 @@ async function handleFileUpload(request: NextRequest) {
 
   for (const file of files) {
     if (!(file instanceof File)) continue;
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      results.push({
+        success: false,
+        filename: file.name,
+        error: "不支持的文件类型",
+      });
+      continue;
+    }
     try {
       const saved = await saveUploadedFile(file, ORIGINALS_DIR);
-      const id = crypto.randomUUID();
-      const processed = await processImage(saved.filePath, UPLOADS_DIR, id);
+      try {
+        const id = crypto.randomUUID();
+        const processed = await processImage(saved.filePath, UPLOADS_DIR, id);
 
-      const webThumbPath = toWebPath(processed.thumbPath);
-      const webOptimizedPath = toWebPath(processed.optimizedPath);
+        const webThumbPath = toWebPath(processed.thumbPath);
+        const webOptimizedPath = toWebPath(processed.optimizedPath);
 
-      await createPhoto({
-        filename: saved.filename,
-        filePath: webOptimizedPath,
-        width: processed.width,
-        height: processed.height,
-        fileSize: processed.fileSize,
-        mimeType: processed.mimeType,
-        thumbPath: webThumbPath,
-        exif: processed.exif as Record<string, unknown> | null,
-        albumId,
-      });
+        await createPhoto({
+          filename: saved.filename,
+          filePath: webOptimizedPath,
+          width: processed.width,
+          height: processed.height,
+          fileSize: processed.fileSize,
+          mimeType: processed.mimeType,
+          thumbPath: webThumbPath,
+          exif: processed.exif as Record<string, unknown> | null,
+          albumId,
+        });
 
-      results.push({ success: true, filename: saved.filename });
+        results.push({ success: true, filename: saved.filename });
+      } catch (processingErr) {
+        try { await unlink(saved.filePath); } catch {}
+        throw processingErr;
+      }
     } catch (err) {
       results.push({
         success: false,

@@ -30,7 +30,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         ...(isEdit ? { id: album!.id } : {}),
         title: title.trim(),
         slug: slug.trim(),
-        description: description.trim() || undefined,
+        description: description.trim(),
         categoryId: categoryId || null,
         published,
       };

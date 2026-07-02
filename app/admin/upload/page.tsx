@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ export default function UploadPage() {
   // Upload state
   const [files, setFiles] = useState<File[]>([]);
   const [albumId, setAlbumId] = useState("");
+  const [albums, setAlbums] = useState<{ id: string; title: string }[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState<{
     count: number;
@@ -31,6 +32,15 @@ export default function UploadPage() {
   const [lanMode, setLanMode] = useState<LanMode>("copy");
   const [importing, setImporting] = useState(false);
   const [lanResult, setLanResult] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/admin/albums")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setAlbums(data);
+      })
+      .catch(() => {});
+  }, []);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(e.target.files ?? []);
@@ -168,13 +178,18 @@ export default function UploadPage() {
         <div className="space-y-4 max-w-2xl">
           <div>
             <label className="block text-sm text-dim mb-1">相册（可选）</label>
-            <input
-              type="text"
+            <select
               value={albumId}
               onChange={(e) => setAlbumId(e.target.value)}
-              placeholder="输入相册 ID"
               className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
-            />
+            >
+              <option value="">无相册</option>
+              {albums.map((album) => (
+                <option key={album.id} value={album.id}>
+                  {album.title}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div

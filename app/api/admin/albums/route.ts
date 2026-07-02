@@ -5,8 +5,21 @@ import {
   createAlbum,
   updateAlbum,
   deleteAlbum,
+  getAllAlbumsAdmin,
 } from "@/lib/db/queries";
 import { slugify } from "@/lib/utils";
+
+export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const albums = await getAllAlbumsAdmin();
+  return NextResponse.json(
+    albums.map((a) => ({ id: a.id, title: a.title }))
+  );
+}
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
@@ -40,17 +53,24 @@ export async function POST(request: NextRequest) {
   }
 
   const slug = body.slug?.trim() || slugify(title);
-  const album = await createAlbum({
-    title,
-    slug,
-    description: body.description,
-    categoryId: body.categoryId,
-    published: body.published,
-  });
-  revalidatePath("/");
-  revalidatePath("/category/[slug]");
-  revalidatePath("/album/[slug]");
-  return NextResponse.json(album, { status: 201 });
+  try {
+    const album = await createAlbum({
+      title,
+      slug,
+      description: body.description,
+      categoryId: body.categoryId,
+      published: body.published,
+    });
+    revalidatePath("/");
+    revalidatePath("/category/[slug]");
+    revalidatePath("/album/[slug]");
+    return NextResponse.json(album, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { error: "创建失败，slug 可能已存在" },
+      { status: 400 }
+    );
+  }
 }
 
 export async function PUT(request: NextRequest) {

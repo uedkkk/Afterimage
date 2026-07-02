@@ -40,7 +40,6 @@ export async function PUT(request: NextRequest) {
     await setSetting(key, value);
   }
 
-  revalidatePath("/");
-  revalidatePath("/about");
+  revalidatePath("/", "layout");
   return NextResponse.json({ success: true });
 }
