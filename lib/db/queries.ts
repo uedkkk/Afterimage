@@ -254,3 +254,86 @@ export async function getAllSettings(): Promise<Record<string, string>> {
   const settings = await db.setting.findMany();
   return Object.fromEntries(settings.map((s) => [s.id, s.value]));
 }
+
+export interface DashboardStats {
+  totalPhotos: number;
+  totalAlbums: number;
+  totalStories: number;
+  totalViews: number;
+  publishedAlbums: number;
+  recentViews: { date: string; count: number }[];
+}
+
+export async function getDashboardStats(): Promise<DashboardStats> {
+  const [totalPhotos, totalAlbums, totalStories, publishedAlbums, totalViews, recentPageViews] =
+    await Promise.all([
+      db.photo.count(),
+      db.album.count(),
+      db.story.count(),
+      db.album.count({ where: { published: true } }),
+      db.pageView.count(),
+      db.pageView.findMany({
+        where: { createdAt: { gte: new Date(Date.now() - 30 * 86400000) } },
+        select: { createdAt: true },
+      }),
+    ]);
+  const viewMap = new Map<string, number>();
+  for (const pv of recentPageViews) {
+    const key = pv.createdAt.toISOString().slice(0, 10);
+    viewMap.set(key, (viewMap.get(key) || 0) + 1);
+  }
+  const recentViews = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(Date.now() - (29 - i) * 86400000);
+    const key = d.toISOString().slice(0, 10);
+    return { date: key, count: viewMap.get(key) || 0 };
+  });
+  return { totalPhotos, totalAlbums, totalStories, totalViews, publishedAlbums, recentViews };
+}
+
+export interface PopularPhoto {
+  photo: PhotoWithTags;
+  views: number;
+}
+
+export async function getPopularPhotos(limit = 10): Promise<PopularPhoto[]> {
+  const results = await db.pageView.groupBy({
+    by: ["photoId"],
+    where: { photoId: { not: null } },
+    _count: { photoId: true },
+    orderBy: { _count: { photoId: "desc" } },
+    take: limit,
+  });
+  const photos = await Promise.all(
+    results
+      .filter((r) => r.photoId)
+      .map(async (r) => {
+        const photo = await getPhotoById(r.photoId!);
+        return photo ? { photo, views: r._count.photoId } : null;
+      })
+  );
+  return photos.filter((p): p is PopularPhoto => p !== null);
+}
+
+export interface AlbumViewStat {
+  album: Album;
+  views: number;
+}
+
+export async function getAlbumViewStats(limit = 10): Promise<AlbumViewStat[]> {
+  const results = await db.pageView.groupBy({
+    by: ["albumId"],
+    where: { albumId: { not: null } },
+    _count: { albumId: true },
+    orderBy: { _count: { albumId: "desc" } },
+    take: limit,
+  });
+  const stats = await Promise.all(
+    results
+      .filter((r) => r.albumId)
+      .map(async (r) => {
+        const album = await db.album.findUnique({ where: { id: r.albumId! } });
+        return album ? { album, views: r._count.albumId } : null;
+      })
+  );
+  return stats.filter((s): s is AlbumViewStat => s !== null);
+}
