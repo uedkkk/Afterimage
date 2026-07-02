@@ -5,15 +5,17 @@ export const revalidate = 300;
 
 export default async function AboutPage() {
   const settings = await getAllSettings();
-  const bio = settings["about.bio"] ?? "用镜头书写光影的诗篇。";
-  const gearRaw = settings["about.gear"] ?? "[]";
+  const bio = settings["about.content"] ?? "用镜头书写光影的诗篇。";
+  const gearRaw = settings["about.gear"] ?? "";
 
-  let gear: { brand: string; model: string }[] = [];
-  try {
-    gear = JSON.parse(gearRaw);
-  } catch {
-    gear = [];
-  }
+  const gear = gearRaw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [brand, ...modelParts] = line.split(/\s+/);
+      return { brand, model: modelParts.join(" ") || "" };
+    });
 
   return (
     <div className="px-4 md:px-14 py-14">
