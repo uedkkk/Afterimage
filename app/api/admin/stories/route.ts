@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
     slug?: string;
     excerpt?: string;
     content?: string;
-    coverId?: string;
-    albumId?: string;
+    coverId?: string | null;
+    albumId?: string | null;
     published?: boolean;
   };
   try {
@@ -44,18 +44,25 @@ export async function POST(request: NextRequest) {
   }
 
   const slug = body.slug?.trim() || slugify(title);
-  const story = await createStory({
-    title,
-    slug,
-    excerpt,
-    content,
-    coverId: body.coverId,
-    albumId: body.albumId,
-    published: body.published,
-  });
-  revalidatePath("/stories");
-  revalidatePath("/stories/[slug]");
-  return NextResponse.json(story, { status: 201 });
+  try {
+    const story = await createStory({
+      title,
+      slug,
+      excerpt,
+      content,
+      coverId: body.coverId,
+      albumId: body.albumId,
+      published: body.published,
+    });
+    revalidatePath("/stories");
+    revalidatePath("/stories/[slug]");
+    return NextResponse.json(story, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { error: "创建失败，slug 可能已存在" },
+      { status: 400 }
+    );
+  }
 }
 
 export async function PUT(request: NextRequest) {

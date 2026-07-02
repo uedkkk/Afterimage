@@ -20,18 +20,20 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
   const [albumId, setAlbumId] = useState(photo.albumId ?? "");
   const [tags, setTags] = useState(photo.tags.join(", "));
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setError(null);
     try {
-      await fetch("/api/admin/photos", {
+      const res = await fetch("/api/admin/photos", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: photo.id,
-          title: title.trim() || undefined,
-          description: description.trim() || undefined,
+          title: title.trim() || null,
+          description: description.trim() || null,
           albumId: albumId || null,
           tags: tags
             .split(",")
@@ -39,6 +41,10 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
             .filter(Boolean),
         }),
       });
+      if (!res.ok) {
+        setError("操作失败");
+        return;
+      }
       router.refresh();
     } finally {
       setSaving(false);
@@ -57,6 +63,9 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <p className="text-sm text-accent">{error}</p>
+      )}
       <div>
         <label className="block text-sm text-dim mb-1">标题</label>
         <input

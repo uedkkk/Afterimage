@@ -32,10 +32,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const category = await createCategory(name, slugify(name));
-  revalidatePath("/");
-  revalidatePath("/category/[slug]");
-  return NextResponse.json(category, { status: 201 });
+  try {
+    const category = await createCategory(name, slugify(name));
+    revalidatePath("/");
+    revalidatePath("/category/[slug]");
+    return NextResponse.json(category, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { error: "创建失败，slug 可能已存在" },
+      { status: 400 }
+    );
+  }
 }
 
 export async function PUT(request: NextRequest) {

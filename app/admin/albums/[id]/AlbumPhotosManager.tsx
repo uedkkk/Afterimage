@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EmptyState } from "@/components/admin/EmptyState";
 import type { PhotoWithTags } from "@/lib/db/queries";
@@ -14,22 +15,33 @@ export function AlbumPhotosManager({
   photos,
 }: AlbumPhotosManagerProps) {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   async function setCover(photoId: string) {
-    await fetch("/api/admin/albums/cover", {
+    setError(null);
+    const res = await fetch("/api/admin/albums/cover", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ albumId, photoId }),
     });
+    if (!res.ok) {
+      setError("操作失败");
+      return;
+    }
     router.refresh();
   }
 
   async function removeFromAlbum(photoId: string) {
-    await fetch("/api/admin/photos", {
+    setError(null);
+    const res = await fetch("/api/admin/photos", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: photoId, albumId: null }),
     });
+    if (!res.ok) {
+      setError("操作失败");
+      return;
+    }
     router.refresh();
   }
 
@@ -38,7 +50,11 @@ export function AlbumPhotosManager({
   }
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+    <div className="space-y-3">
+      {error && (
+        <p className="text-sm text-accent">{error}</p>
+      )}
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
       {photos.map((photo) => (
         <div
           key={photo.id}
@@ -68,6 +84,7 @@ export function AlbumPhotosManager({
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }

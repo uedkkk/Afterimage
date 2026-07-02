@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { EmptyState } from "@/components/admin/EmptyState";
@@ -15,6 +15,9 @@ interface CategoryManagerProps {
 export function CategoryManager({ initialCategories }: CategoryManagerProps) {
   const router = useRouter();
   const [categories, setCategories] = useState(initialCategories);
+  useEffect(() => {
+    setCategories(initialCategories);
+  }, [initialCategories]);
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

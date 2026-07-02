@@ -24,12 +24,16 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleConfirm() {
     setLoading(true);
+    setError(null);
     try {
       await onConfirm();
       setOpen(false);
+    } catch {
+      setError("操作失败");
     } finally {
       setLoading(false);
     }
@@ -49,6 +53,9 @@ export function ConfirmDialog({
             <h2 className="text-lg font-semibold mb-2">{title}</h2>
             {description && (
               <p className="text-sm text-dim mb-4">{description}</p>
+            )}
+            {error && (
+              <p className="text-sm text-accent mb-4">{error}</p>
             )}
             <div className="flex justify-end gap-2 mt-4">
               <button

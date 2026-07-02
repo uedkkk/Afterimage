@@ -36,8 +36,8 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
         slug: slug.trim(),
         excerpt: excerpt.trim(),
         content,
-        albumId: albumId || undefined,
-        coverId: coverId || undefined,
+        albumId: albumId || null,
+        coverId: coverId || null,
         published,
       };
       const res = await fetch("/api/admin/stories", {
