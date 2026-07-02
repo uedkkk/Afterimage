@@ -12,7 +12,8 @@ interface PageProps {
 
 export default async function AlbumPage({ params }: PageProps) {
   const { slug } = await params;
-  const result = await getAlbumWithPhotos(slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const result = await getAlbumWithPhotos(decodedSlug);
 
   if (!result) notFound();
 

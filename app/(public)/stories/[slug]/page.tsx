@@ -13,7 +13,8 @@ interface PageProps {
 
 export default async function StoryPage({ params }: PageProps) {
   const { slug } = await params;
-  const story = await getStoryBySlug(slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const story = await getStoryBySlug(decodedSlug);
 
   if (!story) notFound();
 
