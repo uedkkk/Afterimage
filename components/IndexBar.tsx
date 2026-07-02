@@ -18,9 +18,6 @@ export async function IndexBar() {
       <div className="px-5 py-2 border-r border-faint">
         {photoCount} Works · {albums.length} Albums
       </div>
-      <div className="px-4 md:px-14 py-2 ml-auto">
-        Travel · Street · Portrait
-      </div>
     </div>
   );
 }

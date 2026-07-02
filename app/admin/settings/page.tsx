@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 const KNOWN_SETTINGS = [
   { key: "site.title", label: "站点标题", type: "text" },
   { key: "site.description", label: "站点描述", type: "text" },
+  { key: "site.hero_title", label: "首页大标题（第一行）", type: "text" },
+  { key: "site.hero_subtitle", label: "首页大标题（第二行，斜体强调）", type: "text" },
   { key: "about.content", label: "关于页内容", type: "textarea" },
   { key: "about.gear", label: "器材列表（每行一项）", type: "textarea" },
-  { key: "nav.title", label: "导航栏标题", type: "text" },
+  { key: "nav.title", label: "浏览器标签页标题", type: "text" },
 ];
 
 export default function SettingsPage() {

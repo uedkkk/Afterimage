@@ -31,6 +31,18 @@ async function main() {
     create: { id: "site.description", value: "摄影作品展示与管理系统" },
   });
 
+  await prisma.setting.upsert({
+    where: { id: "site.hero_title" },
+    update: {},
+    create: { id: "site.hero_title", value: "光影的" },
+  });
+
+  await prisma.setting.upsert({
+    where: { id: "site.hero_subtitle" },
+    update: {},
+    create: { id: "site.hero_subtitle", value: "残像" },
+  });
+
   console.log("Seed completed: admin user and default settings created");
 }
 

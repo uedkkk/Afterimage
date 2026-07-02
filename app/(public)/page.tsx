@@ -1,7 +1,6 @@
 import { getAllPhotos, getAllSettings } from "@/lib/db/queries";
 import { PhotoGrid } from "@/components/PhotoGrid";
 import { Reveal } from "@/components/Reveal";
-import Link from "next/link";
 
 export const revalidate = 300;
 
@@ -12,20 +11,19 @@ export default async function Home() {
   ]);
 
   const description = settings["site.description"] ?? "摄影作品展示与管理系统";
+  const heroTitle = settings["site.hero_title"] ?? "光影的";
+  const heroSubtitle = settings["site.hero_subtitle"] ?? "残像";
 
   return (
     <>
       {/* Hero — compact text intro */}
-      <section className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] items-end gap-8 md:gap-28 px-4 md:px-14 pt-14 pb-7 border-b border-line">
+      <section className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] items-end gap-8 md:gap-28 px-4 md:px-14 pt-14 pb-14">
         <div>
-          <div className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-widest text-accent mb-3.5 before:content-[''] before:w-7 before:h-px before:bg-accent">
-            Featured · 2024
-          </div>
           <h1 className="font-display text-[clamp(40px,6vw,84px)] font-bold leading-[0.92] tracking-tight">
-            光影的
+            {heroTitle}
             <br />
             <em className="font-serif italic font-normal text-accent tracking-tight">
-              残像
+              {heroSubtitle}
             </em>
           </h1>
         </div>
@@ -33,20 +31,13 @@ export default async function Home() {
           <p className="font-serif text-[17px] italic text-dim leading-relaxed">
             {description}
           </p>
-          <Link
-            href="#gallery"
-            className="inline-flex items-center gap-2 text-[13px] font-medium no-underline text-ink hover:gap-3.5 hover:text-accent transition-all"
-          >
-            浏览全部作品
-            <span aria-hidden="true">→</span>
-          </Link>
         </div>
       </section>
 
       {/* Gallery */}
-      <section className="px-4 md:px-14 pt-28 pb-14" id="gallery">
+      <section className="px-4 md:px-14 pb-14" id="gallery">
         <Reveal>
-          <div className="flex justify-between items-end mb-14 pb-7 border-b border-line">
+          <div className="flex justify-between items-end mb-14">
             <div className="flex items-baseline gap-4">
               <h2 className="font-display text-[clamp(24px,3vw,36px)] font-semibold tracking-tight">
                 作品集
