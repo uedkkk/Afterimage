@@ -23,7 +23,7 @@ export function PhotoCard({ photo, index }: PhotoCardProps) {
   return (
     <Link
       href={`/photo/${photo.id}`}
-      className="relative overflow-hidden cursor-pointer bg-faint group"
+      className="relative block h-full w-full overflow-hidden cursor-pointer bg-faint group"
     >
       <Image
         src={photo.thumbPath ?? photo.filePath}
