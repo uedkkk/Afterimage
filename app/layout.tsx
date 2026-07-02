@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Instrument_Serif } from "next/font/google";
+import { getAllSettings } from "@/lib/db/queries";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -16,10 +17,12 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Afterimage",
-  description: "摄影作品展示与管理系统",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getAllSettings();
+  const title = settings["nav.title"] ?? "Afterimage";
+  const description = settings["site.description"] ?? "摄影作品展示与管理系统";
+  return { title, description };
+}
 
 export default function RootLayout({
   children,
