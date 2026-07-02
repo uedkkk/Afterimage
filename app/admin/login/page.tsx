@@ -19,18 +19,23 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (res.ok) {
-      router.push(redirectPath);
-      router.refresh();
-    } else {
-      const data = await res.json();
-      setError(data.error || "登录失败");
+      if (res.ok) {
+        router.push(redirectPath);
+        router.refresh();
+      } else {
+        const data = await res.json();
+        setError(data.error || "登录失败");
+      }
+    } catch {
+      setError("网络错误，请重试");
+    } finally {
       setLoading(false);
     }
   }
