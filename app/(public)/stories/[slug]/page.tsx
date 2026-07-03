@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getStoryBySlug } from "@/lib/db/queries";
+import { getStoryWithPhotos } from "@/lib/db/queries";
 import { Reveal } from "@/components/Reveal";
+import { AlbumGallery } from "@/components/AlbumGallery";
 import { formatDate } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -14,9 +15,10 @@ interface PageProps {
 export default async function StoryPage({ params }: PageProps) {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
-  const story = await getStoryBySlug(decodedSlug);
+  const result = await getStoryWithPhotos(decodedSlug);
 
-  if (!story) notFound();
+  if (!result) notFound();
+  const { story, photos } = result;
 
   return (
     <article className="px-4 md:px-14 py-14 max-w-3xl mx-auto">
@@ -73,6 +75,17 @@ export default async function StoryPage({ params }: PageProps) {
           ))}
         </div>
       </Reveal>
+
+      {(story.album ? photos.length > 0 : photos.length > 1) && (
+        <Reveal>
+          <div className="mt-14 pt-10 border-t border-line">
+            <div className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-widest text-accent mb-6 before:content-[''] before:w-7 before:h-px before:bg-accent">
+              {story.album ? "Album" : "Photographs"}
+            </div>
+            <AlbumGallery photos={photos} />
+          </div>
+        </Reveal>
+      )}
     </article>
   );
 }

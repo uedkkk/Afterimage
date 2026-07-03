@@ -102,6 +102,10 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "缺少相册 ID" }, { status: 400 });
   }
 
+  if (data.slug !== undefined) {
+    data.slug = data.slug?.trim() || slugify(data.title ?? "");
+  }
+
   const album = await updateAlbum(id, data);
   revalidatePath("/");
   revalidatePath("/category/[slug]");

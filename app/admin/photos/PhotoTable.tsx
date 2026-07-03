@@ -7,12 +7,12 @@ import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { formatDate } from "@/lib/utils";
 import type { PhotoWithTags } from "@/lib/db/queries";
-import type { Album } from "@/lib/generated/prisma/client";
+import type { Album, Story } from "@/lib/generated/prisma/client";
 
-type PhotoWithAlbum = PhotoWithTags & { album: Album | null };
+type PhotoWithRelations = PhotoWithTags & { album: Album | null; story: Story | null };
 
 interface PhotoTableProps {
-  photos: PhotoWithAlbum[];
+  photos: PhotoWithRelations[];
   albums: (Album & { _count: { photos: number } })[];
 }
 
@@ -121,6 +121,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
               <th className="px-3 py-2 text-left text-sm text-dim">预览</th>
               <th className="px-3 py-2 text-left text-sm text-dim">标题/文件名</th>
               <th className="px-3 py-2 text-left text-sm text-dim">相册</th>
+              <th className="px-3 py-2 text-left text-sm text-dim">故事</th>
               <th className="px-3 py-2 text-left text-sm text-dim">日期</th>
               <th className="px-3 py-2 text-left text-sm text-dim">操作</th>
             </tr>
@@ -156,6 +157,11 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
                 <td className="px-3 py-2">
                   <span className="text-sm text-dim">
                     {photo.album?.title ?? "—"}
+                  </span>
+                </td>
+                <td className="px-3 py-2">
+                  <span className="text-sm text-dim">
+                    {photo.story?.title ?? "—"}
                   </span>
                 </td>
                 <td className="px-3 py-2">

@@ -49,7 +49,17 @@ export default async function StoriesPage() {
                   <span className="font-medium text-ink">{story.title}</span>
                   {story.album && (
                     <span className="text-xs text-dim bg-faint/30 px-2 py-0.5 rounded">
-                      {story.album.title}
+                      相册: {story.album.title}
+                    </span>
+                  )}
+                  {story.photos.length > 0 && (
+                    <span className="text-xs text-dim bg-faint/30 px-2 py-0.5 rounded">
+                      {story.photos.length} 张照片
+                    </span>
+                  )}
+                  {!story.album && story.photos.length === 0 && (
+                    <span className="text-xs text-dim border border-faint px-2 py-0.5 rounded">
+                      无关联
                     </span>
                   )}
                   <span
