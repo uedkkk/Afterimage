@@ -81,7 +81,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
 
       <div>
         <label className="block text-sm text-dim mb-1">
-          Slug（留空自动生成）
+            链接别名（留空自动生成）
         </label>
         <input
           type="text"

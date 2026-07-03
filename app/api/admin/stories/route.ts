@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     content?: string;
     coverId?: string | null;
     albumId?: string | null;
+    photoIds?: string[];
     published?: boolean;
   };
   try {
@@ -43,6 +44,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const photoIds = body.photoIds ?? [];
+  const albumId = body.albumId || null;
+
+  if (photoIds.length > 0 && albumId) {
+    return NextResponse.json(
+      { error: "不能同时关联照片和相册" },
+      { status: 400 }
+    );
+  }
+
   const slug = body.slug?.trim() || slugify(title);
   try {
     const story = await createStory({
@@ -51,7 +62,8 @@ export async function POST(request: NextRequest) {
       excerpt,
       content,
       coverId: body.coverId,
-      albumId: body.albumId,
+      albumId,
+      photoIds,
       published: body.published,
     });
     revalidatePath("/stories");
@@ -79,6 +91,7 @@ export async function PUT(request: NextRequest) {
     content?: string;
     coverId?: string | null;
     albumId?: string | null;
+    photoIds?: string[];
     published?: boolean;
   };
   try {
@@ -93,6 +106,21 @@ export async function PUT(request: NextRequest) {
   const { id, ...data } = body;
   if (!id) {
     return NextResponse.json({ error: "缺少故事 ID" }, { status: 400 });
+  }
+
+  if (data.slug !== undefined) {
+    data.slug = data.slug?.trim() || slugify(data.title ?? "");
+  }
+
+  if (data.photoIds !== undefined) {
+    const photoIds = data.photoIds;
+    const albumId = data.albumId || null;
+    if (photoIds.length > 0 && albumId) {
+      return NextResponse.json(
+        { error: "不能同时关联照片和相册" },
+        { status: 400 }
+      );
+    }
   }
 
   const story = await updateStory(id, data);

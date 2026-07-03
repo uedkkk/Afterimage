@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import type { PhotoWithTags } from "@/lib/db/queries";
-import type { Album } from "@/lib/generated/prisma/client";
+import type { Album, Story } from "@/lib/generated/prisma/client";
 
-type PhotoWithAlbum = PhotoWithTags & { album: Album | null };
+type PhotoWithRelations = PhotoWithTags & { album: Album | null; story: Story | null };
 
 interface PhotoEditFormProps {
-  photo: PhotoWithAlbum;
+  photo: PhotoWithRelations;
   albums: (Album & { _count: { photos: number } })[];
 }
 
@@ -100,6 +100,13 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label className="block text-sm text-dim mb-1">故事</label>
+        <div className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-dim">
+          {photo.story ? photo.story.title : "—（请在故事编辑中关联）"}
+        </div>
       </div>
 
       <div>

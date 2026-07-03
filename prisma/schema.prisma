@@ -34,7 +34,7 @@ model Album {
   sortOrder   Int       @default(0)
   published   Boolean   @default(false)
   photos      Photo[]
-  stories     Story[]
+  story       Story?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -64,8 +64,11 @@ model Photo {
 
   albumCover  Album?  @relation("AlbumCover")
   storyCover  Story?  @relation("StoryCover")
+  storyId     String?
+  story       Story?  @relation(fields: [storyId], references: [id], onDelete: SetNull)
 
   @@index([albumId])
+  @@index([storyId])
   @@index([createdAt])
 }
 
@@ -76,9 +79,10 @@ model Story {
   excerpt   String
   content   String
   coverId   String?  @unique
-  cover     Photo?   @relation("StoryCover", fields: [coverId], references: [id])
-  albumId   String?
-  album     Album?   @relation(fields: [albumId], references: [id])
+  cover     Photo?   @relation("StoryCover", fields: [coverId], references: [id], onDelete: SetNull)
+  albumId   String?  @unique
+  album     Album?   @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  photos    Photo[]
   published Boolean  @default(false)
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())

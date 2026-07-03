@@ -130,6 +130,19 @@ export async function updatePhoto(
   if (data.exif !== undefined) updateData.exif = data.exif ? JSON.stringify(data.exif) : null;
   if (data.thumbPath !== undefined) updateData.thumbPath = data.thumbPath;
 
+  if (data.albumId !== undefined) {
+    const oldPhoto = await db.photo.findUnique({ where: { id }, select: { albumId: true } });
+    const oldAlbumId = oldPhoto?.albumId ?? null;
+    const newAlbumId = data.albumId ?? null;
+
+    if (oldAlbumId !== newAlbumId && oldAlbumId !== null) {
+      await db.story.updateMany({
+        where: { coverId: id, albumId: oldAlbumId },
+        data: { coverId: null },
+      });
+    }
+  }
+
   const photo = await db.photo.update({ where: { id }, data: updateData });
   return serializePhoto(photo);
 }
@@ -145,9 +158,9 @@ export async function deletePhoto(id: string): Promise<void> {
 export async function getAllPhotosAdmin(
   limit = 50,
   offset = 0
-): Promise<(PhotoWithTags & { album: Album | null })[]> {
+): Promise<(PhotoWithTags & { album: Album | null; story: Story | null })[]> {
   const photos = await db.photo.findMany({
-    include: { album: true },
+    include: { album: true, story: true },
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: offset,
@@ -161,10 +174,10 @@ export async function getPhotoCountAdmin(): Promise<number> {
 
 export async function getPhotoByIdAdmin(
   id: string
-): Promise<(PhotoWithTags & { album: Album | null }) | null> {
+): Promise<(PhotoWithTags & { album: Album | null; story: Story | null }) | null> {
   const photo = await db.photo.findUnique({
     where: { id },
-    include: { album: true },
+    include: { album: true, story: true },
   });
   if (!photo) return null;
   return serializePhoto(photo);
@@ -174,6 +187,21 @@ export async function bulkAssignAlbum(
   photoIds: string[],
   albumId: string | null
 ): Promise<void> {
+  const photos = await db.photo.findMany({
+    where: { id: { in: photoIds } },
+    select: { id: true, albumId: true },
+  });
+
+  for (const photo of photos) {
+    const oldAlbumId = photo.albumId ?? null;
+    if (oldAlbumId !== albumId && oldAlbumId !== null) {
+      await db.story.updateMany({
+        where: { coverId: photo.id, albumId: oldAlbumId },
+        data: { coverId: null },
+      });
+    }
+  }
+
   await db.photo.updateMany({
     where: { id: { in: photoIds } },
     data: { albumId },
@@ -342,40 +370,42 @@ export async function deleteCategory(id: string): Promise<void> {
   await db.category.delete({ where: { id } });
 }
 
-export async function getPublishedStories(): Promise<
-  (Story & { cover: Photo | null; album: Album | null })[]
-> {
+export type StoryWithRelations = Story & {
+  cover: Photo | null;
+  album: Album | null;
+  photos: Photo[];
+};
+
+export async function getPublishedStories(): Promise<StoryWithRelations[]> {
   return db.story.findMany({
     where: { published: true },
     orderBy: { sortOrder: "asc" },
-    include: { cover: true, album: true },
+    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
   });
 }
 
 export async function getStoryBySlug(
   slug: string
-): Promise<(Story & { cover: Photo | null; album: Album | null }) | null> {
+): Promise<StoryWithRelations | null> {
   return db.story.findUnique({
     where: { slug },
-    include: { cover: true, album: true },
+    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
   });
 }
 
-export async function getAllStoriesAdmin(): Promise<
-  (Story & { cover: Photo | null; album: Album | null })[]
-> {
+export async function getAllStoriesAdmin(): Promise<StoryWithRelations[]> {
   return db.story.findMany({
-    include: { cover: true, album: true },
+    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
     orderBy: { createdAt: "desc" },
   });
 }
 
 export async function getStoryByIdAdmin(
   id: string
-): Promise<(Story & { cover: Photo | null; album: Album | null }) | null> {
+): Promise<StoryWithRelations | null> {
   return db.story.findUnique({
     where: { id },
-    include: { cover: true, album: true },
+    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
   });
 }
 
@@ -386,9 +416,27 @@ export async function createStory(input: {
   content: string;
   coverId?: string | null;
   albumId?: string | null;
+  photoIds?: string[];
   published?: boolean;
 }): Promise<Story> {
-  return db.story.create({ data: input });
+  const { photoIds, ...storyData } = input;
+
+  if (photoIds && photoIds.length > 0 && storyData.albumId) {
+    throw new Error("不能同时关联照片和相册");
+  }
+
+  return db.$transaction(async (tx) => {
+    const story = await tx.story.create({ data: storyData });
+
+    if (photoIds && photoIds.length > 0) {
+      await tx.photo.updateMany({
+        where: { id: { in: photoIds } },
+        data: { storyId: story.id },
+      });
+    }
+
+    return story;
+  });
 }
 
 export async function updateStory(
@@ -400,10 +448,70 @@ export async function updateStory(
     content?: string;
     coverId?: string | null;
     albumId?: string | null;
+    photoIds?: string[];
     published?: boolean;
   }
 ): Promise<Story | null> {
-  return db.story.update({ where: { id }, data });
+  const { photoIds, ...storyData } = data;
+
+  if (photoIds && photoIds.length > 0 && storyData.albumId) {
+    throw new Error("不能同时关联照片和相册");
+  }
+
+  return db.$transaction(async (tx) => {
+    const story = await tx.story.update({ where: { id }, data: storyData });
+
+    if (photoIds !== undefined) {
+      await tx.photo.updateMany({
+        where: { storyId: id },
+        data: { storyId: null },
+      });
+
+      if (photoIds.length > 0) {
+        await tx.photo.updateMany({
+          where: { id: { in: photoIds } },
+          data: { storyId: id },
+        });
+      }
+    }
+
+    return story;
+  });
+}
+
+export async function setStoryPhotos(
+  storyId: string,
+  photoIds: string[]
+): Promise<void> {
+  await db.$transaction(async (tx) => {
+    await tx.photo.updateMany({
+      where: { storyId },
+      data: { storyId: null },
+    });
+
+    if (photoIds.length > 0) {
+      await tx.photo.updateMany({
+        where: { id: { in: photoIds } },
+        data: { storyId },
+      });
+    }
+  });
+}
+
+export async function getStoryWithPhotos(
+  slug: string
+): Promise<{ story: StoryWithRelations; photos: PhotoWithTags[] } | null> {
+  const story = await getStoryBySlug(slug);
+  if (!story) return null;
+
+  let photos: PhotoWithTags[];
+  if (story.albumId) {
+    photos = await getPhotosByAlbum(story.albumId);
+  } else {
+    photos = story.photos.map(serializePhoto);
+  }
+
+  return { story, photos };
 }
 
 export async function deleteStory(id: string): Promise<void> {
