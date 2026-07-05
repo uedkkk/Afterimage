@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPhotoWithAlbum } from "@/lib/db/queries";
 import { ExifPanel } from "@/components/ExifPanel";
 import { Reveal } from "@/components/Reveal";
+import { ViewTracker } from "@/components/ViewTracker";
 import { formatDate } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -22,6 +23,7 @@ export default async function PhotoPage({ params }: PageProps) {
 
   return (
     <div className="px-4 md:px-14 py-14 max-w-5xl mx-auto">
+      <ViewTracker path={`/photo/${id}`} photoId={photo.id} albumId={album?.id} />
       <Reveal>
         {album && (
           <Link
