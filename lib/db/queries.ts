@@ -249,6 +249,7 @@ export async function getPublishedAlbums(): Promise<Album[]> {
 export async function getAlbumWithPhotos(slug: string): Promise<{
   album: Album & { category: Category | null; cover: Photo | null };
   photos: PhotoWithTags[];
+  story: Story | null;
 } | null> {
   const album = await db.album.findUnique({
     where: { slug, published: true },
@@ -257,7 +258,12 @@ export async function getAlbumWithPhotos(slug: string): Promise<{
   if (!album) return null;
 
   const photos = await getPhotosByAlbum(album.id);
-  return { album, photos };
+
+  const story = await db.story.findFirst({
+    where: { albumId: album.id, published: true },
+  });
+
+  return { album, photos, story };
 }
 
 export async function getAlbumsByCategory(
@@ -330,6 +336,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 export async function getPhotoWithAlbum(id: string): Promise<{
   photo: PhotoWithTags;
   album: Album | null;
+  story: Story | null;
 } | null> {
   const photo = await getPhotoById(id);
   if (!photo) return null;
@@ -339,7 +346,18 @@ export async function getPhotoWithAlbum(id: string): Promise<{
     album = await db.album.findUnique({ where: { id: photo.albumId } });
   }
 
-  return { photo, album };
+  let story: Story | null = null;
+  if (photo.storyId) {
+    story = await db.story.findFirst({
+      where: { id: photo.storyId, published: true },
+    });
+  } else if (album) {
+    story = await db.story.findFirst({
+      where: { albumId: album.id, published: true },
+    });
+  }
+
+  return { photo, album, story };
 }
 
 export async function getAllCategories(): Promise<Category[]> {

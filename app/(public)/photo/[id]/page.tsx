@@ -18,7 +18,7 @@ export default async function PhotoPage({ params }: PageProps) {
 
   if (!result) notFound();
 
-  const { photo, album } = result;
+  const { photo, album, story } = result;
 
   return (
     <div className="px-4 md:px-14 py-14 max-w-5xl mx-auto">
@@ -55,6 +55,14 @@ export default async function PhotoPage({ params }: PageProps) {
             </h1>
             {photo.description && (
               <p className="font-serif italic text-dim">{photo.description}</p>
+            )}
+            {story && (
+              <Link
+                href={`/stories/${story.slug}`}
+                className="inline-block text-[12px] text-dim hover:text-accent transition-colors mt-2"
+              >
+                <span>幕后故事：<span className="text-accent">{story.title}</span></span>
+              </Link>
             )}
           </div>
           <div className="text-[12px] text-dim text-right">

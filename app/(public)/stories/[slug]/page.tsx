@@ -53,13 +53,14 @@ export default async function StoryPage({ params }: PageProps) {
 
       {story.cover && (
         <Reveal>
-          <div className="relative aspect-[3/2] mb-10 overflow-hidden">
+          <div className="relative w-full mb-10">
             <Image
               src={story.cover.thumbPath ?? story.cover.filePath}
               alt={story.title}
-              fill
+              width={story.cover.width}
+              height={story.cover.height}
               sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
+              className="w-full h-auto"
               priority
             />
           </div>

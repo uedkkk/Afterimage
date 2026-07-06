@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getAlbumWithPhotos } from "@/lib/db/queries";
 import { AlbumGallery } from "@/components/AlbumGallery";
 import { Reveal } from "@/components/Reveal";
@@ -17,7 +18,7 @@ export default async function AlbumPage({ params }: PageProps) {
 
   if (!result) notFound();
 
-  const { album, photos } = result;
+  const { album, photos, story } = result;
 
   return (
     <div className="px-4 md:px-14 py-14">
@@ -39,6 +40,14 @@ export default async function AlbumPage({ params }: PageProps) {
           <div className="flex gap-6 mt-5 text-[12px] text-dim">
             <span>{photos.length} 张照片</span>
             <span>{formatDate(album.createdAt)}</span>
+            {story && (
+              <Link
+                href={`/stories/${story.slug}`}
+                className="text-accent hover:underline"
+              >
+                {story.title}
+              </Link>
+            )}
           </div>
         </header>
       </Reveal>
