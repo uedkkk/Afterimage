@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getAlbumWithPhotos } from "@/lib/db/queries";
 import { AlbumGallery } from "@/components/AlbumGallery";
 import { Reveal } from "@/components/Reveal";
+import { ViewTracker } from "@/components/ViewTracker";
 import { formatDate } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -22,6 +23,7 @@ export default async function AlbumPage({ params }: PageProps) {
 
   return (
     <div className="px-4 md:px-14 py-14">
+      <ViewTracker path={`/album/${decodedSlug}`} albumId={album.id} />
       <Reveal>
         <header className="mb-10 pb-7 border-b border-line">
           {album.category && (

@@ -35,10 +35,17 @@ export default async function AdminDashboardPage() {
           {stats.recentViews.map((v) => (
             <div
               key={v.date}
-              className="flex-1 rounded-t bg-ink/20 hover:bg-ink/40 transition-colors"
-              style={{ height: `${(v.count / maxViews) * 100}%`, minHeight: v.count > 0 ? "4px" : "0" }}
-              title={`${v.date}: ${v.count} 次浏览`}
-            />
+              className="flex-1 flex flex-col items-center justify-end h-full group relative"
+            >
+              {v.count > 0 && (
+                <span className="text-[10px] text-dim mb-0.5 tabular-nums">{v.count}</span>
+              )}
+              <div
+                className="w-full rounded-t bg-ink/20 group-hover:bg-ink/40 transition-colors"
+                style={{ height: `${(v.count / maxViews) * 100}%`, minHeight: v.count > 0 ? "4px" : "0" }}
+                title={`${v.date}: ${v.count} 次浏览`}
+              />
+            </div>
           ))}
         </div>
         <div className="flex justify-between mt-2 text-xs text-dim">
