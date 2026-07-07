@@ -11,7 +11,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-bg">
+    <div className="flex min-h-screen bg-canvas">
       <Sidebar />
       <main className="flex-1 overflow-auto px-4 py-8 md:px-10 md:py-10">
         {children}

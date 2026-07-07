@@ -51,7 +51,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">设置</h1>
+        <h1 className="text-2xl font-medium">设置</h1>
         <p className="text-dim text-sm">加载中...</p>
       </div>
     );
@@ -63,7 +63,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">设置</h1>
+        <h1 className="text-2xl font-medium">设置</h1>
         <p className="text-dim mt-1 text-sm">管理站点配置</p>
       </div>
 
@@ -79,14 +79,14 @@ export default function SettingsPage() {
                 value={settings[field.key] ?? ""}
                 onChange={(e) => handleChange(field.key, e.target.value)}
                 rows={field.key === "about.content" ? 8 : 5}
-                className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
               />
             ) : (
               <input
                 type="text"
                 value={settings[field.key] ?? ""}
                 onChange={(e) => handleChange(field.key, e.target.value)}
-                className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
               />
             )}
           </div>
@@ -94,7 +94,7 @@ export default function SettingsPage() {
 
         {extraKeys.length > 0 && (
           <div className="border-t border-faint pt-4 space-y-4">
-            <h2 className="text-sm font-semibold text-dim">其他设置</h2>
+            <h2 className="text-sm font-medium text-dim">其他设置</h2>
             {extraKeys.map((key) => (
               <div key={key}>
                 <label className="block text-sm text-dim mb-1">
@@ -104,7 +104,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings[key] ?? ""}
                   onChange={(e) => handleChange(key, e.target.value)}
-                  className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                  className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
                 />
               </div>
             ))}
@@ -115,7 +115,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving}
-            className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
+            className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
           >
             {saving ? "..." : "保存设置"}
           </button>

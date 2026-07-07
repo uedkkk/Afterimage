@@ -1,19 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Instrument_Serif } from "next/font/google";
+import { Sofia_Sans } from "next/font/google";
 import { getAllSettings } from "@/lib/db/queries";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const sofiaSans = Sofia_Sans({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
+  variable: "--font-sofia-sans",
   display: "swap",
 });
 
@@ -28,8 +20,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="zh-CN" className={`${spaceGrotesk.variable} ${instrumentSerif.variable}`}>
-      <body className="font-display antialiased">{children}</body>
+    <html lang="zh-CN" className={sofiaSans.variable}>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

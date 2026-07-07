@@ -35,7 +35,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="sticky top-0 h-screen w-16 md:w-56 border-r border-faint bg-paper flex flex-col">
+    <aside className="sticky top-0 h-screen w-16 md:w-56 border-r border-dust bg-lifted flex flex-col">
       <nav className="flex-1 py-4 flex flex-col gap-1 px-2">
         {navItems.map((item) => {
           const active = isActive(item.href, item.exact);
@@ -44,10 +44,10 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center justify-center md:justify-start px-2 md:px-3 py-2 rounded-md text-sm no-underline",
+                "flex items-center justify-center md:justify-start px-2 md:px-3 py-2 rounded-button text-sm no-underline transition-colors",
                 active
-                  ? "bg-ink text-bg"
-                  : "text-dim hover:bg-faint hover:text-ink"
+                  ? "bg-ink text-canvas"
+                  : "text-slate hover:bg-dust hover:text-ink"
               )}
             >
               <span className="md:hidden">{item.label[0]}</span>
@@ -56,10 +56,10 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="border-t border-faint p-2 flex flex-col gap-1">
+      <div className="border-t border-dust p-2 flex flex-col gap-1">
         <Link
           href="/"
-          className="flex items-center justify-center md:justify-start px-2 md:px-3 py-2 rounded-md text-sm text-dim hover:bg-faint hover:text-ink no-underline"
+          className="flex items-center justify-center md:justify-start px-2 md:px-3 py-2 rounded-button text-sm text-slate hover:bg-dust hover:text-ink no-underline transition-colors"
         >
           <span className="md:hidden">查</span>
           <span className="hidden md:inline">查看前台 ↗</span>
@@ -67,7 +67,7 @@ export function Sidebar() {
         <form onSubmit={handleLogout}>
           <button
             type="submit"
-            className="w-full flex items-center justify-center md:justify-start px-2 md:px-3 py-2 rounded-md text-sm text-dim hover:bg-faint hover:text-ink"
+            className="w-full flex items-center justify-center md:justify-start px-2 md:px-3 py-2 rounded-button text-sm text-slate hover:bg-dust hover:text-ink transition-colors"
           >
             <span className="md:hidden">退</span>
             <span className="hidden md:inline">退出</span>

@@ -52,13 +52,13 @@ export function AlbumPhotosManager({
   return (
     <div className="space-y-3">
       {error && (
-        <p className="text-sm text-accent">{error}</p>
+        <p className="text-sm text-signal">{error}</p>
       )}
       <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
       {photos.map((photo) => (
         <div
           key={photo.id}
-          className="relative group aspect-square rounded-md overflow-hidden bg-faint"
+          className="relative group aspect-square rounded-button overflow-hidden bg-faint"
         >
           {photo.thumbPath && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -77,7 +77,7 @@ export function AlbumPhotosManager({
             </button>
             <button
               onClick={() => removeFromAlbum(photo.id)}
-              className="text-xs text-bg bg-accent/80 px-2 py-1 rounded hover:bg-accent"
+              className="text-xs text-bg bg-signal/80 px-2 py-1 rounded hover:bg-signal"
             >
               移除
             </button>

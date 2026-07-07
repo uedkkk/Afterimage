@@ -22,21 +22,22 @@ export default async function PhotoPage({ params }: PageProps) {
   const { photo, album, story } = result;
 
   return (
-    <div className="px-4 md:px-14 py-14 max-w-5xl mx-auto">
+    <div className="px-6 md:px-12 py-12 max-w-5xl mx-auto">
       <ViewTracker path={`/photo/${id}`} photoId={photo.id} albumId={album?.id} />
       <Reveal>
         {album && (
           <Link
             href={`/album/${album.slug}`}
-            className="inline-block text-[12px] text-dim hover:text-accent transition-colors mb-7 underline underline-offset-4 decoration-faint hover:decoration-accent"
+            className="inline-flex items-center gap-2 text-[13px] font-450 text-slate hover:text-ink transition-colors mb-7 no-underline"
           >
+            <span aria-hidden="true">←</span>
             {album.title}
           </Link>
         )}
       </Reveal>
 
       <Reveal>
-        <div className="relative w-full mb-7">
+        <div className="relative w-full mb-7 rounded-stadium overflow-hidden shadow-card">
           <Image
             src={photo.filePath}
             alt={photo.title ?? photo.filename}
@@ -52,22 +53,23 @@ export default async function PhotoPage({ params }: PageProps) {
       <Reveal>
         <div className="flex justify-between items-end mb-7">
           <div>
-            <h1 className="font-display text-2xl font-semibold tracking-tight mb-1">
+            <h1 className="text-[28px] font-medium tracking-[-0.02em] mb-1">
               {photo.title ?? photo.filename}
             </h1>
             {photo.description && (
-              <p className="font-serif italic text-dim">{photo.description}</p>
+              <p className="text-slate text-[16px] font-450">{photo.description}</p>
             )}
             {story && (
               <Link
                 href={`/stories/${story.slug}`}
-                className="inline-block text-[12px] text-dim hover:text-accent transition-colors mt-2"
+                className="inline-flex items-center gap-2 text-[13px] font-450 text-slate hover:text-ink transition-colors mt-3 no-underline"
               >
-                <span>幕后故事：<span className="text-accent">{story.title}</span></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
+                幕后故事：{story.title}
               </Link>
             )}
           </div>
-          <div className="text-[12px] text-dim text-right">
+          <div className="text-[13px] font-450 text-slate text-right">
             <div>{formatDate(photo.createdAt)}</div>
             <div className="tabular-nums">
               {photo.width} × {photo.height}

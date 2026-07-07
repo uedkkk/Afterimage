@@ -238,7 +238,7 @@ export async function getAlbumBySlug(slug: string): Promise<Album | null> {
   return db.album.findUnique({ where: { slug }, include: { category: true } });
 }
 
-export async function getPublishedAlbums(): Promise<Album[]> {
+export async function getPublishedAlbums(): Promise<(Album & { category: Category | null; cover: Photo | null })[]> {
   return db.album.findMany({
     where: { published: true },
     orderBy: { sortOrder: "asc" },
