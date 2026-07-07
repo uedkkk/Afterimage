@@ -19,19 +19,20 @@ export default async function CategoryPage({ params }: PageProps) {
   const albums = await getAlbumsByCategory(category.id);
 
   return (
-    <div className="px-4 md:px-14 py-14">
+    <div className="px-6 md:px-12 py-12">
       <Reveal>
-        <header className="mb-10 pb-7 border-b border-line">
-          <div className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-widest text-accent mb-3 before:content-[''] before:w-7 before:h-px before:bg-accent">
+        <header className="mb-12 pb-8 border-b border-ink">
+          <div className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
             Category
           </div>
-          <h1 className="font-display text-[clamp(28px,4vw,48px)] font-semibold tracking-tight">
+          <h1 className="text-[clamp(28px,4vw,48px)] font-medium tracking-[-0.02em]">
             {category.name}
           </h1>
         </header>
       </Reveal>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {albums.map((album, index) => (
           <Reveal key={album.id} delay={index * 50}>
             <AlbumCard album={album} />

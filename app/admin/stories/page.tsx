@@ -12,12 +12,12 @@ export default async function StoriesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">故事管理</h1>
+          <h1 className="text-2xl font-medium">故事管理</h1>
           <p className="text-dim mt-1 text-sm">共 {stories.length} 篇故事</p>
         </div>
         <Link
           href="/admin/stories/new"
-          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
+          className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline hover:bg-dim"
         >
           新建故事
         </Link>
@@ -30,19 +30,19 @@ export default async function StoriesPage() {
           action={
             <Link
               href="/admin/stories/new"
-              className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline"
+              className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline"
             >
               新建故事
             </Link>
           }
         />
       ) : (
-        <div className="rounded-lg border border-faint bg-paper divide-y divide-faint">
+        <div className="rounded-stadium border border-faint bg-paper divide-y divide-faint">
           {stories.map((story) => (
             <Link
               key={story.id}
               href={`/admin/stories/${story.id}`}
-              className="flex items-start justify-between px-4 py-3 no-underline hover:bg-faint/20"
+              className="flex items-start justify-between px-4 py-3 no-underline hover:bg-dust/20"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">

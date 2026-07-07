@@ -32,12 +32,12 @@ export default async function PhotosPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">照片管理</h1>
+          <h1 className="text-2xl font-medium">照片管理</h1>
           <p className="text-dim mt-1 text-sm">共 {total} 张照片</p>
         </div>
         <Link
           href="/admin/upload"
-          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
+          className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline hover:bg-dim"
         >
           上传照片
         </Link>

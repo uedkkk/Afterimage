@@ -241,7 +241,7 @@ export default function UploadPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">上传照片</h1>
+        <h1 className="text-2xl font-medium">上传照片</h1>
         <p className="text-dim mt-1 text-sm">批量上传或从局域网导入</p>
       </div>
 
@@ -277,7 +277,7 @@ export default function UploadPage() {
             <select
               value={albumId}
               onChange={(e) => setAlbumId(e.target.value)}
-              className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+              className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
             >
               <option value="">无相册</option>
               {albums.map((album) => (
@@ -290,7 +290,7 @@ export default function UploadPage() {
 
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-faint rounded-lg p-8 text-center cursor-pointer hover:bg-faint/20"
+            className="border-2 border-dashed border-faint rounded-stadium p-8 text-center cursor-pointer hover:bg-dust/20"
           >
             <input
               ref={fileInputRef}
@@ -326,7 +326,7 @@ export default function UploadPage() {
           <button
             onClick={handleUpload}
             disabled={files.length === 0 || uploading}
-            className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
+            className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
           >
             {uploading ? "上传中..." : `上传 ${files.length} 张`}
           </button>
@@ -345,7 +345,7 @@ export default function UploadPage() {
                 </p>
               )}
               {uploadResult.errors.map((err, i) => (
-                <p key={i} className="text-sm text-accent">
+                <p key={i} className="text-sm text-signal">
                   {err.filename}: {err.error}
                 </p>
               ))}
@@ -359,7 +359,7 @@ export default function UploadPage() {
             <button
               onClick={() => handleSourceChange("local")}
               className={cn(
-                "px-3 py-1.5 text-sm rounded-md border",
+                "px-3 py-1.5 text-sm rounded-button border",
                 lanSource === "local"
                   ? "border-ink text-ink bg-paper"
                   : "border-faint text-dim hover:text-ink"
@@ -370,7 +370,7 @@ export default function UploadPage() {
             <button
               onClick={() => handleSourceChange("webdav")}
               className={cn(
-                "px-3 py-1.5 text-sm rounded-md border",
+                "px-3 py-1.5 text-sm rounded-button border",
                 lanSource === "webdav"
                   ? "border-ink text-ink bg-paper"
                   : "border-faint text-dim hover:text-ink"
@@ -382,7 +382,7 @@ export default function UploadPage() {
 
           {/* WebDAV connection fields */}
           {lanSource === "webdav" && (
-            <div className="space-y-3 p-4 border border-faint rounded-md bg-paper">
+            <div className="space-y-3 p-4 border border-faint rounded-button bg-paper">
               <div>
                 <label className="block text-sm text-dim mb-1">WebDAV 地址</label>
                 <input
@@ -390,7 +390,7 @@ export default function UploadPage() {
                   value={webdavUrl}
                   onChange={(e) => { setWebdavUrl(e.target.value); setWebdavConnected(false); }}
                   placeholder="http://192.168.1.100:5005"
-                  className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                  className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -400,7 +400,7 @@ export default function UploadPage() {
                     type="text"
                     value={webdavUser}
                     onChange={(e) => { setWebdavUser(e.target.value); setWebdavConnected(false); }}
-                    className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                    className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
                   />
                 </div>
                 <div>
@@ -409,7 +409,7 @@ export default function UploadPage() {
                     type="password"
                     value={webdavPass}
                     onChange={(e) => { setWebdavPass(e.target.value); setWebdavConnected(false); }}
-                    className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                    className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
                   />
                 </div>
               </div>
@@ -428,12 +428,12 @@ export default function UploadPage() {
                 onChange={(e) => setLanPath(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleBrowse()}
                 placeholder={lanSource === "webdav" ? "/" : "/mnt/nas/photos/"}
-                className="flex-1 border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
+                className="flex-1 border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
               />
               <button
                 onClick={() => handleBrowse()}
                 disabled={!lanPath.trim() || browsing || (lanSource === "webdav" && !webdavUrl)}
-                className="border border-faint text-dim px-4 py-2 rounded-md text-sm hover:bg-faint disabled:opacity-50"
+                className="border border-faint text-dim px-4 py-2 rounded-button text-sm hover:bg-dust disabled:opacity-50"
               >
                 {browsing ? "浏览中..." : "浏览"}
               </button>
@@ -442,7 +442,7 @@ export default function UploadPage() {
 
           {/* Folder browser */}
           {currentDir && (
-            <div className="border border-faint rounded-md overflow-hidden">
+            <div className="border border-faint rounded-button overflow-hidden">
               {/* Breadcrumb */}
               <div className="flex items-center gap-1 px-3 py-2 border-b border-faint bg-paper text-sm overflow-x-auto whitespace-nowrap">
                 <button
@@ -481,7 +481,7 @@ export default function UploadPage() {
                     <button
                       key={dir.path}
                       onClick={() => handleBrowse(dir.path)}
-                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-ink hover:bg-faint/20 text-left"
+                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-ink hover:bg-dust/20 text-left"
                     >
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-dim shrink-0">
                         <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
@@ -497,7 +497,7 @@ export default function UploadPage() {
                 <button
                   onClick={handleScan}
                   disabled={scanning}
-                  className="text-sm text-ink hover:text-accent disabled:opacity-50"
+                  className="text-sm text-ink hover:text-signal disabled:opacity-50"
                 >
                   {scanning ? "扫描中..." : `扫描当前文件夹的图片`}
                 </button>
@@ -546,7 +546,7 @@ export default function UploadPage() {
                 {scannedFiles.map((file) => (
                   <label
                     key={file.path}
-                    className="flex items-center gap-2 px-3 py-2 hover:bg-faint/20 rounded-md cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2 hover:bg-dust/20 rounded-button cursor-pointer"
                   >
                     <input
                       type="checkbox"
@@ -567,7 +567,7 @@ export default function UploadPage() {
               <button
                 onClick={handleImport}
                 disabled={selectedFiles.size === 0 || importing}
-                className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
+                className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
               >
                 {importing
                   ? "导入中..."

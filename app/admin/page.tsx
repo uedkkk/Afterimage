@@ -18,8 +18,8 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">仪表盘</h1>
-        <p className="text-dim mt-1 text-sm">站点数据概览</p>
+        <h1 className="text-2xl font-medium tracking-[-0.02em]">仪表盘</h1>
+        <p className="text-slate mt-1 text-sm">站点数据概览</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -29,8 +29,8 @@ export default async function AdminDashboardPage() {
         <StatCard label="总浏览量" value={stats.totalViews} />
       </div>
 
-      <div className="rounded-lg border border-faint bg-paper p-5">
-        <h2 className="text-sm font-semibold text-ink mb-4">近 30 天浏览量</h2>
+      <div className="rounded-stadium border border-dust bg-lifted p-5 shadow-card">
+        <h2 className="text-sm font-medium text-ink mb-4">近 30 天浏览量</h2>
         <div className="flex items-end gap-1 h-40">
           {stats.recentViews.map((v) => (
             <div
@@ -38,25 +38,25 @@ export default async function AdminDashboardPage() {
               className="flex-1 flex flex-col items-center justify-end h-full group relative"
             >
               {v.count > 0 && (
-                <span className="text-[10px] text-dim mb-0.5 tabular-nums">{v.count}</span>
+                <span className="text-[10px] text-slate mb-0.5 tabular-nums">{v.count}</span>
               )}
               <div
-                className="w-full rounded-t bg-ink/20 group-hover:bg-ink/40 transition-colors"
+                className="w-full rounded-t-button bg-ink/20 group-hover:bg-ink/40 transition-colors"
                 style={{ height: `${(v.count / maxViews) * 100}%`, minHeight: v.count > 0 ? "4px" : "0" }}
                 title={`${v.date}: ${v.count} 次浏览`}
               />
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-2 text-xs text-dim">
+        <div className="flex justify-between mt-2 text-xs text-slate">
           <span>{formatDate(stats.recentViews[0]?.date ?? new Date())}</span>
           <span>今天</span>
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <div className="rounded-lg border border-faint bg-paper p-5">
-          <h2 className="text-sm font-semibold text-ink mb-4">热门照片</h2>
+        <div className="rounded-stadium border border-dust bg-lifted p-5 shadow-card">
+          <h2 className="text-sm font-medium text-ink mb-4">热门照片</h2>
           {popularPhotos.length === 0 ? (
             <EmptyState title="暂无浏览数据" description="还没有照片被浏览" />
           ) : (
@@ -65,13 +65,13 @@ export default async function AdminDashboardPage() {
                 <li key={item.photo.id}>
                   <Link
                     href={`/admin/photos/${item.photo.id}`}
-                    className="flex items-center justify-between px-2 py-2 rounded-md hover:bg-faint no-underline"
+                    className="flex items-center justify-between px-2 py-2 rounded-button hover:bg-dust no-underline transition-colors"
                   >
                     <span className="text-sm text-ink truncate">
-                      <span className="text-dim mr-2">{i + 1}.</span>
+                      <span className="text-slate mr-2">{i + 1}.</span>
                       {item.photo.title || item.photo.filename}
                     </span>
-                    <span className="text-xs text-dim ml-2 shrink-0">{item.views} 次浏览</span>
+                    <span className="text-xs text-slate ml-2 shrink-0">{item.views} 次浏览</span>
                   </Link>
                 </li>
               ))}
@@ -79,8 +79,8 @@ export default async function AdminDashboardPage() {
           )}
         </div>
 
-        <div className="rounded-lg border border-faint bg-paper p-5">
-          <h2 className="text-sm font-semibold text-ink mb-4">相册浏览统计</h2>
+        <div className="rounded-stadium border border-dust bg-lifted p-5 shadow-card">
+          <h2 className="text-sm font-medium text-ink mb-4">相册浏览统计</h2>
           {albumStats.length === 0 ? (
             <EmptyState title="暂无浏览数据" description="还没有相册被浏览" />
           ) : (
@@ -89,13 +89,13 @@ export default async function AdminDashboardPage() {
                 <li key={item.album.id}>
                   <Link
                     href={`/admin/albums/${item.album.id}`}
-                    className="flex items-center justify-between px-2 py-2 rounded-md hover:bg-faint no-underline"
+                    className="flex items-center justify-between px-2 py-2 rounded-button hover:bg-dust no-underline transition-colors"
                   >
                     <span className="text-sm text-ink truncate">
-                      <span className="text-dim mr-2">{i + 1}.</span>
+                      <span className="text-slate mr-2">{i + 1}.</span>
                       {item.album.title}
                     </span>
-                    <span className="text-xs text-dim ml-2 shrink-0">{item.views} 次浏览</span>
+                    <span className="text-xs text-slate ml-2 shrink-0">{item.views} 次浏览</span>
                   </Link>
                 </li>
               ))}

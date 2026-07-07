@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="color-scheme:light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F3F0EE">
+<title>Afterimage — Palimpsest Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,300;0,400;0,450;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    /* Mastercard-inspired palette */
+    --canvas:#F3F0EE;
+    --lifted:#FCFBFA;
+    --white:#FFFFFF;
+    --ink:#141413;
+    --charcoal:#262627;
+    --slate:#696969;
+    --granite:#555555;
+    --dust:#D1CDC7;
+    --signal:#CF4500;
+    --light-signal:#F37338;
+    --clay:#9A3A0A;
+    --link-blue:#3860BE;
+    --ghost:#E8E2DA;
+    /* Typography */
+    --font:'Sofia Sans',Arial,sans-serif;
+    /* Spacing — 8px base */
+    --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;--s8:128px;
+    /* Shadows */
+    --shadow-nav:rgba(0,0,0,0.04) 0px 4px 24px 0px;
+    --shadow-card:rgba(0,0,0,0.08) 0px 24px 48px 0px;
+    --shadow-drama:rgba(0,0,0,0.25) 0px 70px 110px 0px;
+    /* Easing */
+    --ease:cubic-bezier(0.22,1,0.36,1);
+  }
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--canvas);color:var(--ink);
+    font-family:var(--font);font-weight:450;font-size:16px;line-height:1.5;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  }
+
+  /* ===== Floating Pill Nav ===== */
+  .nav{
+    position:fixed;top:24px;left:50%;transform:translateX(-50%);
+    z-index:100;background:var(--white);border-radius:999px;
+    padding:12px 32px;display:flex;align-items:center;gap:48px;
+    box-shadow:var(--shadow-nav);
+    transition:box-shadow .4s var(--ease);
+  }
+  .nav-logo{font-size:18px;font-weight:600;letter-spacing:-0.02em;text-decoration:none;color:var(--ink);white-space:nowrap}
+  .nav-logo em{font-style:italic;font-weight:450;color:var(--charcoal)}
+  .nav-links{display:flex;gap:40px;align-items:center}
+  .nav-links a{color:var(--ink);text-decoration:none;font-size:15px;font-weight:500;letter-spacing:-0.01em;transition:color .3s var(--ease);cursor:pointer}
+  .nav-links a:hover{color:var(--charcoal)}
+  .nav-search{
+    width:40px;height:40px;border-radius:50%;border:1px solid var(--ink);
+    background:transparent;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--ink);transition:all .3s var(--ease);
+  }
+  .nav-search:hover{background:var(--ink);color:var(--canvas)}
+  .nav-search svg{width:16px;height:16px}
+
+  /* ===== Hero — Stadium Media Frame ===== */
+  .hero{padding:120px 24px 0;position:relative}
+  .hero-frame{
+    position:relative;border-radius:40px;overflow:hidden;
+    width:100%;height:62vh;min-height:480px;background:var(--ink);
+    box-shadow:var(--shadow-card);
+  }
+  .hero-frame img{width:100%;height:100%;object-fit:cover;opacity:.85}
+  .hero-frame::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(20,20,19,.5) 0%,transparent 50%,rgba(20,20,19,.3) 100%);
+  }
+  .hero-content{
+    position:absolute;inset:0;padding:48px 56px;
+    display:flex;flex-direction:column;justify-content:space-between;z-index:2;
+  }
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;
+    color:var(--white);align-self:flex-start;
+    background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+    padding:6px 16px;border-radius:999px;
+  }
+  .hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--light-signal)}
+  .hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:32px}
+  .hero-title{
+    font-size:clamp(40px,6vw,72px);font-weight:500;line-height:1;letter-spacing:-0.02em;
+    color:var(--white);max-width:680px;
+  }
+  .hero-desc{
+    font-size:16px;font-weight:450;line-height:1.5;color:rgba(255,255,255,0.85);
+    max-width:320px;margin-bottom:4px;
+  }
+  .hero-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink);color:var(--canvas);
+    border:1.5px solid var(--ink);border-radius:20px;
+    padding:10px 28px;font-size:15px;font-weight:500;letter-spacing:-0.01em;
+    text-decoration:none;cursor:pointer;
+    transition:all .3s var(--ease);white-space:nowrap;
+  }
+  .hero-cta:hover{background:transparent;color:var(--white);border-color:var(--white)}
+
+  /* Ghost watermark */
+  .ghost-text{
+    position:absolute;font-size:clamp(80px,14vw,180px);font-weight:500;
+    letter-spacing:-0.02em;color:var(--ghost);line-height:1;
+    z-index:0;pointer-events:none;user-select:none;
+  }
+
+  /* ===== Featured — Circular Portraits with Orbital Arcs ===== */
+  .featured{padding:var(--s8) 24px var(--s7);position:relative;overflow:hidden}
+  .section-header{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:var(--s7)}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--slate);
+  }
+  .eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--light-signal)}
+  .section-title{font-size:clamp(32px,4vw,48px);font-weight:500;letter-spacing:-0.02em;line-height:1.1;text-align:center}
+
+  .constellation{position:relative;max-width:1200px;margin:0 auto;height:520px}
+  .orbit-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+  .orbit-path{fill:none;stroke:var(--light-signal);stroke-width:1.5;stroke-dasharray:4 6;opacity:.6}
+
+  .portrait-card{
+    position:absolute;display:flex;flex-direction:column;align-items:center;gap:16px;z-index:2;
+  }
+  .portrait-circle{
+    position:relative;width:240px;height:240px;border-radius:50%;overflow:hidden;
+    box-shadow:var(--shadow-card);cursor:pointer;
+    transition:transform .6s var(--ease);
+  }
+  .portrait-card:hover .portrait-circle{transform:scale(1.03)}
+  .portrait-circle img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+  .portrait-card:hover .portrait-circle img{transform:scale(1.08)}
+  .satellite-cta{
+    position:absolute;bottom:12px;right:12px;
+    width:52px;height:52px;border-radius:50%;background:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 16px rgba(0,0,0,0.15);border:none;cursor:pointer;
+    transition:all .3s var(--ease);z-index:3;
+  }
+  .satellite-cta:hover{background:var(--ink);color:var(--white)}
+  .satellite-cta svg{width:18px;height:18px;transition:transform .3s var(--ease)}
+  .satellite-cta:hover svg{transform:translate(2px,-2px)}
+  .portrait-label{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .portrait-eyebrow{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--slate);display:flex;align-items:center;gap:6px}
+  .portrait-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--light-signal)}
+  .portrait-title{font-size:20px;font-weight:500;letter-spacing:-0.01em;color:var(--ink)}
+
+  /* Position constellation items asymmetrically */
+  .portrait-card:nth-child(2){top:20px;left:8%}
+  .portrait-card:nth-child(3){top:80px;left:38%}
+  .portrait-card:nth-child(4){top:0;right:8%}
+  .portrait-card:nth-child(5){bottom:40px;left:20%}
+  .portrait-card:nth-child(6){bottom:0;right:22%}
+
+  /* ===== Gallery — Pill Cards ===== */
+  .gallery{padding:var(--s8) 24px var(--s7);background:var(--lifted);border-radius:40px;margin:0 24px}
+  .gallery-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;max-width:1280px;margin:0 auto}
+  .g-item{
+    position:relative;border-radius:40px;overflow:hidden;cursor:pointer;
+    background:var(--dust);box-shadow:var(--shadow-card);
+    transition:transform .6s var(--ease),box-shadow .6s var(--ease);
+  }
+  .g-item:hover{transform:translateY(-6px);box-shadow:var(--shadow-drama)}
+  .g-item img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease),filter .5s var(--ease)}
+  .g-item:hover img{transform:scale(1.05)}
+  .g-item:nth-child(1){grid-column:span 7;aspect-ratio:3/2}
+  .g-item:nth-child(2){grid-column:span 5;aspect-ratio:4/5}
+  .g-item:nth-child(3){grid-column:span 5;aspect-ratio:4/5}
+  .g-item:nth-child(4){grid-column:span 7;aspect-ratio:3/2}
+  .g-item:nth-child(5){grid-column:span 4;aspect-ratio:1/1}
+  .g-item:nth-child(6){grid-column:span 4;aspect-ratio:1/1}
+  .g-item:nth-child(7){grid-column:span 4;aspect-ratio:1/1}
+
+  .g-overlay{
+    position:absolute;inset:0;padding:28px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(to bottom,rgba(20,20,19,.3),transparent 40%,transparent 50%,rgba(20,20,19,.7));
+    color:var(--white);opacity:0;transition:opacity .4s var(--ease);
+  }
+  .g-item:hover .g-overlay{opacity:1}
+  .g-chip{
+    display:inline-flex;align-self:flex-start;align-items:center;
+    background:var(--white);color:var(--ink);border-radius:999px;
+    padding:6px 16px;font-size:12px;font-weight:500;letter-spacing:-0.01em;
+  }
+  .g-bottom{display:flex;justify-content:space-between;align-items:flex-end}
+  .g-title{font-size:22px;font-weight:500;letter-spacing:-0.01em}
+  .g-meta{font-size:13px;font-weight:450;opacity:.8}
+
+  .gallery-cta-wrap{display:flex;justify-content:center;margin-top:var(--s6)}
+  .btn-primary{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink);color:var(--canvas);
+    border:1.5px solid var(--ink);border-radius:20px;
+    padding:10px 28px;font-size:15px;font-weight:500;letter-spacing:-0.01em;
+    text-decoration:none;cursor:pointer;transition:all .3s var(--ease);
+  }
+  .btn-primary:hover{background:var(--charcoal)}
+  .btn-outline{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--white);color:var(--ink);
+    border:1.5px solid var(--ink);border-radius:20px;
+    padding:10px 28px;font-size:15px;font-weight:450;
+    text-decoration:none;cursor:pointer;transition:all .3s var(--ease);
+  }
+  .btn-outline:hover{background:var(--ink);color:var(--canvas)}
+
+  /* ===== Stories — Pill Carousel Cards ===== */
+  .stories{padding:var(--s8) 24px;position:relative;overflow:hidden}
+  .stories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1280px;margin:0 auto}
+  .story-card{
+    position:relative;border-radius:40px;overflow:hidden;cursor:pointer;
+    aspect-ratio:3/4;box-shadow:var(--shadow-card);
+    transition:transform .6s var(--ease);
+  }
+  .story-card:hover{transform:translateY(-6px)}
+  .story-card img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+  .story-card:hover img{transform:scale(1.05)}
+  .story-card::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(to bottom,transparent 40%,rgba(20,20,19,.8));
+  }
+  .story-content{
+    position:absolute;bottom:0;left:0;right:0;padding:32px;z-index:2;color:var(--white);
+  }
+  .story-chip{
+    display:inline-flex;align-items:center;background:var(--white);color:var(--ink);
+    border-radius:999px;padding:5px 14px;font-size:11px;font-weight:500;margin-bottom:12px;
+  }
+  .story-title{font-size:22px;font-weight:500;letter-spacing:-0.01em;line-height:1.2;margin-bottom:6px}
+  .story-excerpt{font-size:14px;font-weight:450;opacity:.8;line-height:1.5}
+
+  /* ===== About — Split Editorial ===== */
+  .about{padding:var(--s8) 24px;position:relative;overflow:hidden}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);max-width:1280px;margin:0 auto;align-items:center}
+  .about-visual{position:relative}
+  .about-img{
+    width:100%;aspect-ratio:4/5;border-radius:40px;overflow:hidden;
+    box-shadow:var(--shadow-card);
+  }
+  .about-img img{width:100%;height:100%;object-fit:cover}
+  .about-ghost{position:absolute;top:-40px;left:-60px;font-size:120px;font-weight:500;letter-spacing:-0.02em;color:var(--ghost);z-index:0;line-height:1;pointer-events:none}
+  .about-text-block{position:relative;z-index:2}
+  .about-title{font-size:clamp(32px,4vw,52px);font-weight:500;letter-spacing:-0.02em;line-height:1.1;margin-bottom:24px}
+  .about-desc{font-size:16px;font-weight:450;line-height:1.6;color:var(--granite);margin-bottom:32px;max-width:440px}
+  .about-gear{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+  .gear-item{
+    background:var(--lifted);border-radius:20px;padding:20px 24px;
+    display:flex;flex-direction:column;gap:4px;
+  }
+  .gear-brand{font-size:15px;font-weight:500;color:var(--ink)}
+  .gear-model{font-size:13px;font-weight:450;color:var(--slate)}
+
+  /* ===== Footer — Dark Warm-Black ===== */
+  .footer{
+    background:var(--ink);color:var(--white);
+    padding:64px 48px 48px;margin-top:var(--s8);
+  }
+  .footer-inner{max-width:1280px;margin:0 auto}
+  .footer-headline{font-size:clamp(28px,3.5vw,42px);font-weight:500;letter-spacing:-0.02em;line-height:1.2;margin-bottom:48px;max-width:600px}
+  .footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-bottom:48px}
+  .footer-col h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:rgba(255,255,255,0.5);margin-bottom:16px}
+  .footer-col a{display:block;color:var(--white);text-decoration:none;font-size:14px;font-weight:450;padding:6px 0;transition:color .3s var(--ease);cursor:pointer}
+  .footer-col a:hover{color:rgba(255,255,255,0.7)}
+  .footer-bottom{
+    border-top:1px solid rgba(255,255,255,0.15);padding-top:24px;
+    display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;
+  }
+  .footer-copy{font-size:13px;font-weight:450;color:rgba(255,255,255,0.5)}
+  .footer-socials{display:flex;gap:16px}
+  .footer-socials a{
+    width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.3);
+    display:flex;align-items:center;justify-content:center;color:var(--white);
+    text-decoration:none;transition:all .3s var(--ease);cursor:pointer;
+  }
+  .footer-socials a:hover{background:var(--white);color:var(--ink);border-color:var(--white)}
+  .footer-socials svg{width:16px;height:16px}
+  .footer-logo{font-size:20px;font-weight:600;letter-spacing:-0.02em}
+  .footer-logo em{font-style:italic;font-weight:450;color:rgba(255,255,255,0.6)}
+
+  /* ===== Reveal Animation ===== */
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+
+  /* ===== Focus ===== */
+  a:focus-visible,button:focus-visible{outline:2px solid var(--signal);outline-offset:3px;border-radius:20px}
+
+  /* ===== Responsive ===== */
+  @media(max-width:1023px){
+    .nav-links{display:none}
+    .nav{gap:0;padding:10px 20px}
+    .constellation{height:auto;display:flex;flex-direction:column;gap:48px;align-items:center;padding:32px 0}
+    .portrait-card{position:relative !important;top:auto !important;left:auto !important;right:auto !important;bottom:auto !important}
+    .orbit-svg{display:none}
+    .gallery-grid{grid-template-columns:1fr}
+    .g-item:nth-child(n){grid-column:span 1;aspect-ratio:4/3}
+    .stories-grid{grid-template-columns:1fr}
+    .about-grid{grid-template-columns:1fr;gap:32px}
+    .about-ghost{display:none}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:24px}
+    .hero-bottom{flex-direction:column;align-items:flex-start}
+    .hero-desc{max-width:none}
+  }
+  @media(max-width:767px){
+    .hero{padding:100px 16px 0}
+    .hero-frame{border-radius:28px;height:50vh;min-height:380px}
+    .hero-content{padding:28px 24px}
+    .gallery{margin:0 16px;border-radius:28px;padding:48px 16px}
+    .g-item{border-radius:24px}
+    .footer{padding:48px 24px 32px}
+    .footer-grid{grid-template-columns:1fr}
+    .footer-bottom{flex-direction:column;align-items:flex-start}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Floating Pill Nav ===== -->
+<nav class="nav">
+  <a href="#" class="nav-logo">After<em>image</em></a>
+  <div class="nav-links">
+    <a>作品</a>
+    <a>故事</a>
+    <a>关于</a>
+  </div>
+  <button class="nav-search" aria-label="搜索作品">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+  </button>
+</nav>
+
+<!-- ===== Hero — Stadium Media Frame ===== -->
+<section class="hero">
+  <div class="hero-frame reveal">
+    <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=1600&q=80" alt="Featured photography">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Featured · 2024</span>
+      <div class="hero-bottom">
+        <h1 class="hero-title">光影的残像<br>是记忆的诗篇</h1>
+        <div>
+          <p class="hero-desc">在街巷与山野之间，寻找转瞬即逝的光线、情绪与故事。</p>
+          <a href="#gallery" class="hero-cta">浏览全部作品 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Featured Albums — Circular Portraits with Orbital Arcs ===== -->
+<section class="featured">
+  <div class="ghost-text" style="top:40px;left:-20px">Albums</div>
+  <div class="section-header reveal">
+    <span class="eyebrow">精选影集</span>
+    <h2 class="section-title">每一组影像，都是一段旅程</h2>
+  </div>
+  <div class="constellation">
+    <svg class="orbit-svg" viewBox="0 0 1200 520" preserveAspectRatio="none">
+      <path class="orbit-path" d="M200,140 Q400,80 600,200 T1000,120" />
+      <path class="orbit-path" d="M300,420 Q500,360 700,440 T1050,380" />
+      <path class="orbit-path" d="M250,180 Q350,300 500,420" />
+    </svg>
+    <div class="portrait-card reveal">
+      <div class="portrait-circle">
+        <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=500&q=80" alt="京都红叶">
+        <button class="satellite-cta" aria-label="查看影集">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </button>
+      </div>
+      <div class="portrait-label">
+        <span class="portrait-eyebrow">Travel</span>
+        <span class="portrait-title">京都 · 秋色</span>
+      </div>
+    </div>
+    <div class="portrait-card reveal">
+      <div class="portrait-circle">
+        <img src="https://images.unsplash.com/photo-1545569310-5fd6d4c1d3f1?w=500&q=80" alt="香港夜景">
+        <button class="satellite-cta" aria-label="查看影集">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </button>
+      </div>
+      <div class="portrait-label">
+        <span class="portrait-eyebrow">City</span>
+        <span class="portrait-title">香港 · 夜景</span>
+      </div>
+    </div>
+    <div class="portrait-card reveal">
+      <div class="portrait-circle">
+        <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=500&q=80" alt="奈良之鹿">
+        <button class="satellite-cta" aria-label="查看影集">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </button>
+      </div>
+      <div class="portrait-label">
+        <span class="portrait-eyebrow">Wildlife</span>
+        <span class="portrait-title">奈良 · 鹿语</span>
+      </div>
+    </div>
+    <div class="portrait-card reveal">
+      <div class="portrait-circle">
+        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=500&q=80" alt="大阪街拍">
+        <button class="satellite-cta" aria-label="查看影集">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </button>
+      </div>
+      <div class="portrait-label">
+        <span class="portrait-eyebrow">Street</span>
+        <span class="portrait-title">大阪 · 街拍</span>
+      </div>
+    </div>
+    <div class="portrait-card reveal">
+      <div class="portrait-circle">
+        <img src="https://images.unsplash.com/photo-1538970272646-f61fabb3a8a2?w=500&q=80" alt="澳门历史">
+        <button class="satellite-cta" aria-label="查看影集">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+        </button>
+      </div>
+      <div class="portrait-label">
+        <span class="portrait-eyebrow">Aerial</span>
+        <span class="portrait-title">澳门 · 历史</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Gallery — Pill Cards ===== -->
+<section class="gallery" id="gallery">
+  <div class="section-header reveal" style="margin-bottom:48px">
+    <span class="eyebrow">作品集</span>
+    <h2 class="section-title">121 张光影瞬间</h2>
+  </div>
+  <div class="gallery-grid">
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=900&q=80" alt="京都红叶古寺" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">Travel</span>
+        <div class="g-bottom">
+          <div class="g-title">京都 · 秋色</div>
+          <div class="g-meta">Sony A7RⅡ · 35mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1545569310-5fd6d4c1d3f1?w=700&q=80" alt="香港维港夜景" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">City</span>
+        <div class="g-bottom">
+          <div class="g-title">香港 · 夜景</div>
+          <div class="g-meta">Sony A7RⅡ · 50mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=700&q=80" alt="奈良之鹿" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">Wildlife</span>
+        <div class="g-bottom">
+          <div class="g-title">奈良 · 鹿语</div>
+          <div class="g-meta">Sony A7RⅡ · 85mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=900&q=80" alt="大阪街拍" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">Street</span>
+        <div class="g-bottom">
+          <div class="g-title">大阪 · 街拍</div>
+          <div class="g-meta">Sony A7RⅡ · 35mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1538970272646-f61fabb3a8a2?w=500&q=80" alt="澳门历史城区" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">Aerial</span>
+        <div class="g-bottom">
+          <div class="g-title">澳门 · 历史</div>
+          <div class="g-meta">DJI Air 2S</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1502899576159-f224dc2349fa?w=500&q=80" alt="厦门海港" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">Travel</span>
+        <div class="g-bottom">
+          <div class="g-title">厦门 · 海风</div>
+          <div class="g-meta">Sony A7RⅡ · 40mm</div>
+        </div>
+      </div>
+    </article>
+    <article class="g-item reveal">
+      <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=500&q=80" alt="城市光影" loading="lazy">
+      <div class="g-overlay">
+        <span class="g-chip">Street</span>
+        <div class="g-bottom">
+          <div class="g-title">城市 · 光影</div>
+          <div class="g-meta">Sony A7RⅡ · 35mm</div>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="gallery-cta-wrap reveal">
+    <a class="btn-primary">查看全部 121 张作品 →</a>
+  </div>
+</section>
+
+<!-- ===== Stories — Pill Carousel Cards ===== -->
+<section class="stories">
+  <div class="ghost-text" style="top:20px;right:-30px">Stories</div>
+  <div class="section-header reveal">
+    <span class="eyebrow">影像故事</span>
+    <h2 class="section-title">镜头背后的叙事</h2>
+  </div>
+  <div class="stories-grid">
+    <article class="story-card reveal">
+      <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=600&q=80" alt="故事封面" loading="lazy">
+      <div class="story-content">
+        <span class="story-chip">Story</span>
+        <h3 class="story-title">京都秋色纪行</h3>
+        <p class="story-excerpt">从东福寺到岚山，追逐红叶最盛的三日。</p>
+      </div>
+    </article>
+    <article class="story-card reveal">
+      <img src="https://images.unsplash.com/photo-1545569310-5fd6d4c1d3f1?w=600&q=80" alt="故事封面" loading="lazy">
+      <div class="story-content">
+        <span class="story-chip">Story</span>
+        <h3 class="story-title">香港夜未眠</h3>
+        <p class="story-excerpt">维港的灯火，是城市最温柔的低语。</p>
+      </div>
+    </article>
+    <article class="story-card reveal">
+      <img src="https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80" alt="故事封面" loading="lazy">
+      <div class="story-content">
+        <span class="story-chip">Story</span>
+        <h3 class="story-title">奈良鹿与古寺</h3>
+        <p class="story-excerpt">在春日大社的密林中，与鹿群不期而遇。</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===== About — Split Editorial ===== -->
+<section class="about">
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-ghost">About</div>
+      <div class="about-img">
+        <img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=600&q=80" alt="摄影师" loading="lazy">
+      </div>
+    </div>
+    <div class="about-text-block reveal">
+      <span class="eyebrow">关于摄影师</span>
+      <h2 class="about-title">用镜头书写<br>光影的诗篇</h2>
+      <p class="about-desc">每一次按下快门，都是与瞬间的对话。在街巷与山野之间，寻找那些转瞬即逝的光线、情绪与故事——让影像成为记忆的残像，让瞬间成为永恒。</p>
+      <div class="about-gear">
+        <div class="gear-item">
+          <span class="gear-brand">Sony</span>
+          <span class="gear-model">Alpha 7R Ⅱ</span>
+        </div>
+        <div class="gear-item">
+          <span class="gear-brand">DJI</span>
+          <span class="gear-model">Air 2S</span>
+        </div>
+        <div class="gear-item">
+          <span class="gear-brand">Tamron</span>
+          <span class="gear-model">50-400mm F/4.5-6.3</span>
+        </div>
+        <div class="gear-item">
+          <span class="gear-brand">Sigma</span>
+          <span class="gear-model">35mm F/1.4 DG HSM</span>
+        </div>
+      </div>
+      <a class="btn-outline">了解更多 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer — Dark Warm-Black ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <h2 class="footer-headline">光影不灭，残像永存。<br>期待与你分享下一个瞬间。</h2>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>导航</h4>
+        <a>作品集</a>
+        <a>影像故事</a>
+        <a>关于</a>
+        <a>搜索</a>
+      </div>
+      <div class="footer-col">
+        <h4>影集</h4>
+        <a>京都 · 秋色</a>
+        <a>香港 · 夜景</a>
+        <a>奈良 · 鹿语</a>
+        <a>大阪 · 街拍</a>
+      </div>
+      <div class="footer-col">
+        <h4>分类</h4>
+        <a>旅行</a>
+        <a>城市</a>
+        <a>街拍</a>
+        <a>人像</a>
+      </div>
+      <div class="footer-col">
+        <h4>关注</h4>
+        <a>Instagram ↗</a>
+        <a>GitHub ↗</a>
+        <a>小红书 ↗</a>
+        <a>RSS ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-logo">After<em>image</em></span>
+      <span class="footer-copy">© 2024 Afterimage · 光影的残像</span>
+      <div class="footer-socials">
+        <a aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33s1.7.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48C19.13 20.17 22 16.42 22 12c0-5.52-4.48-10-10-10z"/></svg></a>
+        <a aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
