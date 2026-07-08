@@ -6,6 +6,14 @@ import { Reveal } from "@/components/Reveal";
 
 export const revalidate = 300;
 
+const PORTRAIT_OFFSETS = [
+  "md:mt-2",
+  "md:mt-20",
+  "md:mt-0",
+  "md:mt-16",
+  "md:mt-6",
+];
+
 export default async function Home() {
   const [photos, settings, albums, stories] = await Promise.all([
     getAllPhotos(7, 0),
@@ -39,7 +47,7 @@ export default async function Home() {
         <div className="relative rounded-stadium overflow-hidden w-full h-[62vh] min-h-[420px] bg-ink shadow-card">
           {heroPhoto && (
             <Image
-              src={heroPhoto.thumbPath ?? heroPhoto.filePath}
+              src={heroPhoto.filePath}
               alt={heroPhoto.title ?? heroPhoto.filename}
               fill
               sizes="100vw"
@@ -92,22 +100,21 @@ export default async function Home() {
               </h2>
             </div>
           </Reveal>
-          <div className="relative max-w-6xl mx-auto">
+          <div className="relative max-w-[1200px] mx-auto">
             {/* Orbital arcs — decorative SVG */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none hidden md:block" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M120,140 Q400,80 600,200 T1080,120" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.5" />
-              <path d="M200,420 Q500,360 700,440 T1050,380" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.5" />
-              <path d="M180,180 Q350,300 500,420" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.4" />
+            <svg className="absolute inset-0 w-full h-full pointer-events-none hidden lg:block" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M120,80 Q400,40 600,120 T1080,60" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.4" />
+              <path d="M200,300 Q500,260 700,340 T1050,280" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.4" />
             </svg>
-            <div className="relative flex flex-wrap justify-center gap-8 md:gap-12 py-8">
+            <div className="relative flex flex-col items-center gap-12 md:flex-row md:justify-center md:items-start md:gap-4 lg:gap-6">
               {featuredAlbums.map((album, i) => (
-                <Reveal key={album.id} delay={i * 80}>
+                <Reveal key={album.id} delay={i * 80} className={PORTRAIT_OFFSETS[i] ?? ""}>
                   <Link href={`/album/${album.slug}`} className="group flex flex-col items-center gap-4 no-underline">
                     <div className="relative w-[200px] h-[200px] md:w-[240px] md:h-[240px]">
                       <div className="relative w-full h-full rounded-full overflow-hidden shadow-card cursor-pointer transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105">
                         {album.cover ? (
                           <Image
-                            src={album.cover.thumbPath ?? album.cover.filePath}
+                            src={album.cover.filePath}
                             alt={album.title}
                             fill
                             sizes="(max-width: 768px) 200px, 240px"
@@ -135,9 +142,19 @@ export default async function Home() {
                   </Link>
                 </Reveal>
               ))}
+             </div>
+           </div>
+          {albums.length > 5 && (
+            <div className="flex justify-center mt-12">
+              <Link
+                href="/albums"
+                className="inline-flex items-center gap-2 bg-ink text-canvas border-[1.5px] border-ink rounded-button px-7 py-2.5 text-[15px] font-medium tracking-[-0.01em] no-underline transition-all duration-300 hover:bg-charcoal"
+              >
+                查看全部相册 →
+              </Link>
             </div>
-          </div>
-        </section>
+          )}
+         </section>
       )}
 
       {/* Gallery — Pill Cards */}
@@ -158,7 +175,7 @@ export default async function Home() {
           <Reveal>
             <div className="flex justify-center mt-16">
               <Link
-                href="/search"
+                href="/photos"
                 className="inline-flex items-center gap-2 bg-ink text-canvas border-[1.5px] border-ink rounded-button px-7 py-2.5 text-[15px] font-medium tracking-[-0.01em] no-underline transition-all duration-300 hover:bg-charcoal"
               >
                 查看全部作品 →
@@ -192,7 +209,7 @@ export default async function Home() {
                   {story.cover ? (
                     <div className="relative aspect-[3/4] overflow-hidden bg-dust rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-drama">
                       <Image
-                        src={story.cover.thumbPath ?? story.cover.filePath}
+                        src={story.cover.filePath}
                         alt={story.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"

@@ -14,7 +14,7 @@ export function AlbumCard({ album }: AlbumCardProps) {
     >
       {album.cover && (
         <Image
-          src={album.cover.thumbPath ?? album.cover.filePath}
+          src={album.cover.filePath}
           alt={album.title}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"

@@ -58,7 +58,7 @@ export function SearchResults({ initialResults, query: initialQuery }: SearchRes
               className="relative aspect-square overflow-hidden bg-dust group block rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-drama no-underline"
             >
               <Image
-                src={photo.thumbPath ?? photo.filePath}
+                src={photo.filePath}
                 alt={photo.title ?? photo.filename}
                 fill
                 sizes="(max-width: 640px) 50vw, 25vw"

@@ -16,7 +16,7 @@ export function StoryCard({ story }: StoryCardProps) {
       {story.cover ? (
         <div className="relative aspect-[3/4] overflow-hidden bg-dust mb-5 rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-drama">
           <Image
-            src={story.cover.thumbPath ?? story.cover.filePath}
+            src={story.cover.filePath}
             alt={story.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"

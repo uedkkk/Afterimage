@@ -12,10 +12,16 @@ export function Nav() {
       </Link>
       <div className="hidden md:flex gap-10 items-center">
         <Link
-          href="/"
+          href="/photos"
           className="text-ink no-underline text-[15px] font-medium tracking-[-0.01em] transition-colors duration-300 hover:text-charcoal"
         >
           作品
+        </Link>
+        <Link
+          href="/albums"
+          className="text-ink no-underline text-[15px] font-medium tracking-[-0.01em] transition-colors duration-300 hover:text-charcoal"
+        >
+          影集
         </Link>
         <Link
           href="/stories"
