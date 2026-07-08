@@ -16,32 +16,46 @@ export function AlbumPhotosManager({
 }: AlbumPhotosManagerProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  function showSuccess(msg: string) {
+    setSuccess(msg);
+    setError(null);
+    setTimeout(() => setSuccess(null), 3000);
+  }
 
   async function setCover(photoId: string) {
     setError(null);
+    setLoadingId(photoId);
     const res = await fetch("/api/admin/albums/cover", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ albumId, photoId }),
     });
+    setLoadingId(null);
     if (!res.ok) {
       setError("操作失败");
       return;
     }
+    showSuccess("封面已更新");
     router.refresh();
   }
 
   async function removeFromAlbum(photoId: string) {
     setError(null);
+    setLoadingId(photoId);
     const res = await fetch("/api/admin/photos", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: photoId, albumId: null }),
     });
+    setLoadingId(null);
     if (!res.ok) {
       setError("操作失败");
       return;
     }
+    showSuccess("已移出相册");
     router.refresh();
   }
 
@@ -53,6 +67,9 @@ export function AlbumPhotosManager({
     <div className="space-y-3">
       {error && (
         <p className="text-sm text-signal">{error}</p>
+      )}
+      {success && (
+        <p className="text-sm text-green-600">{success}</p>
       )}
       <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
       {photos.map((photo) => (
@@ -71,15 +88,17 @@ export function AlbumPhotosManager({
           <div className="absolute inset-0 bg-ink/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
             <button
               onClick={() => setCover(photo.id)}
-              className="text-xs text-bg bg-ink/80 px-2 py-1 rounded hover:bg-ink"
+              disabled={loadingId === photo.id}
+              className="text-xs text-bg bg-ink/80 px-2 py-1 rounded hover:bg-ink disabled:opacity-50"
             >
-              设为封面
+              {loadingId === photo.id ? "..." : "设为封面"}
             </button>
             <button
               onClick={() => removeFromAlbum(photo.id)}
-              className="text-xs text-bg bg-signal/80 px-2 py-1 rounded hover:bg-signal"
+              disabled={loadingId === photo.id}
+              className="text-xs text-bg bg-signal/80 px-2 py-1 rounded hover:bg-signal disabled:opacity-50"
             >
-              移除
+              {loadingId === photo.id ? "..." : "移除"}
             </button>
           </div>
         </div>
