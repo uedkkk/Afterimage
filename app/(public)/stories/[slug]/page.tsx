@@ -55,7 +55,7 @@ export default async function StoryPage({ params }: PageProps) {
         <Reveal>
           <div className="relative w-full mb-10 rounded-stadium overflow-hidden shadow-card">
             <Image
-              src={story.cover.thumbPath ?? story.cover.filePath}
+              src={story.cover.filePath}
               alt={story.title}
               width={story.cover.width}
               height={story.cover.height}

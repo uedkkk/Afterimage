@@ -3,13 +3,13 @@ import Link from "next/link";
 import type { PhotoWithTags } from "@/lib/db/queries";
 
 export const SPANS = [
-  "col-span-1 md:col-span-7 aspect-[3/2]",
-  "col-span-1 md:col-span-5 aspect-[4/5]",
-  "col-span-1 md:col-span-5 aspect-[4/5]",
-  "col-span-1 md:col-span-7 aspect-[3/2]",
+  "col-span-1 md:col-span-6 aspect-[3/2]",
+  "col-span-1 md:col-span-6 aspect-[3/2]",
   "col-span-1 md:col-span-4 aspect-square",
   "col-span-1 md:col-span-4 aspect-square",
   "col-span-1 md:col-span-4 aspect-square",
+  "col-span-1 md:col-span-6 aspect-[3/2]",
+  "col-span-1 md:col-span-6 aspect-[3/2]",
 ];
 
 interface PhotoCardProps {
@@ -24,7 +24,7 @@ export function PhotoCard({ photo, index }: PhotoCardProps) {
       className="relative block h-full w-full overflow-hidden cursor-pointer bg-dust group rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-drama"
     >
       <Image
-        src={photo.thumbPath ?? photo.filePath}
+        src={photo.filePath}
         alt={photo.title ?? photo.filename}
         fill
         sizes="(max-width: 768px) 100vw, 50vw"

@@ -22,7 +22,7 @@ export function AlbumGallery({ photos }: AlbumGalleryProps) {
             className="break-inside-avoid mb-5 relative overflow-hidden cursor-pointer group block w-full rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-drama"
           >
             <Image
-              src={photo.thumbPath ?? photo.filePath}
+              src={photo.filePath}
               alt={photo.title ?? photo.filename}
               width={photo.width}
               height={photo.height}
