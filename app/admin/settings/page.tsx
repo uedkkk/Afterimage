@@ -79,14 +79,14 @@ export default function SettingsPage() {
                 value={settings[field.key] ?? ""}
                 onChange={(e) => handleChange(field.key, e.target.value)}
                 rows={field.key === "about.content" ? 8 : 5}
-                className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+                className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
               />
             ) : (
               <input
                 type="text"
                 value={settings[field.key] ?? ""}
                 onChange={(e) => handleChange(field.key, e.target.value)}
-                className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+                className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
               />
             )}
           </div>
@@ -104,7 +104,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings[key] ?? ""}
                   onChange={(e) => handleChange(key, e.target.value)}
-                  className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+                  className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
                 />
               </div>
             ))}
@@ -115,7 +115,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving}
-            className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
+            className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
           >
             {saving ? "..." : "保存设置"}
           </button>

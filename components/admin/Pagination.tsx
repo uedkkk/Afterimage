@@ -56,7 +56,7 @@ export function Pagination({
       {currentPage > 1 && (
         <Link
           href={pageHref(basePath, currentPage - 1)}
-          className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-button text-sm no-underline transition-colors"
+          className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-md text-sm no-underline transition-colors"
         >
           上一页
         </Link>
@@ -69,7 +69,7 @@ export function Pagination({
         ) : item === currentPage ? (
           <span
             key={item}
-            className="bg-ink text-canvas px-3 py-1.5 rounded-button text-sm"
+            className="bg-ink text-canvas px-3 py-1.5 rounded-md text-sm"
           >
             {item}
           </span>
@@ -77,7 +77,7 @@ export function Pagination({
           <Link
             key={item}
             href={pageHref(basePath, item)}
-            className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-button text-sm no-underline transition-colors"
+            className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-md text-sm no-underline transition-colors"
           >
             {item}
           </Link>
@@ -86,7 +86,7 @@ export function Pagination({
       {currentPage < totalPages && (
         <Link
           href={pageHref(basePath, currentPage + 1)}
-          className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-button text-sm no-underline transition-colors"
+          className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-md text-sm no-underline transition-colors"
         >
           下一页
         </Link>

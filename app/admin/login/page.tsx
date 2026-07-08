@@ -48,7 +48,7 @@ function LoginForm() {
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="text-sm text-signal bg-signal/10 px-3 py-2 rounded-button">
+            <div className="text-sm text-signal bg-signal/10 px-3 py-2 rounded-md">
               {error}
             </div>
           )}
@@ -61,7 +61,7 @@ function LoginForm() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-dust bg-lifted px-3 py-2 rounded-button focus:outline-none focus:border-ink transition-colors"
+              className="w-full border border-dust bg-lifted px-3 py-2 rounded-md focus:outline-none focus:border-ink transition-colors"
             />
           </div>
           <div>
@@ -73,13 +73,13 @@ function LoginForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-dust bg-lifted px-3 py-2 rounded-button focus:outline-none focus:border-ink transition-colors"
+              className="w-full border border-dust bg-lifted px-3 py-2 rounded-md focus:outline-none focus:border-ink transition-colors"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-ink text-canvas px-3 py-2 rounded-button transition-colors hover:bg-charcoal"
+            className="w-full bg-ink text-canvas px-3 py-2 rounded-md transition-colors hover:bg-charcoal"
           >
             {loading ? "登录中..." : "登录"}
           </button>

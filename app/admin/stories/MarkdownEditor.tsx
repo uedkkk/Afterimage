@@ -62,7 +62,7 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
           type="button"
           onClick={() => setMobileTab("edit")}
           className={cn(
-            "px-3 py-1 text-sm rounded-button",
+            "px-3 py-1 text-sm rounded-md",
             mobileTab === "edit" ? "bg-ink text-bg" : "border border-faint text-dim"
           )}
         >
@@ -72,7 +72,7 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
           type="button"
           onClick={() => setMobileTab("preview")}
           className={cn(
-            "px-3 py-1 text-sm rounded-button",
+            "px-3 py-1 text-sm rounded-md",
             mobileTab === "preview" ? "bg-ink text-bg" : "border border-faint text-dim"
           )}
         >
@@ -86,14 +86,14 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
           onChange={(e) => onChange(e.target.value)}
           rows={20}
           className={cn(
-            "w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink font-mono",
+            "w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink font-mono",
             mobileTab !== "edit" && "hidden md:block"
           )}
           placeholder="在此输入 Markdown 内容..."
         />
         <div
           className={cn(
-            "border border-faint rounded-button px-3 py-2 text-sm bg-paper text-ink overflow-y-auto",
+            "border border-faint rounded-md px-3 py-2 text-sm bg-paper text-ink overflow-y-auto",
             "prose prose-sm max-w-none",
             mobileTab !== "preview" && "hidden md:block"
           )}

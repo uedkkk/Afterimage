@@ -37,7 +37,7 @@ export default async function PhotosPage({
         </div>
         <Link
           href="/admin/upload"
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline hover:bg-dim"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
         >
           上传照片
         </Link>

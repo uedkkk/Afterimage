@@ -75,7 +75,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -87,7 +87,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
           type="text"
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -97,7 +97,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -106,7 +106,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         >
           <option value="">无分类</option>
           {categories.map((cat) => (
@@ -131,7 +131,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
         >
           {saving ? "..." : isEdit ? "保存" : "创建"}
         </button>
