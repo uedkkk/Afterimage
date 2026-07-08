@@ -58,7 +58,7 @@ export function AlbumPhotosManager({
       {photos.map((photo) => (
         <div
           key={photo.id}
-          className="relative group aspect-square rounded-button overflow-hidden bg-faint"
+          className="relative group aspect-square rounded-md overflow-hidden bg-faint"
         >
           {photo.thumbPath && (
             // eslint-disable-next-line @next/next/no-img-element

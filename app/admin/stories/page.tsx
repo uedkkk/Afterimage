@@ -17,7 +17,7 @@ export default async function StoriesPage() {
         </div>
         <Link
           href="/admin/stories/new"
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline hover:bg-dim"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
         >
           新建故事
         </Link>
@@ -30,14 +30,14 @@ export default async function StoriesPage() {
           action={
             <Link
               href="/admin/stories/new"
-              className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline"
+              className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline"
             >
               新建故事
             </Link>
           }
         />
       ) : (
-        <div className="rounded-stadium border border-faint bg-paper divide-y divide-faint">
+        <div className="rounded-lg border border-faint bg-paper divide-y divide-faint">
           {stories.map((story) => (
             <Link
               key={story.id}

@@ -70,12 +70,12 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
   return (
     <div className="space-y-3">
       {selected.size > 0 && (
-        <div className="flex items-center gap-3 bg-paper border border-faint rounded-stadium px-4 py-3">
+        <div className="flex items-center gap-3 bg-paper border border-faint rounded-lg px-4 py-3">
           <span className="text-sm text-dim">已选 {selected.size} 张</span>
           <select
             value={bulkAlbum}
             onChange={(e) => setBulkAlbum(e.target.value)}
-            className="border border-faint rounded-button px-2 py-1 text-sm bg-bg text-ink"
+            className="border border-faint rounded-md px-2 py-1 text-sm bg-bg text-ink"
           >
             <option value="">选择相册...</option>
             {albums.map((album) => (
@@ -87,7 +87,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
           <button
             onClick={handleBulkAssign}
             disabled={!bulkAlbum}
-            className="bg-ink text-bg px-3 py-1 rounded-button text-sm disabled:opacity-50"
+            className="bg-ink text-bg px-3 py-1 rounded-md text-sm disabled:opacity-50"
           >
             分配相册
           </button>
@@ -106,7 +106,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
         </div>
       )}
 
-      <div className="rounded-stadium border border-faint bg-paper overflow-hidden">
+      <div className="rounded-lg border border-faint bg-paper overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-faint">
@@ -138,7 +138,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
                   />
                 </td>
                 <td className="px-3 py-2">
-                  <div className="w-12 h-12 rounded-button overflow-hidden bg-faint">
+                  <div className="w-12 h-12 rounded-md overflow-hidden bg-faint">
                     {photo.thumbPath && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img

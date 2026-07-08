@@ -72,7 +72,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -82,7 +82,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -91,7 +91,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
         <select
           value={albumId}
           onChange={(e) => setAlbumId(e.target.value)}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         >
           <option value="">无相册</option>
           {albums.map((album) => (
@@ -104,7 +104,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
 
       <div>
         <label className="block text-sm text-dim mb-1">故事</label>
-        <div className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-dim">
+        <div className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-dim">
           {photo.story ? photo.story.title : "—（请在故事编辑中关联）"}
         </div>
       </div>
@@ -117,7 +117,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
           type="text"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -125,7 +125,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
         >
           {saving ? "..." : "保存"}
         </button>

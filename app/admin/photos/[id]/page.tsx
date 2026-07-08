@@ -30,18 +30,18 @@ export default async function PhotoEditPage({
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <div className="rounded-stadium border border-faint bg-paper p-4">
+          <div className="rounded-lg border border-faint bg-paper p-4">
             {photo.filePath && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={photo.filePath}
                 alt={photo.title || photo.filename}
-                className="w-full rounded-button"
+                className="w-full rounded-md"
               />
             )}
           </div>
           {exifEntries.length > 0 && (
-            <div className="rounded-stadium border border-faint bg-paper p-4">
+            <div className="rounded-lg border border-faint bg-paper p-4">
               <h2 className="text-sm font-medium text-ink mb-3">EXIF 信息</h2>
               <dl className="space-y-1">
                 {exifEntries.map(([key, value]) => (

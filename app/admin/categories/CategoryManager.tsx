@@ -88,12 +88,12 @@ export function CategoryManager({ initialCategories }: CategoryManagerProps) {
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="分类名称"
-          className="flex-1 border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="flex-1 border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
         <button
           type="submit"
           disabled={creating}
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
         >
           {creating ? "..." : "添加"}
         </button>
@@ -102,7 +102,7 @@ export function CategoryManager({ initialCategories }: CategoryManagerProps) {
       {categories.length === 0 ? (
         <EmptyState title="暂无分类" description="添加第一个分类吧" />
       ) : (
-        <div className="rounded-stadium border border-faint bg-paper divide-y divide-faint">
+        <div className="rounded-lg border border-faint bg-paper divide-y divide-faint">
           {categories.map((cat) => (
             <div
               key={cat.id}
@@ -115,31 +115,31 @@ export function CategoryManager({ initialCategories }: CategoryManagerProps) {
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     placeholder="名称"
-                    className="border border-faint rounded-button px-2 py-1 text-sm bg-bg text-ink w-32"
+                    className="border border-faint rounded-md px-2 py-1 text-sm bg-bg text-ink w-32"
                   />
                   <input
                     type="text"
                     value={editSlug}
                     onChange={(e) => setEditSlug(e.target.value)}
                     placeholder="slug"
-                    className="border border-faint rounded-button px-2 py-1 text-sm bg-bg text-ink w-32"
+                    className="border border-faint rounded-md px-2 py-1 text-sm bg-bg text-ink w-32"
                   />
                   <input
                     type="number"
                     value={editSortOrder}
                     onChange={(e) => setEditSortOrder(Number(e.target.value))}
                     placeholder="排序"
-                    className="border border-faint rounded-button px-2 py-1 text-sm bg-bg text-ink w-20"
+                    className="border border-faint rounded-md px-2 py-1 text-sm bg-bg text-ink w-20"
                   />
                   <button
                     onClick={handleSaveEdit}
-                    className="bg-ink text-bg px-3 py-1 rounded-button text-sm"
+                    className="bg-ink text-bg px-3 py-1 rounded-md text-sm"
                   >
                     保存
                   </button>
                   <button
                     onClick={() => setEditingId(null)}
-                    className="border border-faint text-dim px-3 py-1 rounded-button text-sm"
+                    className="border border-faint text-dim px-3 py-1 rounded-md text-sm"
                   >
                     取消
                   </button>

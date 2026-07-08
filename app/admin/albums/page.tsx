@@ -17,7 +17,7 @@ export default async function AlbumsPage() {
         </div>
         <Link
           href="/admin/albums/new"
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline hover:bg-dim"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
         >
           新建相册
         </Link>
@@ -30,7 +30,7 @@ export default async function AlbumsPage() {
           action={
             <Link
               href="/admin/albums/new"
-              className="bg-ink text-bg px-4 py-2 rounded-button text-sm no-underline"
+              className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline"
             >
               新建相册
             </Link>
@@ -42,9 +42,9 @@ export default async function AlbumsPage() {
             <Link
               key={album.id}
               href={`/admin/albums/${album.id}`}
-              className="flex items-center gap-4 rounded-stadium border border-faint bg-paper p-4 no-underline hover:bg-dust/30 transition-colors"
+              className="flex items-center gap-4 rounded-lg border border-faint bg-paper p-4 no-underline hover:bg-dust/30 transition-colors"
             >
-              <div className="w-16 h-16 rounded-button overflow-hidden bg-faint shrink-0">
+              <div className="w-16 h-16 rounded-md overflow-hidden bg-faint shrink-0">
                 {album.cover?.thumbPath ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img

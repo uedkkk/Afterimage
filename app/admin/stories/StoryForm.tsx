@@ -151,7 +151,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+            className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
           />
         </div>
         <div>
@@ -162,7 +162,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+            className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
           />
         </div>
       </div>
@@ -177,7 +177,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
           required
           rows={2}
           maxLength={100}
-          className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+          className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
         />
       </div>
 
@@ -200,8 +200,8 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
               onClick={() => handleModeChange(opt.value)}
               className={
                 mode === opt.value
-                  ? "px-3 py-1.5 rounded-button text-sm bg-ink text-bg"
-                  : "px-3 py-1.5 rounded-button text-sm border border-faint text-dim hover:text-ink"
+                  ? "px-3 py-1.5 rounded-md text-sm bg-ink text-bg"
+                  : "px-3 py-1.5 rounded-md text-sm border border-faint text-dim hover:text-ink"
               }
             >
               {opt.label}
@@ -216,7 +216,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
           <select
             value={albumId}
             onChange={(e) => handleAlbumChange(e.target.value)}
-            className="w-full border border-faint rounded-button px-3 py-2 text-sm bg-bg text-ink"
+            className="w-full border border-faint rounded-md px-3 py-2 text-sm bg-bg text-ink"
           >
             <option value="">选择相册</option>
             {albums.map((album) => (
@@ -237,7 +237,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
             <select
               value={photoAlbumFilter}
               onChange={(e) => setPhotoAlbumFilter(e.target.value)}
-              className="border border-faint rounded-button px-2 py-1 text-sm bg-bg text-ink"
+              className="border border-faint rounded-md px-2 py-1 text-sm bg-bg text-ink"
             >
               <option value="">全部照片</option>
               {albums.map((album) => (
@@ -247,7 +247,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
               ))}
             </select>
           </div>
-          <div className="max-h-80 overflow-y-auto border border-faint rounded-button p-2 grid grid-cols-4 sm:grid-cols-6 gap-2">
+          <div className="max-h-80 overflow-y-auto border border-faint rounded-md p-2 grid grid-cols-4 sm:grid-cols-6 gap-2">
             {filteredPhotos.map((photo) => {
               const selected = selectedPhotoIds.includes(photo.id);
               return (
@@ -342,7 +342,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-ink text-bg px-4 py-2 rounded-button text-sm hover:bg-dim disabled:opacity-50"
+          className="bg-ink text-bg px-4 py-2 rounded-md text-sm hover:bg-dim disabled:opacity-50"
         >
           {saving ? "..." : isEdit ? "保存" : "创建"}
         </button>
