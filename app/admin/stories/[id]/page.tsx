@@ -25,7 +25,7 @@ export default async function StoryEditPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">编辑故事</h1>
+        <h1 className="text-2xl font-medium">编辑故事</h1>
         <p className="text-dim mt-1 text-sm">{story.title}</p>
       </div>
       <StoryForm story={story} albums={albums} photos={photos} />

@@ -18,45 +18,53 @@ export default async function AboutPage() {
     });
 
   return (
-    <div className="px-4 md:px-14 py-14">
-      <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] border-t border-line">
+    <div className="px-6 md:px-12 py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
         {/* Left — title */}
-        <Reveal className="lg:border-r lg:border-line lg:p-14 p-0 lg:pt-14 pt-14">
-          <div className="flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-widest text-accent mb-3.5 before:content-[''] before:w-7 before:h-px before:bg-accent">
-            About the Photographer
+        <Reveal>
+          <div className="relative">
+            <div className="absolute -top-10 -left-16 text-[120px] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
+              About
+            </div>
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
+                About the Photographer
+              </div>
+              <h1 className="text-[clamp(28px,4vw,52px)] font-medium leading-[1.1] tracking-[-0.02em] text-balance">
+                用镜头书写
+                <br />
+                光影的诗篇
+              </h1>
+            </div>
           </div>
-          <h1 className="font-display text-[clamp(28px,4vw,48px)] font-semibold leading-tight tracking-tight text-balance">
-            用镜头书写
-            <em className="font-serif italic font-normal text-accent">光影</em>
-            的诗篇
-          </h1>
         </Reveal>
 
         {/* Right — bio + gear */}
-        <Reveal className="lg:p-14 p-0 lg:pt-14 pt-7 flex flex-col justify-center">
-          <p className="font-serif text-lg leading-relaxed text-dim max-w-md mb-14">
-            {bio}
-          </p>
+        <Reveal>
+          <div className="flex flex-col justify-center">
+            <p className="text-[16px] font-450 leading-relaxed text-granite max-w-md mb-8">
+              {bio}
+            </p>
 
-          {gear.length > 0 && (
-            <div className="grid grid-cols-2 gap-0 border-t border-faint">
-              {gear.map((item, i) => (
-                <div
-                  key={i}
-                  className={`py-3.5 border-b border-faint flex justify-between items-baseline ${
-                    i % 2 === 0 ? "pr-3.5 border-r border-faint" : "pl-3.5"
-                  }`}
-                >
-                  <span className="font-display text-sm font-semibold">
-                    {item.brand}
-                  </span>
-                  <span className="font-serif italic text-[13px] text-dim">
-                    {item.model}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+            {gear.length > 0 && (
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {gear.map((item, i) => (
+                  <div
+                    key={i}
+                    className="bg-lifted rounded-button p-5 flex flex-col gap-1"
+                  >
+                    <span className="text-[15px] font-medium text-ink">
+                      {item.brand}
+                    </span>
+                    <span className="text-[13px] font-450 text-slate">
+                      {item.model}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </Reveal>
       </div>
     </div>

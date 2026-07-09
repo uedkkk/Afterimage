@@ -43,34 +43,31 @@ export function Lightbox({ photos, initialIndex, onClose }: LightboxProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
+      className="fixed inset-0 z-[100] bg-ink/95 flex items-center justify-center"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="图片浏览"
     >
-      {/* Close button */}
       <button
         onClick={onClose}
         aria-label="关闭"
-        className="absolute top-5 right-5 text-white/60 hover:text-white text-2xl z-10 w-10 h-10 flex items-center justify-center"
+        className="absolute top-5 right-5 w-10 h-10 rounded-full border border-white/30 text-white/60 hover:text-white hover:border-white flex items-center justify-center z-10 transition-all duration-300"
       >
         ✕
       </button>
 
-      {/* Prev button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           goPrev();
         }}
         aria-label="上一张"
-        className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-3xl z-10 w-12 h-12 flex items-center justify-center"
+        className="absolute left-5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-white/30 text-white/40 hover:text-white hover:border-white flex items-center justify-center z-10 transition-all duration-300"
       >
         ‹
       </button>
 
-      {/* Image */}
       <div
         className="relative max-w-[90vw] max-h-[85vh] w-full h-full"
         onClick={(e) => e.stopPropagation()}
@@ -85,26 +82,24 @@ export function Lightbox({ photos, initialIndex, onClose }: LightboxProps) {
         />
       </div>
 
-      {/* Next button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           goNext();
         }}
         aria-label="下一张"
-        className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-3xl z-10 w-12 h-12 flex items-center justify-center"
+        className="absolute right-5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-white/30 text-white/40 hover:text-white hover:border-white flex items-center justify-center z-10 transition-all duration-300"
       >
         ›
       </button>
 
-      {/* Bottom info bar */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-ink/80 to-transparent">
         <div className="flex justify-between items-end">
           <div className="text-white">
-            <h3 className="font-display text-lg font-medium mb-1">
+            <h3 className="text-[18px] font-medium mb-1">
               {photo.title ?? photo.filename}
             </h3>
-            <p className="text-white/50 text-sm font-serif italic">
+            <p className="text-white/50 text-[14px] font-450">
               {String(index + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
             </p>
           </div>
@@ -114,22 +109,21 @@ export function Lightbox({ photos, initialIndex, onClose }: LightboxProps) {
                 e.stopPropagation();
                 setShowExif((s) => !s);
               }}
-              className="text-white/60 hover:text-white text-sm border border-white/20 px-3 py-1.5 hover:border-white/50 transition-colors"
+              className="text-white/60 hover:text-white text-[14px] font-450 border border-white/20 rounded-button px-4 py-1.5 hover:border-white/50 transition-colors"
             >
               {showExif ? "隐藏 EXIF" : "EXIF 信息"}
             </button>
           )}
         </div>
 
-        {/* EXIF panel */}
         {showExif && photo.exif && (
-          <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-4 text-sm">
+          <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-4 text-[14px]">
             {Object.entries(photo.exif).map(([key, value]) => (
               <div key={key}>
                 <div className="text-white/40 text-xs uppercase tracking-wider mb-0.5">
                   {key}
                 </div>
-                <div className="text-white/80">{String(value)}</div>
+                <div className="text-white/80 font-450">{String(value)}</div>
               </div>
             ))}
           </div>

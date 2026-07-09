@@ -64,7 +64,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <p className="text-sm text-accent">{error}</p>
+        <p className="text-sm text-signal">{error}</p>
       )}
       <div>
         <label className="block text-sm text-dim mb-1">标题</label>
@@ -131,7 +131,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
         </button>
         <ConfirmDialog
           trigger={
-            <span className="text-sm text-accent hover:opacity-80 cursor-pointer">
+            <span className="text-sm text-signal hover:opacity-80 cursor-pointer">
               删除照片
             </span>
           }

@@ -93,7 +93,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
           </button>
           <ConfirmDialog
             trigger={
-              <span className="text-sm text-accent hover:opacity-80 cursor-pointer">
+              <span className="text-sm text-signal hover:opacity-80 cursor-pointer">
                 删除
               </span>
             }
@@ -128,7 +128,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
           </thead>
           <tbody className="divide-y divide-faint">
             {photos.map((photo) => (
-              <tr key={photo.id} className="hover:bg-faint/20">
+              <tr key={photo.id} className="hover:bg-dust/20">
                 <td className="px-3 py-2">
                   <input
                     type="checkbox"

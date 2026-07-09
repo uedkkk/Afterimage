@@ -138,7 +138,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         {isEdit && (
           <ConfirmDialog
             trigger={
-              <span className="text-sm text-accent hover:opacity-80 cursor-pointer">
+              <span className="text-sm text-signal hover:opacity-80 cursor-pointer">
                 {deleting ? "..." : "删除相册"}
               </span>
             }

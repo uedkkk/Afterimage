@@ -56,20 +56,20 @@ export function Pagination({
       {currentPage > 1 && (
         <Link
           href={pageHref(basePath, currentPage - 1)}
-          className="border border-faint text-dim hover:bg-paper px-3 py-1.5 rounded-md text-sm no-underline"
+          className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-md text-sm no-underline transition-colors"
         >
           上一页
         </Link>
       )}
       {items.map((item, i) =>
         item === "..." ? (
-          <span key={`ellipsis-${i}`} className="text-dim px-1">
+          <span key={`ellipsis-${i}`} className="text-slate px-1">
             …
           </span>
         ) : item === currentPage ? (
           <span
             key={item}
-            className="bg-ink text-bg px-3 py-1.5 rounded-md text-sm"
+            className="bg-ink text-canvas px-3 py-1.5 rounded-md text-sm"
           >
             {item}
           </span>
@@ -77,7 +77,7 @@ export function Pagination({
           <Link
             key={item}
             href={pageHref(basePath, item)}
-            className="border border-faint text-dim hover:bg-paper px-3 py-1.5 rounded-md text-sm no-underline"
+            className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-md text-sm no-underline transition-colors"
           >
             {item}
           </Link>
@@ -86,7 +86,7 @@ export function Pagination({
       {currentPage < totalPages && (
         <Link
           href={pageHref(basePath, currentPage + 1)}
-          className="border border-faint text-dim hover:bg-paper px-3 py-1.5 rounded-md text-sm no-underline"
+          className="border border-dust text-slate hover:bg-lifted px-3 py-1.5 rounded-md text-sm no-underline transition-colors"
         >
           下一页
         </Link>

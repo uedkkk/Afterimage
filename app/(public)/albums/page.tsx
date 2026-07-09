@@ -1,22 +1,11 @@
-import { notFound } from "next/navigation";
-import { getCategoryBySlug, getAlbumsByCategory } from "@/lib/db/queries";
+import { getPublishedAlbums } from "@/lib/db/queries";
 import { AlbumCard } from "@/components/AlbumCard";
 import { Reveal } from "@/components/Reveal";
 
 export const revalidate = 300;
 
-interface PageProps {
-  params: Promise<{ slug: string }>;
-}
-
-export default async function CategoryPage({ params }: PageProps) {
-  const { slug } = await params;
-  const decodedSlug = decodeURIComponent(slug);
-  const category = await getCategoryBySlug(decodedSlug);
-
-  if (!category) notFound();
-
-  const albums = await getAlbumsByCategory(category.id);
+export default async function AlbumsPage() {
+  const albums = await getPublishedAlbums();
 
   return (
     <div className="px-6 md:px-12 py-12">
@@ -24,11 +13,14 @@ export default async function CategoryPage({ params }: PageProps) {
         <header className="mb-12 pb-8 border-b border-ink">
           <div className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
-            Category
+            Albums
           </div>
           <h1 className="text-[clamp(28px,4vw,48px)] font-medium tracking-[-0.02em]">
-            {category.name}
+            全部影集
           </h1>
+          <p className="text-[15px] font-450 text-slate mt-3">
+            {albums.length} 个影集
+          </p>
         </header>
       </Reveal>
 

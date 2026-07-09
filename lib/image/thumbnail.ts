@@ -13,8 +13,8 @@ export async function generateThumbnail(
   const outputPath = join(outputDir, `${baseName}.webp`);
 
   await sharp(filePath)
-    .resize(400, undefined, { withoutEnlargement: true })
-    .webp({ quality: 75 })
+    .resize(1200, undefined, { withoutEnlargement: true })
+    .webp({ quality: 82 })
     .toFile(outputPath);
 
   return outputPath;

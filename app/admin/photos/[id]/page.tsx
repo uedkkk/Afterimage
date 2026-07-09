@@ -24,7 +24,7 @@ export default async function PhotoEditPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">编辑照片</h1>
+        <h1 className="text-2xl font-medium">编辑照片</h1>
         <p className="text-dim mt-1 text-sm">{photo.filename}</p>
       </div>
 
@@ -42,7 +42,7 @@ export default async function PhotoEditPage({
           </div>
           {exifEntries.length > 0 && (
             <div className="rounded-lg border border-faint bg-paper p-4">
-              <h2 className="text-sm font-semibold text-ink mb-3">EXIF 信息</h2>
+              <h2 className="text-sm font-medium text-ink mb-3">EXIF 信息</h2>
               <dl className="space-y-1">
                 {exifEntries.map(([key, value]) => (
                   <div key={key} className="flex justify-between text-sm">

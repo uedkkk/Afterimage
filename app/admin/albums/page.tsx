@@ -12,7 +12,7 @@ export default async function AlbumsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">相册管理</h1>
+          <h1 className="text-2xl font-medium">相册管理</h1>
           <p className="text-dim mt-1 text-sm">共 {albums.length} 个相册</p>
         </div>
         <Link
@@ -42,7 +42,7 @@ export default async function AlbumsPage() {
             <Link
               key={album.id}
               href={`/admin/albums/${album.id}`}
-              className="flex items-center gap-4 rounded-lg border border-faint bg-paper p-4 no-underline hover:bg-faint/30 transition-colors"
+              className="flex items-center gap-4 rounded-lg border border-faint bg-paper p-4 no-underline hover:bg-dust/30 transition-colors"
             >
               <div className="w-16 h-16 rounded-md overflow-hidden bg-faint shrink-0">
                 {album.cover?.thumbPath ? (

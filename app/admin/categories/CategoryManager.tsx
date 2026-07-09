@@ -164,7 +164,7 @@ export function CategoryManager({ initialCategories }: CategoryManagerProps) {
                     </button>
                     <ConfirmDialog
                       trigger={
-                        <span className="text-sm text-accent hover:opacity-80 cursor-pointer">
+                        <span className="text-sm text-signal hover:opacity-80 cursor-pointer">
                           删除
                         </span>
                       }

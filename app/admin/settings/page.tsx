@@ -51,7 +51,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">设置</h1>
+        <h1 className="text-2xl font-medium">设置</h1>
         <p className="text-dim text-sm">加载中...</p>
       </div>
     );
@@ -63,7 +63,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">设置</h1>
+        <h1 className="text-2xl font-medium">设置</h1>
         <p className="text-dim mt-1 text-sm">管理站点配置</p>
       </div>
 
@@ -94,7 +94,7 @@ export default function SettingsPage() {
 
         {extraKeys.length > 0 && (
           <div className="border-t border-faint pt-4 space-y-4">
-            <h2 className="text-sm font-semibold text-dim">其他设置</h2>
+            <h2 className="text-sm font-medium text-dim">其他设置</h2>
             {extraKeys.map((key) => (
               <div key={key}>
                 <label className="block text-sm text-dim mb-1">

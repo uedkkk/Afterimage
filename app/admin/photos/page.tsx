@@ -32,7 +32,7 @@ export default async function PhotosPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">照片管理</h1>
+          <h1 className="text-2xl font-medium">照片管理</h1>
           <p className="text-dim mt-1 text-sm">共 {total} 张照片</p>
         </div>
         <Link

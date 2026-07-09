@@ -12,7 +12,7 @@ export default async function StoriesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">故事管理</h1>
+          <h1 className="text-2xl font-medium">故事管理</h1>
           <p className="text-dim mt-1 text-sm">共 {stories.length} 篇故事</p>
         </div>
         <Link
@@ -42,7 +42,7 @@ export default async function StoriesPage() {
             <Link
               key={story.id}
               href={`/admin/stories/${story.id}`}
-              className="flex items-start justify-between px-4 py-3 no-underline hover:bg-faint/20"
+              className="flex items-start justify-between px-4 py-3 no-underline hover:bg-dust/20"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">

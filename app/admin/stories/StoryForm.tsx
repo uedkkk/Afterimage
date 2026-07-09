@@ -268,7 +268,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
                       className="w-full h-full object-cover"
                     />
                   {selected && (
-                    <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-accent rounded-full flex items-center justify-center text-white text-[10px]">
+                    <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-signal rounded-full flex items-center justify-center text-white text-[10px]">
                       ✓
                     </div>
                   )}
@@ -317,7 +317,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
                     className="w-full h-full object-cover"
                   />
                   {selected && (
-                    <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-accent rounded-full flex items-center justify-center text-white text-[10px]">
+                    <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-signal rounded-full flex items-center justify-center text-white text-[10px]">
                       ✓
                     </div>
                   )}
@@ -349,7 +349,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
         {isEdit && (
           <ConfirmDialog
             trigger={
-              <span className="text-sm text-accent hover:opacity-80 cursor-pointer">
+              <span className="text-sm text-signal hover:opacity-80 cursor-pointer">
                 删除故事
               </span>
             }
