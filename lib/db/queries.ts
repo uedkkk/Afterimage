@@ -148,6 +148,14 @@ export async function updatePhoto(
 }
 
 export async function deletePhoto(id: string): Promise<void> {
+  await db.story.updateMany({
+    where: { coverId: id },
+    data: { coverId: null },
+  });
+  await db.album.updateMany({
+    where: { coverId: id },
+    data: { coverId: null },
+  });
   const photo = await db.photo.findUnique({ where: { id } });
   if (photo) {
     await deletePhotoFiles(photo);
@@ -209,6 +217,14 @@ export async function bulkAssignAlbum(
 }
 
 export async function bulkDeletePhotos(photoIds: string[]): Promise<void> {
+  await db.story.updateMany({
+    where: { coverId: { in: photoIds } },
+    data: { coverId: null },
+  });
+  await db.album.updateMany({
+    where: { coverId: { in: photoIds } },
+    data: { coverId: null },
+  });
   const photos = await db.photo.findMany({ where: { id: { in: photoIds } } });
   for (const photo of photos) {
     await deletePhotoFiles(photo);
@@ -319,6 +335,14 @@ export async function updateAlbum(
 }
 
 export async function deleteAlbum(id: string): Promise<void> {
+  const stories = await db.story.findMany({
+    where: { albumId: id },
+    select: { title: true },
+  });
+  if (stories.length > 0) {
+    const titles = stories.map((s) => s.title).join("、");
+    throw new Error(`该相册关联了故事「${titles}」，无法删除`);
+  }
   await db.album.delete({ where: { id } });
 }
 

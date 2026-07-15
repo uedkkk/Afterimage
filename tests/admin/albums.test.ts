@@ -10,6 +10,7 @@ import {
 } from "@/lib/db/queries";
 
 afterAll(async () => {
+  await db.story.deleteMany({ where: { slug: { startsWith: "album-delete-test" } } });
   await db.$disconnect();
 });
 
@@ -80,6 +81,30 @@ describe("album admin queries", () => {
     expect(noCover?.coverId).toBeNull();
 
     await db.photo.delete({ where: { id: photo.id } });
+    await deleteAlbum(album.id);
+  });
+
+  it("refuses to delete an album associated with a story", async () => {
+    const album = await createAlbum({
+      title: "StoryLinkedAlbum",
+      slug: "story-linked-album",
+    });
+    const story = await db.story.create({
+      data: {
+        title: "LinkedStory",
+        slug: "album-delete-test-story",
+        excerpt: "Test excerpt",
+        content: "Test content",
+        albumId: album.id,
+      },
+    });
+
+    await expect(deleteAlbum(album.id)).rejects.toThrow("该相册关联了故事「LinkedStory」");
+
+    const stillExists = await db.album.findUnique({ where: { id: album.id } });
+    expect(stillExists).not.toBeNull();
+
+    await db.story.delete({ where: { id: story.id } });
     await deleteAlbum(album.id);
   });
 });

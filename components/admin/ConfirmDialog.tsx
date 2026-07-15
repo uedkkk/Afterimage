@@ -32,8 +32,8 @@ export function ConfirmDialog({
     try {
       await onConfirm();
       setOpen(false);
-    } catch {
-      setError("操作失败");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "操作失败");
     } finally {
       setLoading(false);
     }

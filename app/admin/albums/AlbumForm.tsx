@@ -54,11 +54,15 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
   async function handleDelete() {
     setDeleting(true);
     try {
-      await fetch("/api/admin/albums", {
+      const res = await fetch("/api/admin/albums", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: album!.id }),
       });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "删除失败");
+      }
       router.push("/admin/albums");
       router.refresh();
     } finally {

@@ -134,7 +134,14 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "缺少相册 ID" }, { status: 400 });
   }
 
-  await deleteAlbum(id);
+  try {
+    await deleteAlbum(id);
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "删除失败" },
+      { status: 409 }
+    );
+  }
   revalidatePath("/");
   revalidatePath("/category/[slug]");
   revalidatePath("/album/[slug]");
