@@ -21,6 +21,13 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
   const [tags, setTags] = useState(photo.tags.join(", "));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  function showSuccess(msg: string) {
+    setSuccess(msg);
+    setError(null);
+    setTimeout(() => setSuccess(null), 3000);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,6 +53,7 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
         setError(data.error || "操作失败");
         return;
       }
+      showSuccess("已保存");
       router.refresh();
     } finally {
       setSaving(false);
@@ -70,6 +78,9 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
         <p className="text-sm text-signal">{error}</p>
+      )}
+      {success && (
+        <p className="text-sm text-green-600">{success}</p>
       )}
       <div>
         <label className="block text-sm text-dim mb-1">标题</label>

@@ -22,6 +22,13 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  function showSuccess(msg: string) {
+    setSuccess(msg);
+    setError(null);
+    setTimeout(() => setSuccess(null), 3000);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,6 +54,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         return;
       }
       if (isEdit) {
+        showSuccess("已保存");
         router.refresh();
       } else {
         router.push("/admin/albums");
@@ -145,6 +153,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
           {saving ? "..." : isEdit ? "保存" : "创建"}
         </button>
         {error && <p className="text-sm text-signal">{error}</p>}
+        {success && <p className="text-sm text-green-600">{success}</p>}
         {isEdit && (
           <ConfirmDialog
             trigger={
