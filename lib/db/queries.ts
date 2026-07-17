@@ -140,6 +140,10 @@ export async function updatePhoto(
         where: { coverId: id, albumId: oldAlbumId },
         data: { coverId: null },
       });
+      await db.album.updateMany({
+        where: { coverId: id, id: oldAlbumId },
+        data: { coverId: null },
+      });
     }
   }
 
@@ -205,6 +209,10 @@ export async function bulkAssignAlbum(
     if (oldAlbumId !== albumId && oldAlbumId !== null) {
       await db.story.updateMany({
         where: { coverId: photo.id, albumId: oldAlbumId },
+        data: { coverId: null },
+      });
+      await db.album.updateMany({
+        where: { coverId: photo.id, id: oldAlbumId },
         data: { coverId: null },
       });
     }

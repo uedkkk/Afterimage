@@ -7,6 +7,8 @@ import {
   updateAlbum,
   deleteAlbum,
   setAlbumCover,
+  updatePhoto,
+  bulkAssignAlbum,
 } from "@/lib/db/queries";
 
 afterAll(async () => {
@@ -154,5 +156,57 @@ describe("album admin queries", () => {
     expect(stillUnpublished?.published).toBe(false);
     await db.photo.deleteMany({ where: { albumId: album.id } });
     await deleteAlbum(album.id);
+  });
+
+  it("nullifies album cover when cover photo is moved to another album", async () => {
+    const albumA = await createAlbum({ title: "AlbumA", slug: "move-cover-album-a" });
+    const albumB = await createAlbum({ title: "AlbumB", slug: "move-cover-album-b" });
+    const photo = await db.photo.create({
+      data: {
+        filename: "move-cover.jpg",
+        filePath: "/uploads/optimized/move-cover.jpg",
+        width: 100,
+        height: 100,
+        fileSize: 1024,
+        mimeType: "image/jpeg",
+        albumId: albumA.id,
+      },
+    });
+    await setAlbumCover(albumA.id, photo.id);
+
+    await updatePhoto(photo.id, { albumId: albumB.id });
+
+    const albumAAfter = await db.album.findUnique({ where: { id: albumA.id } });
+    expect(albumAAfter?.coverId).toBeNull();
+
+    await db.photo.delete({ where: { id: photo.id } });
+    await deleteAlbum(albumA.id);
+    await deleteAlbum(albumB.id);
+  });
+
+  it("nullifies album cover when cover photo is bulk-moved to another album", async () => {
+    const albumA = await createAlbum({ title: "BulkAlbumA", slug: "bulk-move-cover-a" });
+    const albumB = await createAlbum({ title: "BulkAlbumB", slug: "bulk-move-cover-b" });
+    const photo = await db.photo.create({
+      data: {
+        filename: "bulk-move-cover.jpg",
+        filePath: "/uploads/optimized/bulk-move-cover.jpg",
+        width: 100,
+        height: 100,
+        fileSize: 1024,
+        mimeType: "image/jpeg",
+        albumId: albumA.id,
+      },
+    });
+    await setAlbumCover(albumA.id, photo.id);
+
+    await bulkAssignAlbum([photo.id], albumB.id);
+
+    const albumAAfter = await db.album.findUnique({ where: { id: albumA.id } });
+    expect(albumAAfter?.coverId).toBeNull();
+
+    await db.photo.delete({ where: { id: photo.id } });
+    await deleteAlbum(albumA.id);
+    await deleteAlbum(albumB.id);
   });
 });
