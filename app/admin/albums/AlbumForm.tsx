@@ -21,10 +21,12 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
   const [published, setPublished] = useState(album?.published ?? false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setError(null);
     try {
       const payload = {
         ...(isEdit ? { id: album!.id } : {}),
@@ -39,12 +41,15 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
-        if (isEdit) {
-          router.refresh();
-        } else {
-          router.push("/admin/albums");
-        }
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "操作失败");
+        return;
+      }
+      if (isEdit) {
+        router.refresh();
+      } else {
+        router.push("/admin/albums");
       }
     } finally {
       setSaving(false);
@@ -139,6 +144,7 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         >
           {saving ? "..." : isEdit ? "保存" : "创建"}
         </button>
+        {error && <p className="text-sm text-signal">{error}</p>}
         {isEdit && (
           <ConfirmDialog
             trigger={

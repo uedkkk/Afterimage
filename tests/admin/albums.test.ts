@@ -35,6 +35,19 @@ describe("album admin queries", () => {
     expect(byId!.album.title).toBe("AdminTestAlbum");
     expect(byId!.photos).toEqual([]);
 
+    const photo = await db.photo.create({
+      data: {
+        filename: "admin-test-photo.jpg",
+        filePath: "/uploads/optimized/admin-test-photo.jpg",
+        width: 100,
+        height: 100,
+        fileSize: 1024,
+        mimeType: "image/jpeg",
+        albumId: created.id,
+      },
+    });
+    await setAlbumCover(created.id, photo.id);
+
     const updated = await updateAlbum(created.id, {
       title: "UpdatedAlbum",
       published: true,
@@ -44,6 +57,7 @@ describe("album admin queries", () => {
     expect(updated?.published).toBe(true);
     expect(updated?.sortOrder).toBe(3);
 
+    await db.photo.delete({ where: { id: photo.id } });
     await deleteAlbum(created.id);
     const deleted = await db.album.findUnique({
       where: { id: created.id },
@@ -105,6 +119,40 @@ describe("album admin queries", () => {
     expect(stillExists).not.toBeNull();
 
     await db.story.delete({ where: { id: story.id } });
+    await deleteAlbum(album.id);
+  });
+
+  it("refuses to create an album with published=true", async () => {
+    await expect(
+      createAlbum({ title: "PublishOnCreate", slug: "publish-on-create", published: true })
+    ).rejects.toThrow("相册必须有照片和封面才能发布");
+  });
+
+  it("refuses to publish an album without photos", async () => {
+    const album = await createAlbum({ title: "NoPhotoAlbum", slug: "no-photo-album" });
+    await expect(updateAlbum(album.id, { published: true })).rejects.toThrow("相册没有照片，无法发布");
+    const stillUnpublished = await db.album.findUnique({ where: { id: album.id } });
+    expect(stillUnpublished?.published).toBe(false);
+    await deleteAlbum(album.id);
+  });
+
+  it("refuses to publish an album without a cover", async () => {
+    const album = await createAlbum({ title: "NoCoverAlbum", slug: "no-cover-album" });
+    await db.photo.create({
+      data: {
+        filename: "no-cover-photo.jpg",
+        filePath: "/uploads/optimized/no-cover-photo.jpg",
+        width: 100,
+        height: 100,
+        fileSize: 1024,
+        mimeType: "image/jpeg",
+        albumId: album.id,
+      },
+    });
+    await expect(updateAlbum(album.id, { published: true })).rejects.toThrow("相册没有封面，无法发布");
+    const stillUnpublished = await db.album.findUnique({ where: { id: album.id } });
+    expect(stillUnpublished?.published).toBe(false);
+    await db.photo.deleteMany({ where: { albumId: album.id } });
     await deleteAlbum(album.id);
   });
 });

@@ -239,6 +239,9 @@ export async function createAlbum(input: {
   categoryId?: string;
   published?: boolean;
 }): Promise<Album> {
+  if (input.published === true) {
+    throw new Error("相册必须有照片和封面才能发布");
+  }
   return db.album.create({
     data: {
       title: input.title,
@@ -331,6 +334,19 @@ export async function updateAlbum(
     sortOrder?: number;
   }
 ): Promise<Album | null> {
+  if (data.published === true) {
+    const album = await db.album.findUnique({
+      where: { id },
+      select: { coverId: true, _count: { select: { photos: true } } },
+    });
+    if (!album) return null;
+    if (album._count.photos === 0) {
+      throw new Error("相册没有照片，无法发布");
+    }
+    if (!album.coverId) {
+      throw new Error("相册没有封面，无法发布");
+    }
+  }
   return db.album.update({ where: { id }, data });
 }
 

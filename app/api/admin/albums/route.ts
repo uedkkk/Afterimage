@@ -65,9 +65,9 @@ export async function POST(request: NextRequest) {
     revalidatePath("/category/[slug]");
     revalidatePath("/album/[slug]");
     return NextResponse.json(album, { status: 201 });
-  } catch {
+  } catch (e) {
     return NextResponse.json(
-      { error: "创建失败，slug 可能已存在" },
+      { error: e instanceof Error ? e.message : "创建失败，slug 可能已存在" },
       { status: 400 }
     );
   }
@@ -106,11 +106,18 @@ export async function PUT(request: NextRequest) {
     data.slug = data.slug?.trim() || slugify(data.title ?? "");
   }
 
-  const album = await updateAlbum(id, data);
-  revalidatePath("/");
-  revalidatePath("/category/[slug]");
-  revalidatePath("/album/[slug]");
-  return NextResponse.json(album);
+  try {
+    const album = await updateAlbum(id, data);
+    revalidatePath("/");
+    revalidatePath("/category/[slug]");
+    revalidatePath("/album/[slug]");
+    return NextResponse.json(album);
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "更新失败" },
+      { status: 400 }
+    );
+  }
 }
 
 export async function DELETE(request: NextRequest) {
