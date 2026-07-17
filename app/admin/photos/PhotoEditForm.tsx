@@ -42,7 +42,8 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
         }),
       });
       if (!res.ok) {
-        setError("操作失败");
+        const data = await res.json();
+        setError(data.error || "操作失败");
         return;
       }
       router.refresh();
@@ -52,11 +53,15 @@ export function PhotoEditForm({ photo, albums }: PhotoEditFormProps) {
   }
 
   async function handleDelete() {
-    await fetch("/api/admin/photos", {
+    const res = await fetch("/api/admin/photos", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: photo.id }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "操作失败");
+    }
     router.push("/admin/photos");
     router.refresh();
   }

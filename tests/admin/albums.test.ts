@@ -9,6 +9,7 @@ import {
   setAlbumCover,
   updatePhoto,
   bulkAssignAlbum,
+  deletePhoto,
 } from "@/lib/db/queries";
 
 afterAll(async () => {
@@ -158,7 +159,7 @@ describe("album admin queries", () => {
     await deleteAlbum(album.id);
   });
 
-  it("nullifies album cover when cover photo is moved to another album", async () => {
+  it("refuses to move a cover photo to another album", async () => {
     const albumA = await createAlbum({ title: "AlbumA", slug: "move-cover-album-a" });
     const albumB = await createAlbum({ title: "AlbumB", slug: "move-cover-album-b" });
     const photo = await db.photo.create({
@@ -174,17 +175,20 @@ describe("album admin queries", () => {
     });
     await setAlbumCover(albumA.id, photo.id);
 
-    await updatePhoto(photo.id, { albumId: albumB.id });
+    await expect(updatePhoto(photo.id, { albumId: albumB.id })).rejects.toThrow(
+      "该照片是相册「AlbumA」的封面，请先更换封面"
+    );
 
     const albumAAfter = await db.album.findUnique({ where: { id: albumA.id } });
-    expect(albumAAfter?.coverId).toBeNull();
+    expect(albumAAfter?.coverId).toBe(photo.id);
 
+    await setAlbumCover(albumA.id, null);
     await db.photo.delete({ where: { id: photo.id } });
     await deleteAlbum(albumA.id);
     await deleteAlbum(albumB.id);
   });
 
-  it("nullifies album cover when cover photo is bulk-moved to another album", async () => {
+  it("refuses to bulk-move a cover photo to another album", async () => {
     const albumA = await createAlbum({ title: "BulkAlbumA", slug: "bulk-move-cover-a" });
     const albumB = await createAlbum({ title: "BulkAlbumB", slug: "bulk-move-cover-b" });
     const photo = await db.photo.create({
@@ -200,13 +204,43 @@ describe("album admin queries", () => {
     });
     await setAlbumCover(albumA.id, photo.id);
 
-    await bulkAssignAlbum([photo.id], albumB.id);
+    await expect(bulkAssignAlbum([photo.id], albumB.id)).rejects.toThrow(
+      "照片是相册「BulkAlbumA」的封面，请先更换封面"
+    );
 
     const albumAAfter = await db.album.findUnique({ where: { id: albumA.id } });
-    expect(albumAAfter?.coverId).toBeNull();
+    expect(albumAAfter?.coverId).toBe(photo.id);
 
+    await setAlbumCover(albumA.id, null);
     await db.photo.delete({ where: { id: photo.id } });
     await deleteAlbum(albumA.id);
     await deleteAlbum(albumB.id);
+  });
+
+  it("refuses to delete a cover photo", async () => {
+    const album = await createAlbum({ title: "CoverDeleteAlbum", slug: "cover-delete-album" });
+    const photo = await db.photo.create({
+      data: {
+        filename: "cover-delete.jpg",
+        filePath: "/uploads/optimized/cover-delete.jpg",
+        width: 100,
+        height: 100,
+        fileSize: 1024,
+        mimeType: "image/jpeg",
+        albumId: album.id,
+      },
+    });
+    await setAlbumCover(album.id, photo.id);
+
+    await expect(deletePhoto(photo.id)).rejects.toThrow(
+      "该照片是相册「CoverDeleteAlbum」的封面，请先更换封面"
+    );
+
+    const photoStillExists = await db.photo.findUnique({ where: { id: photo.id } });
+    expect(photoStillExists).not.toBeNull();
+
+    await setAlbumCover(album.id, null);
+    await deletePhoto(photo.id);
+    await deleteAlbum(album.id);
   });
 });
