@@ -21,10 +21,19 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
   const [published, setPublished] = useState(album?.published ?? false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  function showSuccess(msg: string) {
+    setSuccess(msg);
+    setError(null);
+    setTimeout(() => setSuccess(null), 3000);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setError(null);
     try {
       const payload = {
         ...(isEdit ? { id: album!.id } : {}),
@@ -39,12 +48,16 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
-        if (isEdit) {
-          router.refresh();
-        } else {
-          router.push("/admin/albums");
-        }
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "操作失败");
+        return;
+      }
+      if (isEdit) {
+        showSuccess("已保存");
+        router.refresh();
+      } else {
+        router.push("/admin/albums");
       }
     } finally {
       setSaving(false);
@@ -54,11 +67,15 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
   async function handleDelete() {
     setDeleting(true);
     try {
-      await fetch("/api/admin/albums", {
+      const res = await fetch("/api/admin/albums", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: album!.id }),
       });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "删除失败");
+      }
       router.push("/admin/albums");
       router.refresh();
     } finally {
@@ -135,6 +152,8 @@ export function AlbumForm({ album, categories }: AlbumFormProps) {
         >
           {saving ? "..." : isEdit ? "保存" : "创建"}
         </button>
+        {error && <p className="text-sm text-signal">{error}</p>}
+        {success && <p className="text-sm text-green-600">{success}</p>}
         {isEdit && (
           <ConfirmDialog
             trigger={

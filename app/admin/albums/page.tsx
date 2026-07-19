@@ -10,14 +10,12 @@ export default async function AlbumsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-medium">相册管理</h1>
-          <p className="text-dim mt-1 text-sm">共 {albums.length} 个相册</p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-medium">相册管理</h1>
+        <p className="text-dim mt-1 text-sm">共 {albums.length} 个相册</p>
         <Link
           href="/admin/albums/new"
-          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
+          className="inline-block mt-3 bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
         >
           新建相册
         </Link>
@@ -27,14 +25,6 @@ export default async function AlbumsPage() {
         <EmptyState
           title="暂无相册"
           description="创建第一个相册吧"
-          action={
-            <Link
-              href="/admin/albums/new"
-              className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline"
-            >
-              新建相册
-            </Link>
-          }
         />
       ) : (
         <div className="grid gap-3">

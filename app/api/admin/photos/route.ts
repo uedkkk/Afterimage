@@ -33,7 +33,14 @@ export async function PUT(request: NextRequest) {
   }
 
   if (body.photoIds && Array.isArray(body.photoIds)) {
-    await bulkAssignAlbum(body.photoIds, body.albumId ?? null);
+    try {
+      await bulkAssignAlbum(body.photoIds, body.albumId ?? null);
+    } catch (e) {
+      return NextResponse.json(
+        { error: e instanceof Error ? e.message : "操作失败" },
+        { status: 409 }
+      );
+    }
     revalidatePath("/");
     revalidatePath("/album/[slug]");
     return NextResponse.json({ success: true });
@@ -51,11 +58,18 @@ export async function PUT(request: NextRequest) {
   if (data.tags !== undefined) updateData.tags = data.tags;
   if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
 
-  const photo = await updatePhoto(id, updateData as Parameters<typeof updatePhoto>[1]);
-  revalidatePath("/");
-  revalidatePath("/album/[slug]");
-  revalidatePath("/photo/[id]");
-  return NextResponse.json(photo);
+  try {
+    const photo = await updatePhoto(id, updateData as Parameters<typeof updatePhoto>[1]);
+    revalidatePath("/");
+    revalidatePath("/album/[slug]");
+    revalidatePath("/photo/[id]");
+    return NextResponse.json(photo);
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "操作失败" },
+      { status: 409 }
+    );
+  }
 }
 
 export async function DELETE(request: NextRequest) {
@@ -75,7 +89,14 @@ export async function DELETE(request: NextRequest) {
   }
 
   if (body.photoIds && Array.isArray(body.photoIds)) {
-    await bulkDeletePhotos(body.photoIds);
+    try {
+      await bulkDeletePhotos(body.photoIds);
+    } catch (e) {
+      return NextResponse.json(
+        { error: e instanceof Error ? e.message : "操作失败" },
+        { status: 409 }
+      );
+    }
     revalidatePath("/");
     revalidatePath("/album/[slug]");
     return NextResponse.json({ success: true });
@@ -86,7 +107,14 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "缺少照片 ID" }, { status: 400 });
   }
 
-  await deletePhoto(id);
+  try {
+    await deletePhoto(id);
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "操作失败" },
+      { status: 409 }
+    );
+  }
   revalidatePath("/");
   revalidatePath("/album/[slug]");
   revalidatePath("/photo/[id]");

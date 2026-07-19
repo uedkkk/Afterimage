@@ -40,7 +40,7 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
 
   async function handleBulkAssign() {
     if (!bulkAlbum || selected.size === 0) return;
-    await fetch("/api/admin/photos", {
+    const res = await fetch("/api/admin/photos", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -48,17 +48,26 @@ export function PhotoTable({ photos, albums }: PhotoTableProps) {
         albumId: bulkAlbum || null,
       }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || "操作失败");
+      return;
+    }
     setSelected(new Set());
     setBulkAlbum("");
     router.refresh();
   }
 
   async function handleBulkDelete() {
-    await fetch("/api/admin/photos", {
+    const res = await fetch("/api/admin/photos", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ photoIds: Array.from(selected) }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "操作失败");
+    }
     setSelected(new Set());
     router.refresh();
   }

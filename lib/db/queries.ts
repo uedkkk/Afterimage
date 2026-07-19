@@ -136,8 +136,19 @@ export async function updatePhoto(
     const newAlbumId = data.albumId ?? null;
 
     if (oldAlbumId !== newAlbumId && oldAlbumId !== null) {
+      const coverAlbum = await db.album.findFirst({
+        where: { coverId: id, id: oldAlbumId, published: true },
+        select: { title: true },
+      });
+      if (coverAlbum) {
+        throw new Error(`该照片是相册「${coverAlbum.title}」的封面，请先更换封面`);
+      }
       await db.story.updateMany({
         where: { coverId: id, albumId: oldAlbumId },
+        data: { coverId: null },
+      });
+      await db.album.updateMany({
+        where: { coverId: id, id: oldAlbumId },
         data: { coverId: null },
       });
     }
@@ -148,6 +159,21 @@ export async function updatePhoto(
 }
 
 export async function deletePhoto(id: string): Promise<void> {
+  const coverAlbum = await db.album.findFirst({
+    where: { coverId: id, published: true },
+    select: { title: true },
+  });
+  if (coverAlbum) {
+    throw new Error(`该照片是相册「${coverAlbum.title}」的封面，请先更换封面`);
+  }
+  await db.story.updateMany({
+    where: { coverId: id },
+    data: { coverId: null },
+  });
+  await db.album.updateMany({
+    where: { coverId: id },
+    data: { coverId: null },
+  });
   const photo = await db.photo.findUnique({ where: { id } });
   if (photo) {
     await deletePhotoFiles(photo);
@@ -195,8 +221,19 @@ export async function bulkAssignAlbum(
   for (const photo of photos) {
     const oldAlbumId = photo.albumId ?? null;
     if (oldAlbumId !== albumId && oldAlbumId !== null) {
+      const coverAlbum = await db.album.findFirst({
+        where: { coverId: photo.id, id: oldAlbumId, published: true },
+        select: { title: true },
+      });
+      if (coverAlbum) {
+        throw new Error(`照片是相册「${coverAlbum.title}」的封面，请先更换封面`);
+      }
       await db.story.updateMany({
         where: { coverId: photo.id, albumId: oldAlbumId },
+        data: { coverId: null },
+      });
+      await db.album.updateMany({
+        where: { coverId: photo.id, id: oldAlbumId },
         data: { coverId: null },
       });
     }
@@ -209,6 +246,22 @@ export async function bulkAssignAlbum(
 }
 
 export async function bulkDeletePhotos(photoIds: string[]): Promise<void> {
+  const coverAlbums = await db.album.findMany({
+    where: { coverId: { in: photoIds }, published: true },
+    select: { title: true },
+  });
+  if (coverAlbums.length > 0) {
+    const titles = coverAlbums.map((a) => a.title).join("、");
+    throw new Error(`选中的照片是相册「${titles}」的封面，请先更换封面`);
+  }
+  await db.story.updateMany({
+    where: { coverId: { in: photoIds } },
+    data: { coverId: null },
+  });
+  await db.album.updateMany({
+    where: { coverId: { in: photoIds } },
+    data: { coverId: null },
+  });
   const photos = await db.photo.findMany({ where: { id: { in: photoIds } } });
   for (const photo of photos) {
     await deletePhotoFiles(photo);
@@ -223,6 +276,9 @@ export async function createAlbum(input: {
   categoryId?: string;
   published?: boolean;
 }): Promise<Album> {
+  if (input.published === true) {
+    throw new Error("相册必须有照片和封面才能发布");
+  }
   return db.album.create({
     data: {
       title: input.title,
@@ -315,10 +371,31 @@ export async function updateAlbum(
     sortOrder?: number;
   }
 ): Promise<Album | null> {
+  if (data.published === true) {
+    const album = await db.album.findUnique({
+      where: { id },
+      select: { coverId: true, _count: { select: { photos: true } } },
+    });
+    if (!album) return null;
+    if (album._count.photos === 0) {
+      throw new Error("相册没有照片，无法发布");
+    }
+    if (!album.coverId) {
+      throw new Error("相册没有封面，无法发布");
+    }
+  }
   return db.album.update({ where: { id }, data });
 }
 
 export async function deleteAlbum(id: string): Promise<void> {
+  const stories = await db.story.findMany({
+    where: { albumId: id },
+    select: { title: true },
+  });
+  if (stories.length > 0) {
+    const titles = stories.map((s) => s.title).join("、");
+    throw new Error(`该相册关联了故事「${titles}」，无法删除`);
+  }
   await db.album.delete({ where: { id } });
 }
 
