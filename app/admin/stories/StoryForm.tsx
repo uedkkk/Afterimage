@@ -142,7 +142,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-5xl">
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm text-dim mb-1">标题 *</label>

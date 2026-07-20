@@ -10,9 +10,11 @@ export default async function StoriesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-medium">故事管理</h1>
-        <p className="text-dim mt-1 text-sm">共 {stories.length} 篇故事</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-medium">故事管理</h1>
+          <p className="text-dim mt-1 text-sm">共 {stories.length} 篇故事</p>
+        </div>
         <Link
           href="/admin/stories/new"
           className="inline-block mt-3 bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"

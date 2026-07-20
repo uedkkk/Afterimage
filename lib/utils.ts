@@ -17,3 +17,8 @@ export function slugify(text: string): string {
     .replace(/[^\w\u4e00-\u9fff]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+export function estimateReadingTime(content: string): number {
+  const text = content.replace(/[#*`\[\]()>_~|-]/g, " ");
+  return Math.max(1, Math.ceil(text.length / 400));
+}
