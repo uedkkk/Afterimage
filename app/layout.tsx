@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sofia_Sans, Fraunces, Source_Serif_4 } from "next/font/google";
+import { Sofia_Sans, Lato, Lora, Playfair_Display } from "next/font/google";
 import { getAllSettings } from "@/lib/db/queries";
 import "./globals.css";
 
@@ -9,18 +9,27 @@ const sofiaSans = Sofia_Sans({
   display: "swap",
 });
 
-const fraunces = Fraunces({
+const lato = Lato({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-lato",
   display: "swap",
-  weight: ["500", "600", "700"],
+  weight: ["400", "700"],
 });
 
-const sourceSerif = Source_Serif_4({
+const lora = Lora({
   subsets: ["latin"],
-  variable: "--font-source-serif",
+  variable: "--font-lora",
   display: "swap",
-  weight: ["400", "600", "700"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -36,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${sofiaSans.variable} ${fraunces.variable} ${sourceSerif.variable}`}
+      className={`${sofiaSans.variable} ${lato.variable} ${lora.variable} ${playfair.variable}`}
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />

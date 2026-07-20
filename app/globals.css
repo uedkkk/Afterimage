@@ -44,17 +44,34 @@ body {
   }
 }
 
-/* Story prose — paragraph spacing & hr decorative element */
+/* Story prose — 1:1 Medium.css */
 .prose p {
-  margin-top: 1.8em;
+  margin-top: 21px;
   margin-bottom: 0;
 }
 .prose p:first-child {
   margin-top: 0;
 }
+.prose h2 + h3,
+.prose h3 + h4,
+.prose h4 + h5,
+.prose h5 + h6 {
+  margin-top: 21px;
+}
+.prose > p:first-of-type::first-letter {
+  font-family: var(--font-playfair), 'Noto Serif SC', serif;
+  font-size: 60px;
+  line-height: 60px;
+  float: left;
+  margin: 0 7px 0 -5px;
+  color: rgba(0, 0, 0, 0.84);
+}
 .prose hr::before {
   content: "• • •";
-  color: #E8E5E0;
+  color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
   letter-spacing: 1em;
+}
+::selection {
+  background-color: lavender;
 }

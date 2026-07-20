@@ -35,5 +35,16 @@ marked.use({
 
 export function renderMarkdown(content: string): string {
   const html = marked.parse(content, { async: false, breaks: true }) as string;
-  return html.replace(/<p>(<figure>[\s\S]*?<\/figure>)<\/p>/g, "$1");
+  return html.replace(
+    /<p>([\s\S]*?)<figure>([\s\S]*?)<\/figure>([\s\S]*?)<\/p>/g,
+    (_match, before, fig, after) => {
+      const b = before.replace(/<br\s*\/?>\s*$/, "").trim();
+      const a = after.replace(/^\s*<br\s*\/?>/, "").trim();
+      let result = "";
+      if (b) result += `<p>${b}</p>`;
+      result += `<figure>${fig}</figure>`;
+      if (a) result += `<p>${a}</p>`;
+      return result;
+    }
+  );
 }
