@@ -52,7 +52,8 @@ export function AlbumPhotosManager({
     });
     setLoadingId(null);
     if (!res.ok) {
-      setError("操作失败");
+      const data = await res.json();
+      setError(data.error || "操作失败");
       return;
     }
     showSuccess("已移出相册");

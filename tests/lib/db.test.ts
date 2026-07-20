@@ -17,6 +17,7 @@ const testAlbumId = "test-album-id";
 beforeAll(async () => {
   await db.photo.deleteMany({});
   await db.album.deleteMany({});
+  await db.story.deleteMany({});
   await db.category.deleteMany({});
   await db.setting.deleteMany({ where: { id: { startsWith: "test." } } });
 
@@ -38,6 +39,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await db.photo.deleteMany({});
   await db.album.deleteMany({});
+  await db.story.deleteMany({});
   await db.category.deleteMany({});
   await db.setting.deleteMany({ where: { id: { startsWith: "test." } } });
   await db.$disconnect();
@@ -106,6 +108,37 @@ describe("photo queries", () => {
     await deletePhoto(created.id);
     const found = await getPhotoById(created.id);
     expect(found).toBeNull();
+  });
+
+  it("nullifies story coverId when deleting a cover photo", async () => {
+    const photo = await createPhoto({
+      filename: "cover-test.jpg",
+      filePath: "/uploads/cover-test.jpg",
+      width: 800,
+      height: 600,
+      fileSize: 500000,
+      mimeType: "image/jpeg",
+    });
+
+    const story = await db.story.create({
+      data: {
+        title: "Cover Test Story",
+        slug: "cover-test-story",
+        excerpt: "Test excerpt",
+        content: "Test content",
+        coverId: photo.id,
+      },
+    });
+
+    await deletePhoto(photo.id);
+
+    const updatedStory = await db.story.findUnique({
+      where: { id: story.id },
+      select: { coverId: true },
+    });
+    expect(updatedStory?.coverId).toBeNull();
+
+    await db.story.delete({ where: { id: story.id } });
   });
 });
 

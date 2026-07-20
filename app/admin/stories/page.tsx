@@ -17,7 +17,7 @@ export default async function StoriesPage() {
         </div>
         <Link
           href="/admin/stories/new"
-          className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
+          className="inline-block mt-3 bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline hover:bg-dim"
         >
           新建故事
         </Link>
@@ -27,14 +27,6 @@ export default async function StoriesPage() {
         <EmptyState
           title="暂无故事"
           description="写第一篇故事吧"
-          action={
-            <Link
-              href="/admin/stories/new"
-              className="bg-ink text-bg px-4 py-2 rounded-md text-sm no-underline"
-            >
-              新建故事
-            </Link>
-          }
         />
       ) : (
         <div className="rounded-lg border border-faint bg-paper divide-y divide-faint">
