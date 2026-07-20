@@ -43,3 +43,18 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Story prose — paragraph spacing & hr decorative element */
+.prose p {
+  margin-top: 1.8em;
+  margin-bottom: 0;
+}
+.prose p:first-child {
+  margin-top: 0;
+}
+.prose hr::before {
+  content: "• • •";
+  color: #E8E5E0;
+  font-size: 14px;
+  letter-spacing: 1em;
+}

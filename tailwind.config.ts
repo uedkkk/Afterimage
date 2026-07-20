@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 
 const config: Config = {
   content: [
@@ -9,13 +10,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Mastercard-inspired palette
         canvas: "#F3F0EE",
         lifted: "#FCFBFA",
+        paper: "#FAF9F6",
         white: "#FFFFFF",
         ink: "#141413",
         charcoal: "#262627",
         slate: "#696969",
+        "warm-muted": "#8C8C8C",
         granite: "#555555",
         dust: "#D1CDC7",
         signal: "#CF4500",
@@ -23,9 +25,9 @@ const config: Config = {
         clay: "#9A3A0A",
         "link-blue": "#3860BE",
         ghost: "#E8E2DA",
-        // Legacy aliases (map old names to new values)
+        hairline: "#E8E5E0",
+        callout: "#F5F3EF",
         bg: "#F3F0EE",
-        paper: "#FCFBFA",
         dim: "#696969",
         faint: "#D1CDC7",
         line: "#141413",
@@ -33,8 +35,13 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sofia-sans)", "Arial", "sans-serif"],
-        display: ["var(--font-sofia-sans)", "Arial", "sans-serif"],
-        serif: ["var(--font-sofia-sans)", "Arial", "sans-serif"],
+        display: ["var(--font-fraunces)", "Noto Serif SC", "Georgia", "serif"],
+        serif: [
+          "var(--font-source-serif)",
+          "Noto Serif SC",
+          "Georgia",
+          "serif",
+        ],
       },
       borderRadius: {
         pill: "999px",
@@ -46,9 +53,198 @@ const config: Config = {
         card: "rgba(0, 0, 0, 0.08) 0px 24px 48px 0px",
         drama: "rgba(0, 0, 0, 0.25) 0px 70px 110px 0px",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: "#1A1A1A",
+            fontSize: "20px",
+            lineHeight: "1.7",
+            maxWidth: "none",
+            fontFamily:
+              "var(--font-source-serif), 'Noto Serif SC', Georgia, serif",
+            a: {
+              color: "#CF4500",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+              textDecorationThickness: "1px",
+              textDecorationColor: "rgba(207, 69, 0, 0.35)",
+              transition: "text-decoration-color 0.15s",
+              fontWeight: "400",
+            },
+            "a:hover": {
+              textDecorationColor: "#CF4500",
+            },
+            h2: {
+              fontFamily:
+                "var(--font-fraunces), 'Noto Serif SC', Georgia, serif",
+              fontSize: "32px",
+              fontWeight: "600",
+              lineHeight: "1.2",
+              color: "#1A1A1A",
+              letterSpacing: "-0.02em",
+              marginTop: "3em",
+              marginBottom: "0.6em",
+              paddingTop: "2em",
+              borderTop: "1px solid #E8E5E0",
+              borderBottom: "none",
+            },
+            h3: {
+              fontFamily:
+                "var(--font-sofia-sans), Arial, sans-serif",
+              fontSize: "26px",
+              fontWeight: "600",
+              lineHeight: "1.3",
+              color: "#1A1A1A",
+              letterSpacing: "-0.01em",
+              marginTop: "2em",
+              marginBottom: "0.4em",
+            },
+            h4: {
+              fontFamily:
+                "var(--font-sofia-sans), Arial, sans-serif",
+              fontSize: "20px",
+              fontWeight: "600",
+              color: "#1A1A1A",
+              marginTop: "1.75em",
+              marginBottom: "0.4em",
+            },
+            h5: {
+              fontFamily:
+                "var(--font-sofia-sans), Arial, sans-serif",
+              fontSize: "17px",
+              fontWeight: "600",
+              color: "#1A1A1A",
+              marginTop: "1.5em",
+              marginBottom: "0.3em",
+            },
+            h6: {
+              fontFamily:
+                "var(--font-sofia-sans), Arial, sans-serif",
+              fontSize: "15px",
+              fontWeight: "600",
+              color: "#8C8C8C",
+              marginTop: "1.5em",
+              marginBottom: "0.3em",
+            },
+            p: {
+              marginTop: "1.8em",
+              marginBottom: "0",
+            },
+            blockquote: {
+              fontFamily:
+                "var(--font-sofia-sans), Arial, sans-serif",
+              fontSize: "15px",
+              lineHeight: "1.6",
+              color: "#8C8C8C",
+              background: "#F5F3EF",
+              borderLeft: "3px solid #CF4500",
+              borderRadius: "4px",
+              padding: "1.25em 1.5em",
+              marginTop: "2em",
+              marginBottom: "2em",
+              fontStyle: "normal",
+              fontWeight: "400",
+            },
+            "blockquote p": {
+              marginTop: "0",
+              marginBottom: "0",
+              color: "#8C8C8C",
+            },
+            "blockquote a": {
+              color: "#CF4500",
+            },
+            code: {
+              fontFamily: "'SF Mono', 'Fira Code', monospace",
+              backgroundColor: "rgba(0,0,0,0.04)",
+              borderRadius: "4px",
+              padding: "0.15em 0.4em",
+              fontSize: "0.85em",
+              fontWeight: "400",
+            },
+            "code::before": { content: '""' },
+            "code::after": { content: '""' },
+            pre: {
+              backgroundColor: "#F5F3EF",
+              border: "1px solid #E8E5E0",
+              borderRadius: "4px",
+              padding: "1.25rem 1.5rem",
+              overflowX: "auto",
+              marginTop: "2em",
+              marginBottom: "2em",
+            },
+            "pre code": {
+              backgroundColor: "transparent",
+              border: "none",
+              padding: "0",
+              fontSize: "0.875rem",
+              lineHeight: "1.6",
+              color: "#1A1A1A",
+            },
+            img: {
+              borderRadius: "4px",
+              marginTop: "0",
+              marginBottom: "0",
+              marginLeft: "auto",
+              marginRight: "auto",
+              display: "block",
+            },
+            figure: {
+              marginTop: "2.5em",
+              marginBottom: "2.5em",
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            },
+            figcaption: {
+              fontFamily:
+                "var(--font-sofia-sans), Arial, sans-serif",
+              color: "#8C8C8C",
+              fontSize: "14px",
+              textAlign: "center",
+              marginTop: "12px",
+              fontStyle: "normal",
+              lineHeight: "1.4",
+            },
+            ul: {
+              marginTop: "1.5em",
+              marginBottom: "1.5em",
+              paddingLeft: "1.5em",
+            },
+            ol: {
+              marginTop: "1.5em",
+              marginBottom: "1.5em",
+              paddingLeft: "1.5em",
+            },
+            li: {
+              marginTop: "0.4em",
+              marginBottom: "0.4em",
+            },
+            "ul li::marker": {
+              color: "#8C8C8C",
+            },
+            hr: {
+              border: "none",
+              marginTop: "3em",
+              marginBottom: "3em",
+              textAlign: "center",
+            },
+            "h2:first-child": {
+              marginTop: "0",
+              paddingTop: "0",
+              borderTop: "none",
+            },
+            "h3:first-child": { marginTop: "0" },
+            "h4:first-child": { marginTop: "0" },
+            "p:first-child": { marginTop: "0" },
+            "figure:first-child": { marginTop: "0" },
+            "h2 + h3": { marginTop: "0.4em" },
+            "h3 + h4": { marginTop: "0.4em" },
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [typography],
 };
 
 export default config;
