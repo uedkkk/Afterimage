@@ -21,17 +21,17 @@ export function PhotoCard({ photo, index }: PhotoCardProps) {
   return (
     <Link
       href={`/photo/${photo.id}`}
-      className="relative block h-full w-full overflow-hidden cursor-pointer bg-dust group rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-drama"
+      className="relative block h-full w-full overflow-hidden cursor-pointer bg-dust group"
     >
       <Image
         src={photo.filePath}
         alt={photo.title ?? photo.filename}
         fill
         sizes="(max-width: 768px) 100vw, 50vw"
-        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
       />
       <div className="absolute inset-0 p-5 md:p-7 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-b from-black/30 via-transparent to-black/70 text-white">
-        <span className="self-start bg-white text-ink rounded-pill px-3 py-1 text-[12px] font-medium">
+        <span className="self-start text-[12px] font-semibold uppercase tracking-[0.04em] text-light-signal">
           {String(index + 1).padStart(2, "0")}
         </span>
         <div className="flex justify-between items-end">
@@ -39,7 +39,7 @@ export function PhotoCard({ photo, index }: PhotoCardProps) {
             {photo.title ?? photo.filename}
           </div>
           {photo.exif && (
-            <div className="text-[13px] font-450 opacity-80">
+            <div className="text-[13px] opacity-80">
               {typeof photo.exif.camera === "string" ? photo.exif.camera : ""}
             </div>
           )}

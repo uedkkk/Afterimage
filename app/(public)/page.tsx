@@ -7,14 +7,6 @@ import { Reveal } from "@/components/Reveal";
 
 export const revalidate = 300;
 
-const PORTRAIT_OFFSETS = [
-  "md:mt-2",
-  "md:mt-20",
-  "md:mt-0",
-  "md:mt-16",
-  "md:mt-6",
-];
-
 export default async function Home() {
   const [photos, settings, albums, stories] = await Promise.all([
     getAllPhotos(7, 0),
@@ -45,7 +37,7 @@ export default async function Home() {
     <>
       {/* Hero — Stadium Media Frame */}
       <section className="px-6">
-        <div className="relative rounded-stadium overflow-hidden w-full h-[62vh] min-h-[420px] bg-ink shadow-card">
+        <div className="relative overflow-hidden w-full h-[62vh] min-h-[420px] bg-ink">
           {heroPhoto && (
             <Image
               src={heroPhoto.filePath}
@@ -84,67 +76,59 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Featured Albums — Circular Portraits with Orbital Arcs */}
+      {/* Featured Albums */}
       {featuredAlbums.length > 0 && (
         <section className="py-24 md:py-32 px-6 relative overflow-hidden">
           <div className="absolute top-4 left-0 text-[clamp(80px,14vw,180px)] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
             Albums
           </div>
-          <Reveal>
-            <div className="flex flex-col items-center gap-3 mb-16">
-              <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
-                <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
-                精选影集
-              </span>
-              <h2 className="text-[clamp(28px,4vw,48px)] font-medium tracking-[-0.02em] leading-[1.1] text-center">
-                每一组影像，都是一段旅程
-              </h2>
-            </div>
-          </Reveal>
-          <div className="relative max-w-[1200px] mx-auto">
-            {/* Orbital arcs — decorative SVG */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none hidden lg:block" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M120,80 Q400,40 600,120 T1080,60" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.4" />
-              <path d="M200,300 Q500,260 700,340 T1050,280" fill="none" stroke="#F37338" strokeWidth="1.5" strokeDasharray="4 6" opacity="0.4" />
-            </svg>
-            <div className="relative flex flex-col items-center gap-12 md:flex-row md:justify-center md:items-start md:gap-4 lg:gap-6">
+          <div className="max-w-[1320px] mx-auto relative">
+            <Reveal>
+              <div className="pb-6 border-b border-[rgba(0,0,0,0.08)] mb-11">
+                <div className="inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.04em] text-slate mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
+                  精选影集
+                </div>
+                <h2 className="text-[clamp(28px,4vw,48px)] font-medium tracking-[-0.02em] leading-[1.1]">
+                  每一组影像，都是一段旅程
+                </h2>
+              </div>
+            </Reveal>
+            <div className="story-grid">
               {featuredAlbums.map((album, i) => (
-                <Reveal key={album.id} delay={i * 80} className={PORTRAIT_OFFSETS[i] ?? ""}>
-                  <Link href={`/album/${album.slug}`} className="group flex flex-col items-center gap-4 no-underline">
-                    <div className="relative w-[200px] h-[200px] md:w-[240px] md:h-[240px]">
-                      <div className="relative w-full h-full rounded-full overflow-hidden shadow-card cursor-pointer transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105">
-                        {album.cover ? (
-                          <Image
-                            src={album.cover.filePath}
-                            alt={album.title}
-                            fill
-                            sizes="(max-width: 768px) 200px, 240px"
-                            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-dust" />
-                        )}
+                <Reveal key={album.id} delay={i * 80}>
+                  <Link href={`/album/${album.slug}`} className="group flex flex-col gap-5 no-underline">
+                    {album.cover ? (
+                      <div className="relative aspect-[3/2] overflow-hidden bg-dust">
+                        <Image
+                          src={album.cover.filePath}
+                          alt={album.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                        />
                       </div>
-                      <span className="absolute bottom-3 right-3 w-[52px] h-[52px] rounded-full bg-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition-all duration-300 group-hover:bg-ink group-hover:text-white z-10">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[18px] h-[18px] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                          <path d="M7 17L17 7M17 7H8M17 7V16" />
-                        </svg>
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.04em] text-slate">
-                        <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
+                    ) : (
+                      <div className="relative aspect-[3/2] overflow-hidden bg-dust" />
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-[12px] font-semibold uppercase tracking-[0.04em] text-signal mb-2">
                         {album.category?.name ?? "Album"}
                       </span>
-                      <span className="text-[18px] md:text-[20px] font-medium tracking-[-0.01em] text-ink">
+                      <h3 className="text-[22px] font-semibold tracking-[-0.014em] leading-[1.3] text-ink transition-opacity duration-300 group-hover:opacity-60">
                         {album.title}
-                      </span>
+                      </h3>
+                      {album.description && (
+                        <p className="mt-2 text-[15px] leading-[1.5] text-[rgba(0,0,0,0.5)] line-clamp-2">
+                          {album.description}
+                        </p>
+                      )}
                     </div>
                   </Link>
                 </Reveal>
               ))}
-             </div>
-           </div>
+            </div>
+          </div>
           {albums.length > 5 && (
             <div className="flex justify-center mt-12">
               <Link
@@ -155,12 +139,12 @@ export default async function Home() {
               </Link>
             </div>
           )}
-         </section>
+        </section>
       )}
 
-      {/* Gallery — Pill Cards */}
+      {/* Gallery */}
       <section className="px-6 pb-24" id="gallery">
-        <div className="bg-lifted rounded-stadium px-6 md:px-12 py-16 md:py-24">
+        <div className="bg-lifted px-6 md:px-12 py-16 md:py-24">
           <Reveal>
             <div className="flex flex-col items-center gap-3 mb-12">
               <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
