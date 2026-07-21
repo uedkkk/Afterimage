@@ -28,7 +28,7 @@ export default async function PhotoPage({ params }: PageProps) {
         {album && (
           <Link
             href={`/album/${album.slug}`}
-            className="inline-flex items-center gap-2 text-[13px] font-450 text-slate hover:text-ink transition-colors mb-7 no-underline"
+            className="inline-flex items-center gap-2 text-[13px] text-slate hover:text-ink transition-colors mb-7 no-underline"
           >
             <span aria-hidden="true">←</span>
             {album.title}
@@ -37,7 +37,7 @@ export default async function PhotoPage({ params }: PageProps) {
       </Reveal>
 
       <Reveal>
-        <div className="relative w-full mb-7 rounded-stadium overflow-hidden shadow-card">
+        <div className="relative w-full mb-7 overflow-hidden">
           <Image
             src={photo.filePath}
             alt={photo.title ?? photo.filename}
@@ -57,19 +57,19 @@ export default async function PhotoPage({ params }: PageProps) {
               {photo.title ?? photo.filename}
             </h1>
             {photo.description && (
-              <p className="text-slate text-[16px] font-450">{photo.description}</p>
+              <p className="text-slate text-[16px]">{photo.description}</p>
             )}
             {story && (
               <Link
                 href={`/stories/${story.slug}`}
-                className="inline-flex items-center gap-2 text-[13px] font-450 text-slate hover:text-ink transition-colors mt-3 no-underline"
+                className="inline-flex items-center gap-2 text-[13px] text-slate hover:text-ink transition-colors mt-3 no-underline"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
                 幕后故事：{story.title}
               </Link>
             )}
           </div>
-          <div className="text-[13px] font-450 text-slate text-right">
+          <div className="text-[13px] text-slate text-right">
             <div>{formatDate(photo.createdAt)}</div>
             <div className="tabular-nums">
               {photo.width} × {photo.height}

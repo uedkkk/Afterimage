@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --color-canvas: #F3F0EE;
-  --color-lifted: #FCFBFA;
+  --color-canvas: #FFFFFF;
+  --color-lifted: #FAFAFA;
   --color-white: #FFFFFF;
   --color-ink: #141413;
   --color-charcoal: #262627;
@@ -58,6 +58,20 @@ body {
 .prose h5 + h6 {
   margin-top: 21px;
 }
+.prose h2 + blockquote,
+.prose h3 + blockquote,
+.prose h4 + blockquote,
+.prose h5 + blockquote,
+.prose h6 + blockquote {
+  margin-top: 40px;
+}
+.prose h2 + table,
+.prose h3 + table,
+.prose h4 + table,
+.prose h5 + table,
+.prose h6 + table {
+  margin-top: 40px;
+}
 .prose > p:first-of-type::first-letter {
   font-family: var(--font-playfair), 'Noto Serif SC', serif;
   font-size: 60px;
@@ -65,6 +79,10 @@ body {
   float: left;
   margin: 0 7px 0 -5px;
   color: rgba(0, 0, 0, 0.84);
+}
+.prose hr {
+  height: auto;
+  overflow: visible;
 }
 .prose hr::before {
   content: "• • •";
@@ -74,4 +92,37 @@ body {
 }
 ::selection {
   background-color: lavender;
+}
+
+/* ── Story grid — Ghost-style hairline dividers ── */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 42px;
+}
+.story-grid > * {
+  padding-top: 42px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+.story-grid > *:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+@media (min-width: 640px) {
+  .story-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .story-grid > *:nth-child(-n+2) {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .story-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .story-grid > *:nth-child(-n+3) {
+    border-top: none;
+    padding-top: 0;
+  }
 }

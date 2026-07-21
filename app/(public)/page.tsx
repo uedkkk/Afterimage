@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllPhotos, getAllSettings, getPublishedAlbums, getPublishedStories } from "@/lib/db/queries";
 import { PhotoGrid } from "@/components/PhotoGrid";
+import { StoryCard } from "@/components/StoryCard";
 import { Reveal } from "@/components/Reveal";
 
 export const revalidate = 300;
@@ -86,9 +87,6 @@ export default async function Home() {
       {/* Featured Albums — Circular Portraits with Orbital Arcs */}
       {featuredAlbums.length > 0 && (
         <section className="py-24 md:py-32 px-6 relative overflow-hidden">
-          <div className="absolute top-4 left-0 text-[clamp(80px,14vw,180px)] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
-            Albums
-          </div>
           <Reveal>
             <div className="flex flex-col items-center gap-3 mb-16">
               <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
@@ -159,7 +157,7 @@ export default async function Home() {
 
       {/* Gallery — Pill Cards */}
       <section className="px-6 pb-24" id="gallery">
-        <div className="bg-lifted rounded-stadium px-6 md:px-12 py-16 md:py-24">
+        <div className="bg-lifted rounded-stadium max-w-[1320px] mx-auto px-6 md:px-12 py-16 md:py-24">
           <Reveal>
             <div className="flex flex-col items-center gap-3 mb-12">
               <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
@@ -185,66 +183,28 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Stories — Pill Carousel Cards */}
+      {/* Stories — Editorial Grid */}
       {featuredStories.length > 0 && (
         <section className="py-24 md:py-32 px-6 relative overflow-hidden">
-          <div className="absolute top-4 right-0 text-[clamp(80px,14vw,180px)] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
-            Stories
-          </div>
-          <Reveal>
-            <div className="flex flex-col items-center gap-3 mb-16">
-              <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
-                <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
-                影像故事
-              </span>
-              <h2 className="text-[clamp(28px,4vw,48px)] font-medium tracking-[-0.02em] leading-[1.1] text-center">
-                镜头背后的叙事
-              </h2>
+          <div className="max-w-[1320px] mx-auto relative">
+            <Reveal>
+              <div className="pb-6 border-b border-[rgba(0,0,0,0.08)] mb-11">
+                <div className="inline-flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.04em] text-slate mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
+                  影像故事
+                </div>
+                <h2 className="text-[clamp(28px,4vw,48px)] font-medium tracking-[-0.02em] leading-[1.1] text-center">
+                  镜头背后的叙事
+                </h2>
+              </div>
+            </Reveal>
+            <div className="story-grid">
+              {featuredStories.map((story, i) => (
+                <Reveal key={story.id} delay={i * 80}>
+                  <StoryCard story={story} />
+                </Reveal>
+              ))}
             </div>
-          </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {featuredStories.map((story, i) => (
-              <Reveal key={story.id} delay={i * 80}>
-                <Link href={`/stories/${story.slug}`} className="group block no-underline">
-                  {story.cover ? (
-                    <div className="relative aspect-[3/4] overflow-hidden bg-dust rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-drama">
-                      <Image
-                        src={story.cover.filePath}
-                        alt={story.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 flex flex-col justify-end p-7 bg-gradient-to-t from-black/80 to-transparent">
-                        <span className="self-start bg-white text-ink rounded-pill px-3 py-1 text-[11px] font-medium mb-3">
-                          Story
-                        </span>
-                        <h3 className="text-white text-[22px] font-medium tracking-[-0.01em] leading-[1.2] mb-1.5">
-                          {story.title}
-                        </h3>
-                        <p className="text-white/70 text-[14px] font-450 leading-[1.5] line-clamp-2">
-                          {story.excerpt}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="relative aspect-[3/4] overflow-hidden bg-lifted rounded-stadium shadow-card p-7 flex flex-col justify-between transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-drama">
-                      <span className="self-start bg-ink text-canvas rounded-pill px-3 py-1 text-[11px] font-medium">
-                        Story
-                      </span>
-                      <div>
-                        <h3 className="text-ink text-[22px] font-medium tracking-[-0.01em] leading-[1.2] mb-1.5">
-                          {story.title}
-                        </h3>
-                        <p className="text-slate text-[14px] font-450 leading-[1.5] line-clamp-4">
-                          {story.excerpt}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </Link>
-              </Reveal>
-            ))}
           </div>
         </section>
       )}
@@ -254,9 +214,6 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
           <Reveal>
             <div className="relative">
-              <div className="absolute -top-10 -left-16 text-[120px] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
-                About
-              </div>
               <div className="relative">
                 <div className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate mb-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
