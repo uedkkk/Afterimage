@@ -87,9 +87,6 @@ export default async function Home() {
       {/* Featured Albums — Circular Portraits with Orbital Arcs */}
       {featuredAlbums.length > 0 && (
         <section className="py-24 md:py-32 px-6 relative overflow-hidden">
-          <div className="absolute top-4 left-0 text-[clamp(80px,14vw,180px)] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
-            Albums
-          </div>
           <Reveal>
             <div className="flex flex-col items-center gap-3 mb-16">
               <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
@@ -160,7 +157,7 @@ export default async function Home() {
 
       {/* Gallery — Pill Cards */}
       <section className="px-6 pb-24" id="gallery">
-        <div className="bg-lifted rounded-stadium px-6 md:px-12 py-16 md:py-24">
+        <div className="bg-lifted rounded-stadium max-w-[1320px] mx-auto px-6 md:px-12 py-16 md:py-24">
           <Reveal>
             <div className="flex flex-col items-center gap-3 mb-12">
               <span className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate">
@@ -189,9 +186,6 @@ export default async function Home() {
       {/* Stories — Editorial Grid */}
       {featuredStories.length > 0 && (
         <section className="py-24 md:py-32 px-6 relative overflow-hidden">
-          <div className="absolute top-4 right-0 text-[clamp(80px,14vw,180px)] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
-            Stories
-          </div>
           <div className="max-w-[1320px] mx-auto relative">
             <Reveal>
               <div className="pb-6 border-b border-[rgba(0,0,0,0.08)] mb-11">
@@ -220,9 +214,6 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
           <Reveal>
             <div className="relative">
-              <div className="absolute -top-10 -left-16 text-[120px] font-medium tracking-[-0.02em] text-ghost leading-none pointer-events-none select-none">
-                About
-              </div>
               <div className="relative">
                 <div className="inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.04em] text-slate mb-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-light-signal" />
