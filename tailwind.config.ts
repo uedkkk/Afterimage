@@ -10,9 +10,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#F3F0EE",
-        lifted: "#FCFBFA",
-        paper: "#FAF9F6",
+        canvas: "#FFFFFF",
+        lifted: "#FAFAFA",
+        paper: "#F5F5F5",
         white: "#FFFFFF",
         ink: "#141413",
         charcoal: "#262627",
@@ -27,7 +27,7 @@ const config: Config = {
         ghost: "#E8E2DA",
         hairline: "#E8E5E0",
         callout: "#F5F3EF",
-        bg: "#F3F0EE",
+        bg: "#FFFFFF",
         dim: "#696969",
         faint: "#D1CDC7",
         line: "#141413",
@@ -44,7 +44,7 @@ const config: Config = {
         button: "20px",
       },
       boxShadow: {
-        nav: "rgba(0, 0, 0, 0.04) 0px 4px 24px 0px",
+        nav: "rgba(0, 0, 0, 0.12) 0px 8px 32px 0px, rgba(0, 0, 0, 0.08) 0px 2px 4px 0px",
         card: "rgba(0, 0, 0, 0.08) 0px 24px 48px 0px",
         drama: "rgba(0, 0, 0, 0.25) 0px 70px 110px 0px",
       },
@@ -52,8 +52,8 @@ const config: Config = {
         DEFAULT: {
           css: {
             color: "rgba(0, 0, 0, 0.84)",
-            fontSize: "21px",
-            lineHeight: "1.58",
+            fontSize: "18px",
+            lineHeight: "1.6",
             letterSpacing: "-0.03px",
             maxWidth: "none",
             fontFamily: "var(--font-lora), 'Noto Serif SC', serif",
@@ -68,9 +68,9 @@ const config: Config = {
             },
             h2: {
               fontFamily: "var(--font-lato), Arial, sans-serif",
-              fontSize: "26px",
+              fontSize: "28px",
               fontWeight: "700",
-              lineHeight: "34.5px",
+              lineHeight: "37px",
               color: "rgba(0, 0, 0, 0.84)",
               letterSpacing: "-0.45px",
               marginTop: "56px",
@@ -82,7 +82,7 @@ const config: Config = {
             },
             h3: {
               fontFamily: "var(--font-lato), Arial, sans-serif",
-              fontSize: "22px",
+              fontSize: "24px",
               fontWeight: "700",
               lineHeight: "1.3",
               color: "rgba(0, 0, 0, 0.84)",
@@ -92,7 +92,7 @@ const config: Config = {
             },
             h4: {
               fontFamily: "var(--font-lato), Arial, sans-serif",
-              fontSize: "19px",
+              fontSize: "21px",
               fontWeight: "700",
               color: "rgba(0, 0, 0, 0.84)",
               marginTop: "40px",
@@ -100,7 +100,7 @@ const config: Config = {
             },
             h5: {
               fontFamily: "var(--font-lato), Arial, sans-serif",
-              fontSize: "17px",
+              fontSize: "19px",
               fontWeight: "700",
               color: "rgba(0, 0, 0, 0.84)",
               marginTop: "32px",
@@ -108,28 +108,28 @@ const config: Config = {
             },
             h6: {
               fontFamily: "var(--font-lato), Arial, sans-serif",
-              fontSize: "15px",
+              fontSize: "18px",
               fontWeight: "700",
               color: "rgba(0, 0, 0, 0.54)",
               marginTop: "28px",
               marginBottom: "-6px",
             },
             p: {
-              marginTop: "21px",
+              marginTop: "14px",
               marginBottom: "0",
             },
             blockquote: {
               fontFamily: "var(--font-playfair), 'Noto Serif SC', serif",
-              fontSize: "30px",
+              fontSize: "18px",
               fontStyle: "italic",
               letterSpacing: "-0.36px",
-              lineHeight: "44.4px",
+              lineHeight: "1.6",
               color: "rgba(0, 0, 0, 0.68)",
-              borderLeft: "none",
+              borderLeft: "2px solid rgba(0,0,0,0.15)",
               background: "transparent",
-              padding: "0 0 0 50px",
-              marginTop: "55px",
-              marginBottom: "33px",
+              padding: "0 0 0 20px",
+              marginTop: "28px",
+              marginBottom: "28px",
               fontWeight: "400",
             },
             "blockquote p": {
@@ -209,6 +209,28 @@ const config: Config = {
             },
             "ul li::marker": {
               color: "rgba(0, 0, 0, 0.54)",
+            },
+            table: {
+              marginTop: "28px",
+              marginBottom: "28px",
+              width: "100%",
+              borderCollapse: "collapse",
+              fontFamily: "var(--font-lato), Arial, sans-serif",
+              fontSize: "16px",
+            },
+            thead: {
+              borderBottom: "1px solid rgba(0,0,0,0.15)",
+            },
+            th: {
+              fontWeight: "700",
+              textAlign: "left",
+              padding: "10px 16px",
+              color: "rgba(0, 0, 0, 0.84)",
+            },
+            td: {
+              padding: "10px 16px",
+              borderBottom: "1px solid rgba(0,0,0,0.08)",
+              color: "rgba(0, 0, 0, 0.68)",
             },
             hr: {
               border: "none",

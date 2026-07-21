@@ -467,15 +467,21 @@ export async function deleteCategory(id: string): Promise<void> {
 
 export type StoryWithRelations = Story & {
   cover: Photo | null;
-  album: Album | null;
+  album: (Album & { category: Category | null }) | null;
   photos: Photo[];
+};
+
+const storyInclude = {
+  cover: true,
+  album: { include: { category: true } },
+  photos: { orderBy: { sortOrder: "asc" as const } },
 };
 
 export async function getPublishedStories(): Promise<StoryWithRelations[]> {
   return db.story.findMany({
     where: { published: true },
     orderBy: { sortOrder: "asc" },
-    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
+    include: storyInclude,
   });
 }
 
@@ -484,13 +490,25 @@ export async function getStoryBySlug(
 ): Promise<StoryWithRelations | null> {
   return db.story.findUnique({
     where: { slug },
-    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
+    include: storyInclude,
+  });
+}
+
+export async function getRelatedStories(
+  slug: string,
+  limit = 3
+): Promise<StoryWithRelations[]> {
+  return db.story.findMany({
+    where: { published: true, slug: { not: slug } },
+    orderBy: { sortOrder: "asc" },
+    take: limit,
+    include: storyInclude,
   });
 }
 
 export async function getAllStoriesAdmin(): Promise<StoryWithRelations[]> {
   return db.story.findMany({
-    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
+    include: storyInclude,
     orderBy: { createdAt: "desc" },
   });
 }
@@ -500,7 +518,7 @@ export async function getStoryByIdAdmin(
 ): Promise<StoryWithRelations | null> {
   return db.story.findUnique({
     where: { id },
-    include: { cover: true, album: true, photos: { orderBy: { sortOrder: "asc" } } },
+    include: storyInclude,
   });
 }
 

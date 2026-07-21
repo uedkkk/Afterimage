@@ -1,55 +1,50 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { StoryWithRelations } from "@/lib/db/queries";
-import { formatDate } from "@/lib/utils";
+import { formatDate, estimateReadingTime } from "@/lib/utils";
 
 interface StoryCardProps {
   story: StoryWithRelations;
 }
 
 export function StoryCard({ story }: StoryCardProps) {
+  const tag = story.album?.category?.name ?? "Story";
+  const readingTime = estimateReadingTime(story.content);
+
   return (
     <Link
       href={`/stories/${story.slug}`}
-      className="group block no-underline"
+      className="group flex flex-col gap-5 no-underline"
     >
-      {story.cover ? (
-        <div className="relative aspect-[3/4] overflow-hidden bg-dust mb-5 rounded-stadium shadow-card transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-drama">
+      {story.cover && (
+        <div className="relative aspect-[3/2] overflow-hidden bg-ghost">
           <Image
             src={story.cover.filePath}
             alt={story.title}
             fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/80 to-transparent">
-            <span className="self-start bg-white text-ink rounded-pill px-3 py-1 text-[11px] font-medium mb-3">
-              Story
-            </span>
-            <h3 className="text-white text-[22px] font-medium tracking-[-0.01em] leading-[1.2] mb-1.5">
-              {story.title}
-            </h3>
-            <p className="text-white/70 text-[14px] font-450 leading-[1.5] line-clamp-2">
-              {story.excerpt}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="relative aspect-[3/4] overflow-hidden bg-lifted mb-5 rounded-stadium shadow-card p-6 flex flex-col justify-between transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-drama">
-          <span className="self-start bg-ink text-canvas rounded-pill px-3 py-1 text-[11px] font-medium">
-            Story
-          </span>
-          <div>
-            <h3 className="text-ink text-[22px] font-medium tracking-[-0.01em] leading-[1.2] mb-1.5">
-              {story.title}
-            </h3>
-            <p className="text-slate text-[14px] font-450 leading-[1.5] line-clamp-4">
-              {story.excerpt}
-            </p>
-          </div>
         </div>
       )}
-      <div className="text-[13px] font-450 text-slate px-1">{formatDate(story.createdAt)}</div>
+      <div className="flex flex-col">
+        <span className="text-[12px] font-semibold uppercase tracking-[0.04em] text-signal mb-2">
+          {tag}
+        </span>
+        <h3 className="text-[22px] font-semibold tracking-[-0.014em] leading-[1.3] text-ink transition-opacity duration-300 group-hover:opacity-60">
+          {story.title}
+        </h3>
+        {story.excerpt && (
+          <p className="mt-2 text-[15px] leading-[1.5] text-[rgba(0,0,0,0.5)] line-clamp-2">
+            {story.excerpt}
+          </p>
+        )}
+        <div className="mt-3 flex items-center gap-1.5 text-[13px] text-[rgba(0,0,0,0.5)]">
+          <time>{formatDate(story.createdAt)}</time>
+          <span className="text-[rgba(0,0,0,0.4)]">—</span>
+          <span>约 {readingTime} 分钟阅读</span>
+        </div>
+      </div>
     </Link>
   );
 }
