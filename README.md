@@ -189,3 +189,5 @@ graph TD
 ## License
 
 Private — All Rights Reserved
+
+故事编辑器基于 [Ghost Koenig](https://github.com/TryGhost/Ghost) (MIT License)，详见 [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md)。
