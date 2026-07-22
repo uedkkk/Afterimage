@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>故事编辑器</title>
+<style>
+  /* CRITICAL: Ghost sets root font-size to 62.5% so 1rem = 10px */
+  html{font-size:62.5%;line-height:1.65}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#1a1a1a}
+  .header{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid #e5e5e5;position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;height:50px}
+  .header-left{display:flex;align-items:center;gap:16px}
+  .back-btn{background:none;border:none;font-size:14px;color:#666;cursor:pointer;padding:4px 8px;border-radius:4px}
+  .back-btn:hover{background:#f5f5f5;color:#1a1a1a}
+  .story-title{font-size:14px;font-weight:500;color:#333}
+  .save-btn{background:#1a1a1a;color:#fff;border:none;padding:6px 16px;border-radius:6px;font-size:14px;cursor:pointer}
+  .save-btn:hover{background:#333}
+  .save-btn:disabled{opacity:.5;cursor:default}
+  .saved-badge{font-size:12px;color:#16a34a}
+  .editor-scroll{margin-top:50px;height:calc(100vh - 50px);overflow-x:hidden;overflow-y:auto}
+  .editor-pane{padding:11vw 92px}
+  @media(max-width:768px){.editor-pane{padding:56px 32px}}
+  .editor-wrapper{max-width:740px;margin:0 auto}
+  .loading{display:flex;align-items:center;justify-content:center;height:100vh;color:#999;font-size:14px}
+  .error-msg{color:#dc2626;font-size:14px;padding:40px;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <button class="back-btn" id="back-btn">← 返回</button>
+    <span class="story-title" id="story-title"></span>
+    <span class="saved-badge" id="saved-badge" style="display:none">已保存</span>
+  </div>
+  <button class="save-btn" id="save-btn">保存</button>
+</div>
+
+<div class="editor-scroll">
+  <div class="editor-pane">
+    <div class="editor-wrapper">
+      <div id="root">
+        <div class="loading">加载编辑器...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script>
+  // React 18 UMD doesn't export jsx/jsxs from react/jsx-runtime — add shims
+  // The Koenig UMD bundle maps react/jsx-runtime to window.React
+  window.React.jsx = function(type, props) { return React.createElement(type, props); };
+  window.React.jsxs = function(type, props) { return React.createElement(type, props); };
+</script>
+<script src="/koenig/koenig-lexical.umd.js"></script>
+
+<script>
+(function() {
+  var Koenig = window['@tryghost/koenig-lexical'];
+  var h = React.createElement;
+  var storyId = new URLSearchParams(window.location.search).get('id');
+  var latestContent = '';
+  var initialContent = undefined;
+
+  // ---- File upload hook ----
+  function useFileUpload(type) {
+    var progress = React.useState(100);
+    var isLoading = React.useState(false);
+    var errors = React.useState([]);
+    var filesNumber = React.useState(0);
+
+    async function upload(files) {
+      filesNumber[1](files.length);
+      isLoading[1](true);
+      progress[1](30);
+
+      var formData = new FormData();
+      for (var i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+
+      try {
+        var res = await fetch('/api/admin/editor-upload', { method: 'POST', body: formData });
+        var data = await res.json();
+        progress[1](100);
+        isLoading[1](false);
+        if (data.errors && data.errors.length) {
+          errors[1](data.errors);
+          return null;
+        }
+        return (data.results || []).map(function(r) { return { url: r.url, fileName: r.fileName }; });
+      } catch(e) {
+        errors[1]([{ fileName: 'upload', message: '上传失败' }]);
+        isLoading[1](false);
+        progress[1](100);
+        return null;
+      }
+    }
+
+    return { progress: progress[0], isLoading: isLoading[0], upload: upload, errors: errors[0], filesNumber: filesNumber[0] };
+  }
+
+  var fileTypes = {
+    image: { mimeTypes: ['image/gif','image/jpg','image/jpeg','image/png','image/svg+xml','image/webp'], extensions: ['gif','jpg','jpeg','png','svg','svgz','webp'] },
+    video: { mimeTypes: ['video/mp4','video/webm','video/ogg'], extensions: ['mp4','webm','ogv'] },
+    audio: { mimeTypes: ['audio/mp3','audio/mpeg','audio/ogg','audio/wav','audio/x-wav','audio/mp4','audio/x-m4a'], extensions: ['mp3','wav','ogg','m4a'] },
+    mediaThumbnail: { mimeTypes: ['image/gif','image/jpg','image/jpeg','image/png','image/webp'], extensions: ['gif','jpg','jpeg','png','webp'] },
+    file: { mimeTypes: [], extensions: [] }
+  };
+
+  var fileUploader = { useFileUpload: useFileUpload, fileTypes: fileTypes };
+
+  var cardConfig = {
+    unsplash: null,
+    klipy: null,
+    fetchEmbed: async function() { return null; },
+    fetchAutocompleteLinks: async function() { return []; },
+    fetchLabels: async function() { return []; },
+    searchLinks: async function() { return []; },
+    siteTitle: 'Afterimage',
+    siteDescription: '光影的残像',
+    siteUrl: window.location.origin,
+    membersEnabled: false,
+    stripeEnabled: false,
+    renderLabels: false,
+    feature: { transistor: false }
+  };
+
+  // ---- Editor component ----
+  function EditorApp() {
+    var handleChange = React.useCallback(function(editorState) {
+      if (typeof editorState === 'string') {
+        latestContent = editorState;
+      } else if (editorState && typeof editorState === 'object') {
+        try { latestContent = JSON.stringify(editorState); } catch(e) {}
+      }
+      var badge = document.getElementById('saved-badge');
+      if (badge) badge.style.display = 'none';
+    }, []);
+
+    var memoCardConfig = React.useMemo(function() { return cardConfig; }, []);
+    var memoFileUploader = React.useMemo(function() { return fileUploader; }, []);
+
+    return h(Koenig.KoenigComposer, {
+      cardConfig: memoCardConfig,
+      darkMode: false,
+      fileUploader: memoFileUploader,
+      initialEditorState: initialContent,
+      isTKEnabled: true
+    }, h(Koenig.KoenigEditor, { onChange: handleChange }));
+  }
+
+  // ---- Load story ----
+  async function loadStory() {
+    var res = await fetch('/api/admin/stories?id=' + encodeURIComponent(storyId));
+    if (!res.ok) {
+      document.getElementById('root').innerHTML = '<div class="error-msg">加载失败 (' + res.status + ')</div>';
+      return;
+    }
+    var story = await res.json();
+    document.getElementById('story-title').textContent = story.title || '';
+
+    // Check if content is Lexical JSON
+    if (story.content && story.content.trimStart().indexOf('{') === 0) {
+      try {
+        var parsed = JSON.parse(story.content);
+        if (parsed && parsed.root && parsed.root.type === 'root') {
+          initialContent = story.content;
+        }
+      } catch(e) {}
+    }
+
+    latestContent = story.content || '';
+    renderEditor();
+  }
+
+  function renderEditor() {
+    var root = document.getElementById('root');
+    root.innerHTML = '';
+    ReactDOM.createRoot(root).render(h(EditorApp));
+  }
+
+  // ---- Save ----
+  async function saveContent() {
+    var btn = document.getElementById('save-btn');
+    btn.textContent = '保存中...';
+    btn.disabled = true;
+
+    try {
+      var res = await fetch('/api/admin/stories', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: storyId, content: latestContent })
+      });
+      if (res.ok) {
+        btn.textContent = '保存';
+        btn.disabled = false;
+        var badge = document.getElementById('saved-badge');
+        if (badge) {
+          badge.style.display = 'inline';
+          setTimeout(function() { badge.style.display = 'none'; }, 2000);
+        }
+      } else {
+        btn.textContent = '保存失败';
+        setTimeout(function() { btn.textContent = '保存'; btn.disabled = false; }, 2000);
+      }
+    } catch(e) {
+      btn.textContent = '保存失败';
+      setTimeout(function() { btn.textContent = '保存'; btn.disabled = false; }, 2000);
+    }
+  }
+
+  // ---- Navigation ----
+  document.getElementById('back-btn').addEventListener('click', function() {
+    window.location.href = '/admin/stories/' + storyId;
+  });
+  document.getElementById('save-btn').addEventListener('click', saveContent);
+
+  // Keyboard shortcut: Ctrl/Cmd + S
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      saveContent();
+    }
+  });
+
+  // ---- Init ----
+  if (!storyId) {
+    document.getElementById('root').innerHTML = '<div class="error-msg">缺少故事 ID</div>';
+  } else {
+    loadStory();
+  }
+})();
+</script>
+
+</body>
+</html>

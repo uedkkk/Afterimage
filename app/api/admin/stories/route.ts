@@ -5,8 +5,28 @@ import {
   createStory,
   updateStory,
   deleteStory,
+  getStoryByIdAdmin,
 } from "@/lib/db/queries";
 import { slugify } from "@/lib/utils";
+
+export async function GET(request: NextRequest) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const id = request.nextUrl.searchParams.get("id");
+  if (!id) {
+    return NextResponse.json({ error: "缺少 id 参数" }, { status: 400 });
+  }
+
+  const story = await getStoryByIdAdmin(id);
+  if (!story) {
+    return NextResponse.json({ error: "故事不存在" }, { status: 404 });
+  }
+
+  return NextResponse.json(story);
+}
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
@@ -35,11 +55,11 @@ export async function POST(request: NextRequest) {
 
   const title = body.title?.trim();
   const excerpt = body.excerpt?.trim();
-  const content = body.content?.trim();
+  const content = body.content?.trim() ?? "";
 
-  if (!title || !excerpt || !content) {
+  if (!title || !excerpt) {
     return NextResponse.json(
-      { error: "标题、摘要和内容不能为空" },
+      { error: "标题和摘要不能为空" },
       { status: 400 }
     );
   }

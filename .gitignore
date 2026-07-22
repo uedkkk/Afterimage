@@ -58,3 +58,5 @@ public/uploads/thumbnails/*
 !public/uploads/thumbnails/.gitkeep
 public/uploads/optimized/*
 !public/uploads/optimized/.gitkeep
+test-results/
+public/uploads/editor/

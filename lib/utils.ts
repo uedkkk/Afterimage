@@ -19,6 +19,21 @@ export function slugify(text: string): string {
 }
 
 export function estimateReadingTime(content: string): number {
-  const text = content.replace(/[#*`\[\]()>_~|-]/g, " ");
+  let text = content;
+  if (content.trimStart().startsWith("{")) {
+    try {
+      const parsed = JSON.parse(content);
+      if (parsed?.root?.type === "root") {
+        const texts: string[] = [];
+        function extractText(node: Record<string, unknown>) {
+          if (typeof node.text === "string") texts.push(node.text);
+          if (Array.isArray(node.children)) node.children.forEach((c) => extractText(c as Record<string, unknown>));
+        }
+        extractText(parsed.root as Record<string, unknown>);
+        text = texts.join(" ");
+      }
+    } catch {}
+  }
+  text = text.replace(/[#*`\[\]()>_~|-]/g, " ");
   return Math.max(1, Math.ceil(text.length / 400));
 }
