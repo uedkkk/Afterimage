@@ -10,6 +10,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
+  if (pathname.match(/\/admin\/stories\/[^/]+\/editor$/)) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex min-h-screen bg-canvas">
       <Sidebar />

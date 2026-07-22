@@ -1,11 +1,16 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import "@/lib/kg-content.css";
 import { getStoryWithPhotos, getRelatedStories } from "@/lib/db/queries";
 import { Reveal } from "@/components/Reveal";
 import { AlbumGallery } from "@/components/AlbumGallery";
 import { StoryCard } from "@/components/StoryCard";
 import { MarkdownContent } from "@/components/MarkdownContent";
+import { KgToggleScript } from "@/components/KgToggleScript";
+import { isLexicalContent } from "@/lib/editor-utils";
+import { renderLexicalToHtml } from "@/lib/lexical-render";
+import { renderMarkdown } from "@/lib/markdown";
 import { formatDate, estimateReadingTime } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -82,12 +87,26 @@ export default async function StoryPage({ params }: PageProps) {
         </Reveal>
       )}
 
-      {/* Content — narrow column */}
-      <div className="max-w-[720px] mx-auto mt-16">
-        <MarkdownContent
-          content={story.content}
-          className="prose max-w-none"
-        />
+      {/* Content — kg-content-wide grid for wide/full width support */}
+      <div className="mt-16">
+        {isLexicalContent(story.content) ? (
+          <>
+            <div
+              className="kg-content-wide"
+              dangerouslySetInnerHTML={{
+                __html: await renderLexicalToHtml(story.content),
+              }}
+            />
+            <KgToggleScript />
+          </>
+        ) : (
+          <div className="max-w-[720px] mx-auto">
+            <MarkdownContent
+              content={story.content}
+              className="prose max-w-none"
+            />
+          </div>
+        )}
       </div>
 
       {/* Article footer ornament */}

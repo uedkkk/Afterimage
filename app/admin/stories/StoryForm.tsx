@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
-import { MarkdownEditor } from "./MarkdownEditor";
 import type { Album } from "@/lib/generated/prisma/client";
 import type { PhotoWithTags, StoryWithRelations } from "@/lib/db/queries";
 
@@ -25,6 +25,8 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
   const [content, setContent] = useState(story?.content ?? "");
   const [published, setPublished] = useState(story?.published ?? false);
   const [saving, setSaving] = useState(false);
+
+  const hasContent = content && content.trim().length > 0;
 
   const initialMode: AssociationMode = story?.albumId
     ? "album"
@@ -108,7 +110,7 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
         title: title.trim(),
         slug: slug.trim(),
         excerpt: excerpt.trim(),
-        content,
+        content: content || "",
         albumId: mode === "album" && albumId ? albumId : null,
         photoIds: mode === "photos" ? selectedPhotoIds : [],
         coverId: coverId || null,
@@ -123,7 +125,8 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
         if (isEdit) {
           router.refresh();
         } else {
-          router.push("/admin/stories");
+          const created = await res.json();
+          router.push(`/admin/stories/${created.id}/editor`);
         }
       }
     } finally {
@@ -182,8 +185,19 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm text-dim mb-1">内容 *</label>
-        <MarkdownEditor value={content} onChange={setContent} />
+        <label className="block text-sm text-dim mb-1">内容</label>
+        {isEdit ? (
+          <Link
+            href={`/admin/stories/${story!.id}/editor`}
+            className="inline-flex items-center gap-2 border border-faint rounded-md bg-paper px-4 py-2.5 text-sm text-ink hover:bg-faint/40 transition-colors"
+          >
+            {hasContent ? "编辑内容 →" : "撰写内容 →"}
+          </Link>
+        ) : (
+          <div className="border border-dashed border-faint rounded-md bg-paper px-4 py-3 text-sm text-dim/60 min-h-[60px] flex items-center">
+            保存后进入编辑器撰写内容
+          </div>
+        )}
       </div>
 
       <div>
@@ -251,22 +265,22 @@ export function StoryForm({ story, albums, photos }: StoryFormProps) {
             {filteredPhotos.map((photo) => {
               const selected = selectedPhotoIds.includes(photo.id);
               return (
-                  <button
-                    key={photo.id}
-                    type="button"
-                    onClick={() => togglePhoto(photo.id)}
-                    className={
-                      selected
-                        ? "relative aspect-square overflow-hidden ring-2 ring-accent rounded"
-                        : "relative aspect-square overflow-hidden rounded opacity-60 hover:opacity-100"
-                    }
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={photo.thumbPath ?? photo.filePath}
-                      alt={photo.title ?? photo.filename}
-                      className="w-full h-full object-cover"
-                    />
+                <button
+                  key={photo.id}
+                  type="button"
+                  onClick={() => togglePhoto(photo.id)}
+                  className={
+                    selected
+                      ? "relative aspect-square overflow-hidden ring-2 ring-accent rounded"
+                      : "relative aspect-square overflow-hidden rounded opacity-60 hover:opacity-100"
+                  }
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photo.thumbPath ?? photo.filePath}
+                    alt={photo.title ?? photo.filename}
+                    className="w-full h-full object-cover"
+                  />
                   {selected && (
                     <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-signal rounded-full flex items-center justify-center text-white text-[10px]">
                       ✓
