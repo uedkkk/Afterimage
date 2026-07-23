@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
       published: body.published,
     });
     revalidatePath("/");
+    revalidatePath("/albums");
     revalidatePath("/category/[slug]");
     revalidatePath("/album/[slug]");
     return NextResponse.json(album, { status: 201 });
@@ -109,6 +110,7 @@ export async function PUT(request: NextRequest) {
   try {
     const album = await updateAlbum(id, data);
     revalidatePath("/");
+    revalidatePath("/albums");
     revalidatePath("/category/[slug]");
     revalidatePath("/album/[slug]");
     return NextResponse.json(album);
@@ -150,6 +152,7 @@ export async function DELETE(request: NextRequest) {
     );
   }
   revalidatePath("/");
+  revalidatePath("/albums");
   revalidatePath("/category/[slug]");
   revalidatePath("/album/[slug]");
   return NextResponse.json({ success: true });

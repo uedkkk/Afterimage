@@ -47,9 +47,11 @@ CREATE TABLE "Photo" (
     "exif" TEXT,
     "tags" TEXT NOT NULL DEFAULT '[]',
     "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "storyId" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Photo_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "Photo_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "Photo_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -109,6 +111,9 @@ CREATE INDEX "Album_slug_idx" ON "Album"("slug");
 
 -- CreateIndex
 CREATE INDEX "Photo_albumId_idx" ON "Photo"("albumId");
+
+-- CreateIndex
+CREATE INDEX "Photo_storyId_idx" ON "Photo"("storyId");
 
 -- CreateIndex
 CREATE INDEX "Photo_createdAt_idx" ON "Photo"("createdAt");
