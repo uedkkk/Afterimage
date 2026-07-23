@@ -18,7 +18,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV DATABASE_URL="file:./data/afterimage.db"
+RUN mkdir -p data
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 RUN npm run build
 
 # Stage 3: Minimal runtime
@@ -28,9 +31,6 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
-
-# Install prisma CLI and tsx for migrations and seeding at runtime
-RUN npm install --no-save prisma@^7.8.0 tsx@^4.22.4
 
 # Copy standalone server output (includes minimal node_modules)
 COPY --from=builder /app/.next/standalone ./
@@ -43,6 +43,8 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./
 # Copy generated Prisma client
 COPY --from=builder /app/lib/generated ./lib/generated
+# Copy full node_modules for prisma CLI, tsx, and seeding at runtime
+COPY --from=builder /app/node_modules ./node_modules
 # Copy entrypoint script
 COPY docker-entrypoint.sh ./
 RUN chmod +x docker-entrypoint.sh

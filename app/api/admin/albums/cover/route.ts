@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 
   await setAlbumCover(albumId, photoId ?? null);
   revalidatePath("/");
+  revalidatePath("/albums");
   revalidatePath("/album/[slug]");
   return NextResponse.json({ success: true });
 }

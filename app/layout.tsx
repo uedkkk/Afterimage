@@ -33,10 +33,14 @@ const playfair = Playfair_Display({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getAllSettings();
-  const title = settings["nav.title"] ?? "Afterimage";
-  const description = settings["site.description"] ?? "摄影作品展示与管理系统";
-  return { title, description };
+  try {
+    const settings = await getAllSettings();
+    const title = settings["nav.title"] ?? "Afterimage";
+    const description = settings["site.description"] ?? "摄影作品展示与管理系统";
+    return { title, description };
+  } catch {
+    return { title: "Afterimage", description: "摄影作品展示与管理系统" };
+  }
 }
 
 export default function RootLayout({
